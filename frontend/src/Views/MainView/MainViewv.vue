@@ -60,9 +60,9 @@ const player2_name = ref("Adam K.");
 }
 
 .team-card {
-  position: absolute;
-  top: 0px;
-  left: 0px;
+  position: fixed;
+  top: 0;
+  left: 0;
   background-color: #525a64;
   width: 540px;
   height: 204px;
@@ -182,5 +182,83 @@ const player2_name = ref("Adam K.");
 
 .about-button {
   background-color: rgba(26, 74, 143, 0.9);
+}
+
+@media (max-width: 550px) {
+  .team-card {
+    position: fixed;
+    bottom: 8vh;
+    top: auto;
+    left: 0;
+    width: 100vw;
+    height: 20vh;
+    background-color: #525a64;
+  }
+
+  .team-card {
+    position: fixed;
+    bottom: 5vh;
+    background-color: #525a64;
+    width: 100vw;
+    height: 20vh;
+  }
+
+  .team-card-top {
+    background-color: #62707e;
+    width: 100vw;
+    height: 5vh;
+    font-family: "Titillium Web";
+    font-size: 30px;
+    font-weight: 600;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-text-stroke: 1px black;
+  }
+
+  .team-members {
+    display: flex;
+    gap: 5px;
+    margin-top: 7vh;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .member-slot {
+    padding: 8px;
+    width: 100px;
+    margin-left: 15px;
+    margin-right: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-family: "Titillium Web";
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo-card {
+    width: 336px;
+    height: 85px;
+    position: absolute;
+    top: 18vh;
+    background-color: rgba(253, 253, 230, 0.7);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .buttons-card {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5vh;
+  }
 }
 </style>

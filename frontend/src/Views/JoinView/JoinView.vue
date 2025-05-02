@@ -179,4 +179,62 @@ import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
   border-width: 1px;
   border-style: solid;
 }
+@media (max-width: 550px) {
+  .content-square {
+    width: 95vw;
+    height: 60vh;
+    backdrop-filter: blur(3px);
+    background-color: rgba(64, 77, 97, 0.7);
+    border-width: 0;
+  }
+
+  .title-text {
+    font-size: 40px;
+    -webkit-text-stroke-width: 1px;
+    margin-bottom: 4vh;
+  }
+
+  .text {
+    font-size: 32px;
+    text-align: center;
+  }
+
+  .input-text {
+    font-size: 40px;
+    width: 100%;
+    letter-spacing: 23px;
+    padding: 6px 0;
+    text-align: center;
+  }
+
+  .input {
+    width: 100%;
+    height: 50px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  .copy-button,
+  .paste-button {
+    width: 64px;
+    height: 64px;
+    background-size: 62px;
+    background-position: -5px;
+  }
+
+  .margin,
+  .margin-title {
+    margin-top: 50px;
+  }
+
+  .join-view {
+    padding: 0px;
+    background-size: cover;
+    background-position: center;
+  }
+}
 </style>

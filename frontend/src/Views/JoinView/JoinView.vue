@@ -24,7 +24,7 @@
           <div class="input-group">
             <p class="text">Enter team code: </p>
             <div class="code-input">
-            
+
             <input
               type="text"
               class="input input-text"
@@ -34,12 +34,12 @@
               pattern="\d*"
               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
             />
-            
+
             <button
             class="paste-button" />
             </div>
           </div>
-            
+
         </div>
 
       </div>
@@ -159,6 +159,7 @@ function copyCode() {
 .join-view {
   min-height: 100vh;
   width: 100%;
+  padding-top: 70px;
   margin: auto;
   background-image: url('@/images/mainBackground.jpg');
   background-size: cover;

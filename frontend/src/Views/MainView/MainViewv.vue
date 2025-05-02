@@ -23,9 +23,15 @@
       <img class="logo-img" src="@/images/logo.png" />
       <div class="logo-text">WIKQUIZ</div>
     </div>
-    <div class="play-button">
-      <div>Play</div>
-      <img class="play-img" src="@/images/play.png" />
+    <div class="buttons-card">
+      <div class="button play-button">
+        <div>Play</div>
+        <img class="button-img" src="@/images/play.png" />
+      </div>
+      <div class="button about-button">
+        <div>About</div>
+        <img class="button-img" src="@/images/handshake.png" />
+      </div>
     </div>
   </div>
 </template>
@@ -117,8 +123,7 @@ const player2_name = ref("Adam K.");
   width: 336px;
   height: 85px;
   position: absolute;
-  top: 254px;
-  left: 552px;
+  top: 30vh;
   background-color: rgba(253, 253, 230, 0.7);
   display: flex;
   flex-direction: row;
@@ -140,17 +145,18 @@ const player2_name = ref("Adam K.");
   color: #ff0000;
 }
 
-.play-img {
-  height: 72px;
-  width: 72px;
-  margin-left: 50px;
+.buttons-card {
+  margin-top: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 100px;
 }
 
-.play-button {
-  background-color: rgba(72, 176, 44, 0.9);
+.button {
   width: 312px;
   height: 84px;
-  font-family: 'Segoe UI';
+  font-family: "Segoe UI";
   font-weight: 600;
   font-size: 48px;
   color: #ffffff;
@@ -159,6 +165,22 @@ const player2_name = ref("Adam K.");
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
+  border: 2px solid #ffffff;
   gap: 10px;
+}
+
+.button-img {
+  height: 72px;
+  width: 72px;
+  margin-left: 50px;
+}
+
+.play-button {
+  background-color: rgba(72, 176, 44, 0.9);
+}
+
+.about-button {
+  background-color: rgba(26, 74, 143, 0.9);
 }
 </style>

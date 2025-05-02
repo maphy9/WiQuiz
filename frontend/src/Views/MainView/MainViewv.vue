@@ -19,6 +19,10 @@
         </div>
       </div>
     </div>
+    <div class="logo-card">
+      <img class="logo-img" src="@/images/logo.png" />
+      <div class="logo-text">WIKQUIZ</div>
+    </div>
   </div>
 </template>
 
@@ -103,5 +107,32 @@ const player2_name = ref("Adam K.");
 
 .add {
   background-color: #48b02c;
+}
+
+.logo-card {
+  width: 336px;
+  height: 85.2px;
+  position: absolute;
+  top: 255.2px;
+  left: 552px;
+  background-color: rgba(253, 253, 230, 0.7);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.logo-img {
+  width: 84px;
+  height: 84px;
+}
+
+.logo-text {
+  font-size: 50px;
+  font-family: "Segoe UI";
+  font-weight: 600;
+  color: #ff0000;
 }
 </style>

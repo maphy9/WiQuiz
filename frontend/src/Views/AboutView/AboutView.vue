@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue';
 
 </script>
 
 <template>
 <div class="main">
+  <LanguageButton />
   <div class="container">
     <div class="title">Creators</div>
 

@@ -1,37 +1,45 @@
 <template>
   <div class="join-view">
+    <LanguageButton />
       <div class="content-square">
 
         <div class="margin">
-            <h1 class="title-text">Twój kod:</h1>
-            <div class="input-group">
+          <h1 class="title-text">Your code:</h1>
+          <div class="input-group">
+            <div class="code-input">
               <input type="text"
               class="input input-text"
-              value=" 6  2  3  1  6  2 "
+              value="623162"
               readonly />
 
               <button class="copy-button" />
+            </div>
           </div>
         </div>
 
         <div class="margin-title">
 
-          <h1 class="title-text">Dołącz do zespołu</h1>
+          <h1 class="title-text">Join team</h1>
 
           <div class="input-group">
-
-            <div class="label-and-input">
-              <p class="text">Wpisz kod zespołu: </p>
-              <input
+            <p class="text">Enter team code: </p>
+            <div class="code-input">
+            
+            <input
               type="text"
               class="input input-text"
-              value=" 1  2  4  5  3  6 "
-              readonly />
-            </div>
-
+              maxlength="6"
+              inputmode="numeric"
+              value="124536"
+              pattern="\d*"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+            />
+            
             <button
             class="paste-button" />
+            </div>
           </div>
+            
         </div>
 
       </div>
@@ -39,6 +47,8 @@
 </template>
 
 <script lang="ts" setup>
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
+
 
 </script>
 
@@ -66,20 +76,21 @@
   color: black;
   font-weight: bold;
   font-size: 64px;
-  font-family: "Titilium Web";
-  letter-spacing: 1px;
+  font-family: "Titillium Web";
+  letter-spacing: 30px;
+  text-align: center;
 }
 
-.label-and-input {
+.code-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  margin: 16px;
 }
 
 .copy-button{
   width: 100px;
-  height: 104px;
+  height: 102px;
   border: black;
   background-color: white;
   background-image: url('@/images/clipboard.png');
@@ -90,14 +101,15 @@
   border-width: 1px;
   border-style: solid;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .paste-button{
   width: 100px;
-  height: 104px;
+  height: 102px;
   border: black;
   background-color: white;
-  background-image: url('@/images/arrowRight.png');
+  background-image: url('@/images/arrow.png');
   background-size: 100px;
   background-repeat: no-repeat;
   padding-left: 10px;
@@ -105,17 +117,23 @@
   border-width: 1px;
   border-style: solid;
   transition: all 0.3s ease;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  cursor: pointer;
 }
 .copy-button:active, .paste-button:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
   background-color: rgba(255, 255, 255, 0.9);
 }
+.paste-button:active{
+  transform: scaleX(-1) scale(1.05);
+}
 
 .text {
   color: white;
   font-size: 48px;
-  font-family: "Titilium Web";
+  font-family: "Titillium Web";
 }
 
 .input {
@@ -127,6 +145,7 @@
   border-color: black;
   border-width: 1px;
   border-style: solid;
+  font-family: "Titillium Web";
 }
 
 .join-view {
@@ -145,10 +164,10 @@
 .title-text {
   color: white;
   -webkit-text-stroke-color: black;
-  -webkit-text-stroke-width: 1.1px;
+  -webkit-text-stroke-width: 1px;
   font-size: 64px;
   font-weight: 700;
-  font-family: "Titilium Web", sans-serif;
+  font-family: "Titillium Web", sans-serif;
 }
 
 .content-square {

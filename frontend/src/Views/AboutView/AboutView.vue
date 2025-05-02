@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue';
+
+</script>
+
 <template>
 <div class="main">
   <div class="container">
@@ -10,6 +15,7 @@
       <li>Mikita Dzeviatau - 253805</li>
     </ul>
   </div>
+  <ReturnButton />
 </div>
 </template>
 

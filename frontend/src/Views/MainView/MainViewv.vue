@@ -23,6 +23,10 @@
       <img class="logo-img" src="@/images/logo.png" />
       <div class="logo-text">WIKQUIZ</div>
     </div>
+    <div class="play-button">
+      <div>Play</div>
+      <img class="play-img" src="@/images/play.png" />
+    </div>
   </div>
 </template>
 
@@ -111,9 +115,9 @@ const player2_name = ref("Adam K.");
 
 .logo-card {
   width: 336px;
-  height: 85.2px;
+  height: 85px;
   position: absolute;
-  top: 255.2px;
+  top: 254px;
   left: 552px;
   background-color: rgba(253, 253, 230, 0.7);
   display: flex;
@@ -134,5 +138,27 @@ const player2_name = ref("Adam K.");
   font-family: "Segoe UI";
   font-weight: 600;
   color: #ff0000;
+}
+
+.play-img {
+  height: 72px;
+  width: 72px;
+  margin-left: 50px;
+}
+
+.play-button {
+  background-color: rgba(72, 176, 44, 0.9);
+  width: 312px;
+  height: 84px;
+  font-family: 'Segoe UI';
+  font-weight: 600;
+  font-size: 48px;
+  color: #ffffff;
+  -webkit-text-stroke: 1px black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 </style>

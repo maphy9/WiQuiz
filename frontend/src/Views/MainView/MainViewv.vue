@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LanguageButton></LanguageButton>
     <div class="team-card">
       <div class="team-card-top">
         <h3>Your team</h3>
@@ -38,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import LanguageButton from "@/components/SharedComponents/LanguageButton.vue";
 
 const player1_name = ref("Bolesław R.");
 const player2_name = ref("Adam K.");

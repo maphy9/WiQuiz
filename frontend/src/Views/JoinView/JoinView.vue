@@ -9,10 +9,10 @@
             <div class="code-input">
               <input type="text"
               class="input input-text"
-              value="623162"
+              :value="codeInput"
               readonly />
 
-              <button class="copy-button" />
+              <button class="copy-button" @click="copyCode"/>
             </div>
           </div>
         </div>
@@ -48,7 +48,15 @@
 
 <script lang="ts" setup>
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
+import { ref } from 'vue'
 
+const codeInput = ref(623162)
+
+function copyCode() {
+  if (codeInput.value) {
+    navigator.clipboard.writeText(codeInput.value.toString())
+  }
+}
 
 </script>
 

@@ -74,18 +74,6 @@ function handleLogoClick() {
   }
 }
 
-@keyframes flicker {
-  0%,
-  100% {
-    opacity: 1;
-    filter: drop-shadow(0 0 5px #48b02c);
-  }
-  50% {
-    opacity: 0.6;
-    filter: drop-shadow(0 0 15px #a4f593);
-  }
-}
-
 @keyframes rotate360 {
   from {
     transform: rotate(0deg);
@@ -93,10 +81,6 @@ function handleLogoClick() {
   to {
     transform: rotate(360deg);
   }
-}
-
-.rotate {
-  animation: rotate360 1s ease-in-out;
 }
 
 .background {
@@ -120,8 +104,8 @@ function handleLogoClick() {
   top: 0;
   left: 0;
   background-color: #525a64;
-  width: 540px;
-  height: 204px;
+  width: 35vw;
+  height: 23vh;
 }
 
 .team-card-top {
@@ -129,10 +113,10 @@ function handleLogoClick() {
   top: 0px;
   left: 0px;
   background-color: #62707e;
-  width: 540px;
-  height: 60px;
+  width: 35vw;
+  height: 7vh;
   font-family: "Titillium Web";
-  font-size: 30px;
+  font-size: 4vh;
   font-weight: 600;
   color: #ffffff;
   display: flex;
@@ -143,19 +127,19 @@ function handleLogoClick() {
 
 .team-members {
   display: flex;
-  gap: 12px;
-  margin-top: 70px;
+  gap: 2vw;
+  margin-top: 8vh;
   align-items: center;
   justify-content: space-between;
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .member-slot {
-  padding: 8px;
-  width: 100px;
-  margin-left: 25px;
-  margin-right: 25px;
+  width: 15vh;
+  height: 6vh;
   text-align: center;
-  font-size: 18px;
+  font-size: 2vh;
   font-family: "Titillium Web";
   color: #ffffff;
   display: flex;
@@ -164,11 +148,22 @@ function handleLogoClick() {
 }
 
 .avatar {
-  width: 72px;
-  height: 72px;
+  width: 9vh;
+  height: 9vh;
   background-color: #ccc;
   border-radius: 50%;
   margin-bottom: 4px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar:hover {
+  cursor: pointer;
+}
+
+.avatar:active {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  background-color: rgba(19, 57, 8, 0.9);
 }
 
 .add {
@@ -176,45 +171,55 @@ function handleLogoClick() {
 }
 
 .logo-card {
-  width: 336px;
-  height: 85px;
+  width: 25vw;
+  height: 12vh;
+  min-width: 200px;
+  min-height: 50px;
   position: absolute;
-  top: 30vh;
+  top: 25vh;
   background-color: rgba(253, 253, 230, 0.7);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  padding: 8px;
   border-radius: 10px;
 }
 
+.rotate {
+  animation: rotate360 1s ease-in-out;
+}
+
 .logo-img {
-  width: 84px;
-  height: 84px;
+  width: 12vh;
+  height: 12vh;
 }
 
 .logo-text {
-  font-size: 50px;
+  font-size: 3vw;
   font-family: "Segoe UI";
   font-weight: 600;
   color: #ff0000;
 }
 
 .buttons-card {
-  margin-top: 250px;
+  position: fixed;
+  margin-top: 10vh;
+  top: 50vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 100px;
+  gap: 15vh;
 }
 
 .button {
-  width: 312px;
-  height: 84px;
+  transition: all 0.3s ease;
+  width: 20vw;
+  height: 10vh;
+  min-width: 150px;
+  min-height: 40px;
   font-family: "Segoe UI";
   font-weight: 600;
-  font-size: 48px;
+  font-size: 3vw;
   color: #ffffff;
   -webkit-text-stroke: 1px black;
   display: flex;
@@ -226,55 +231,45 @@ function handleLogoClick() {
   gap: 10px;
 }
 
-.button-img {
-  height: 72px;
-  width: 72px;
-  margin-left: 50px;
-}
-
-.play-button {
-  background-color: rgba(72, 176, 44, 0.9);
-}
-
-.about-button {
-  background-color: rgba(26, 74, 143, 0.9);
-}
-
-.play-button {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: pulse 2.5s infinite;
-}
-
 .button:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
-  cursor: pointer;
-}
-
-.play-button:hover {
-  background-color: rgba(19, 57, 8, 0.9);
-}
-
-.about-button:hover {
-  background-color: rgba(9, 25, 49, 0.9);
-}
-
-.add {
-  background-color: #48b02c;
-  animation: flicker 2.5s infinite ease-in-out;
-}
-
-.add:hover {
-  animation-play-state: paused;
-  transform: scale(1.05);
   cursor: pointer;
 }
 
 .button:active {
-  animation-play-state: paused;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
-  background-color: rgba(61, 79, 105, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.button-img {
+  height: 10vh;
+  width: 10vh;
+  margin-left: 2vw;
+}
+
+.play-button {
+  animation: pulse 2.5s infinite;
+  background-color: rgba(72, 176, 44, 0.9);
+}
+
+.play-button:hover {
+  background-color: rgba(19, 57, 8, 0.9);
+  animation: none;
+}
+
+.play-button:active {
+  animation: none;
+  transform: scale(1.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(26, 74, 143, 0.9);
+}
+
+.about-button:hover {
+  background-color: rgba(12, 33, 63, 0.9);
 }
 
 @media (max-width: 550px) {
@@ -321,10 +316,8 @@ function handleLogoClick() {
   .member-slot {
     padding: 8px;
     width: 100px;
-    margin-left: 15px;
-    margin-right: 15px;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     font-family: "Titillium Web";
     color: #ffffff;
     display: flex;
@@ -332,11 +325,15 @@ function handleLogoClick() {
     align-items: center;
   }
 
+  .avatar {
+    width: 15vw;
+    height: 15vw;
+  }
+
   .logo-card {
     width: 336px;
     height: 85px;
     position: absolute;
-    top: 18vh;
     background-color: rgba(253, 253, 230, 0.7);
     display: flex;
     flex-direction: row;
@@ -346,12 +343,37 @@ function handleLogoClick() {
     border-radius: 10px;
   }
 
+  .logo-text {
+    font-size: 40px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+    color: #ff0000;
+  }
+
+  .button {
+    width: 312px;
+    height: 84px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+    font-size: 48px;
+    color: #ffffff;
+    -webkit-text-stroke: 1px black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: 2px solid #ffffff;
+    gap: 10px;
+  }
+
   .buttons-card {
-    margin-top: 3px;
+    top: 35vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5vh;
+    margin-bottom: 50px;
   }
 }
 </style>

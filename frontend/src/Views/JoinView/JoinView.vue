@@ -97,12 +97,12 @@ function copyCode() {
 }
 
 .copy-button{
-  width: 100px;
+  width: 10vh;
   height: calc(10vh + 2px);
   border: black;
   background-color: white;
   background-image: url('@/images/clipboard.png');
-  background-size: 95px;
+  background-size: calc(10vh - 5px);
   background-repeat: no-repeat;
   padding-left: 10px;
   border-color: black;
@@ -113,12 +113,12 @@ function copyCode() {
 }
 
 .paste-button{
-  width: 100px;
+  width: 10vh;
   height: calc(10vh + 2px);
   border: black;
   background-color: white;
   background-image: url('@/images/arrow.png');
-  background-size: 100px;
+  background-size: calc(10vh);
   background-repeat: no-repeat;
   padding-left: 10px;
   border-color: black;

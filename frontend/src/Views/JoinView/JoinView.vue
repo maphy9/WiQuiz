@@ -63,10 +63,10 @@ function copyCode() {
 <style>
 
 .margin{
-  margin-top: 85px;
+  margin-top: 7vh;
 }
 .margin-title{
-  margin-top: 100px;
+  margin-top: 9vh;
 }
 .input-group {
   display: flex;
@@ -83,9 +83,9 @@ function copyCode() {
 .input-text{
   color: black;
   font-weight: bold;
-  font-size: 64px;
+  font-size: 7vh;
   font-family: "Titillium Web";
-  letter-spacing: 30px;
+  letter-spacing: 1vw;
   text-align: center;
 }
 
@@ -98,7 +98,7 @@ function copyCode() {
 
 .copy-button{
   width: 100px;
-  height: 102px;
+  height: calc(10vh + 2px);
   border: black;
   background-color: white;
   background-image: url('@/images/clipboard.png');
@@ -114,7 +114,7 @@ function copyCode() {
 
 .paste-button{
   width: 100px;
-  height: 102px;
+  height: calc(10vh + 2px);
   border: black;
   background-color: white;
   background-image: url('@/images/arrow.png');
@@ -140,13 +140,13 @@ function copyCode() {
 
 .text {
   color: white;
-  font-size: 48px;
+  font-size: 4vh;
   font-family: "Titillium Web";
 }
 
 .input {
   width: 400px;
-  height: 100px;
+  height: 10vh;
   border: black;
   background-color: white;
   padding-left: 10px;
@@ -159,7 +159,6 @@ function copyCode() {
 .join-view {
   min-height: 100vh;
   width: 100%;
-  padding-top: 70px;
   margin: auto;
   background-image: url('@/images/mainBackground.jpg');
   background-size: cover;
@@ -174,14 +173,14 @@ function copyCode() {
   color: white;
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
-  font-size: 64px;
+  font-size: 7vh;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 }
 
 .content-square {
-  height: 715px;
-  width: 1332px;
+  height: 70vh;
+  width: 70vw;
   backdrop-filter: blur(5px);
   background-color: rgba(64, 77, 97, 0.7);
   border-color: black;

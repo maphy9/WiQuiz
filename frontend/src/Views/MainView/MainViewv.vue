@@ -20,8 +20,8 @@
         </div>
       </div>
     </div>
-    <div class="logo-card">
-      <img class="logo-img" src="@/images/logo.png" />
+    <div class="logo-card" @click="handleLogoClick">
+      <img class="logo-img" src="@/images/logo.png" :class="{ rotate: rotateLogo }" />
       <div class="logo-text">WIKQUIZ</div>
     </div>
     <div class="buttons-card">
@@ -43,9 +43,62 @@ import LanguageButton from "@/components/SharedComponents/LanguageButton.vue";
 
 const player1_name = ref("Bolesław R.");
 const player2_name = ref("Adam K.");
+const logoClickCount = ref(0);
+const rotateLogo = ref(false);
+
+function handleLogoClick() {
+  logoClickCount.value++;
+  if (logoClickCount.value >= 5) {
+    rotateLogo.value = true;
+    setTimeout(() => {
+      rotateLogo.value = false;
+      logoClickCount.value = 0;
+    }, 1000);
+  }
+}
 </script>
 
 <style scoped>
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px #48b02c);
+  }
+  50% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 15px #a4f593);
+  }
+}
+
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate {
+  animation: rotate360 1s ease-in-out;
+}
+
 .background {
   height: 100vh;
   width: 100vw;
@@ -59,6 +112,7 @@ const player2_name = ref("Adam K.");
   justify-content: center;
   align-items: center;
   text-align: center;
+  user-select: none;
 }
 
 .team-card {
@@ -184,6 +238,43 @@ const player2_name = ref("Adam K.");
 
 .about-button {
   background-color: rgba(26, 74, 143, 0.9);
+}
+
+.play-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: pulse 2.5s infinite;
+}
+
+.button:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+}
+
+.play-button:hover {
+  background-color: rgba(19, 57, 8, 0.9);
+}
+
+.about-button:hover {
+  background-color: rgba(9, 25, 49, 0.9);
+}
+
+.add {
+  background-color: #48b02c;
+  animation: flicker 2.5s infinite ease-in-out;
+}
+
+.add:hover {
+  animation-play-state: paused;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.button:active {
+  animation-play-state: paused;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  background-color: rgba(61, 79, 105, 0.7);
 }
 
 @media (max-width: 550px) {

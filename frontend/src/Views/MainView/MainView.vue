@@ -106,6 +106,7 @@ function handleLogoClick() {
   background-color: #525a64;
   width: 35vw;
   height: 23vh;
+  min-width: 400px;
 }
 
 .team-card-top {
@@ -123,6 +124,7 @@ function handleLogoClick() {
   justify-content: center;
   align-items: center;
   -webkit-text-stroke: 1px black;
+  min-width: 400px;
 }
 
 .team-members {
@@ -167,8 +169,8 @@ function handleLogoClick() {
 }
 
 .logo-card {
-  width: 25vw;
-  height: 12vh;
+  width: 20vw;
+  height: 10vh;
   min-width: 200px;
   min-height: 50px;
   position: absolute;
@@ -186,8 +188,10 @@ function handleLogoClick() {
 }
 
 .logo-img {
-  width: 12vh;
-  height: 12vh;
+  width: 5vw;
+  height: 5vw;
+  min-width: 60px;
+  min-height: 60px;
 }
 
 .logo-text {
@@ -195,27 +199,28 @@ function handleLogoClick() {
   font-family: "Segoe UI";
   font-weight: 600;
   color: #ff0000;
+  margin-right: 2vw;
 }
 
 .buttons-card {
   position: fixed;
   margin-top: 10vh;
-  top: 50vh;
+  top: 35vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15vh;
+  gap: 12vh;
 }
 
 .button {
   transition: all 0.3s ease;
   width: 20vw;
-  height: 10vh;
-  min-width: 150px;
+  height: 8vh;
+  min-width: 300px;
   min-height: 40px;
   font-family: "Segoe UI";
   font-weight: 600;
-  font-size: 3vw;
+  font-size: clamp(35px, 3vw, 40px);
   color: #ffffff;
   -webkit-text-stroke: 1px black;
   display: flex;
@@ -224,7 +229,7 @@ function handleLogoClick() {
   justify-content: center;
   border-radius: 5px;
   border: 2px solid #ffffff;
-  gap: 10px;
+  gap: 3vw;
 }
 
 .button:active {

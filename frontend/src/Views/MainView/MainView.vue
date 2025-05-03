@@ -156,10 +156,6 @@ function handleLogoClick() {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.avatar:hover {
-  cursor: pointer;
-}
-
 .avatar:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
@@ -231,10 +227,6 @@ function handleLogoClick() {
   gap: 10px;
 }
 
-.button:hover {
-  cursor: pointer;
-}
-
 .button:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
@@ -252,15 +244,11 @@ function handleLogoClick() {
   background-color: rgba(72, 176, 44, 0.9);
 }
 
-.play-button:hover {
-  background-color: rgba(19, 57, 8, 0.9);
-  animation: none;
-}
-
 .play-button:active {
   animation: none;
   transform: scale(1.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(19, 57, 8, 0.9);
 }
 
 .about-button {
@@ -268,8 +256,27 @@ function handleLogoClick() {
   background-color: rgba(26, 74, 143, 0.9);
 }
 
-.about-button:hover {
+.about-button:active{
   background-color: rgba(12, 33, 63, 0.9);
+}
+
+@media (hover: hover) {
+  .avatar:hover {
+    cursor: pointer;
+  }
+
+  .play-button:hover {
+    background-color: rgba(19, 57, 8, 0.9);
+    animation: none;
+  }
+
+  .about-button:hover {
+    background-color: rgba(12, 33, 63, 0.9);
+  }
+
+  .button:hover {
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 550px) {

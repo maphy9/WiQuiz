@@ -43,11 +43,13 @@
         </div>
 
       </div>
+      <ReturnButton />
   </div>
 </template>
 
 <script lang="ts" setup>
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue';
 import { ref } from 'vue'
 
 const codeInput = ref(623162)

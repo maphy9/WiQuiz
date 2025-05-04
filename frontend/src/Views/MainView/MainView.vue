@@ -155,24 +155,25 @@ function handleLogoClick() {
   background-color: #ccc;
   border-radius: 50%;
   margin-bottom: 4px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease !important;
 }
 
 .avatar:active {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
   transform: scale(1.05);
-  background-color: rgba(19, 57, 8, 0.9);
 }
 
 .add {
   background-color: #48b02c;
 }
 
+.add:active {
+  background-color: rgba(79, 190, 48, 1) !important;
+}
+
 .logo-card {
-  width: 20vw;
-  height: 10vh;
-  min-width: 200px;
-  min-height: 50px;
+  width: 336px;
+  height: 86px;
   position: absolute;
   top: 25vh;
   background-color: rgba(253, 253, 230, 0.7);
@@ -180,7 +181,7 @@ function handleLogoClick() {
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .rotate {
@@ -188,14 +189,12 @@ function handleLogoClick() {
 }
 
 .logo-img {
-  width: 5vw;
-  height: 5vw;
-  min-width: 60px;
-  min-height: 60px;
+  width: 84px;
+  height: 84px;
 }
 
 .logo-text {
-  font-size: 3vw;
+  font-size: 50px;
   font-family: "Segoe UI";
   font-weight: 600;
   color: #ff0000;
@@ -213,9 +212,9 @@ function handleLogoClick() {
 }
 
 .button {
-  transition: all 0.3s ease;
-  width: 20vw;
-  height: 8vh;
+  transition: all 0.3s ease !important;
+  width: 312px;
+  height: 84px;
   min-width: 300px;
   min-height: 40px;
   font-family: "Segoe UI";
@@ -232,12 +231,6 @@ function handleLogoClick() {
   gap: 3vw;
 }
 
-.button:active {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
 .button-img {
   height: 10vh;
   width: 10vh;
@@ -252,8 +245,8 @@ function handleLogoClick() {
 .play-button:active {
   animation: none;
   transform: scale(1.05);
+  background-color: rgba(79, 190, 48, 0.9) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgba(19, 57, 8, 0.9);
 }
 
 .about-button {
@@ -261,22 +254,30 @@ function handleLogoClick() {
   background-color: rgba(26, 74, 143, 0.9);
 }
 
-.about-button:active{
-  background-color: rgba(12, 33, 63, 0.9);
+.about-button:active {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  background-color: rgba(30, 80, 152, 0.9) !important;
 }
 
 @media (hover: hover) {
   .avatar:hover {
     cursor: pointer;
+    opacity: 0.7;
+  }
+
+  .add:hover {
+    opacity: 1;
+    background-color: rgba(59, 158, 32);
   }
 
   .play-button:hover {
-    background-color: rgba(19, 57, 8, 0.9);
+    background-color: rgba(59, 158, 32, 0.9);
     animation: none;
   }
 
   .about-button:hover {
-    background-color: rgba(12, 33, 63, 0.9);
+    background-color: rgba(20, 67, 132, 0.9);
   }
 
   .button:hover {
@@ -352,11 +353,15 @@ function handleLogoClick() {
     align-items: center;
     justify-content: space-around;
     padding: 8px;
-    border-radius: 10px;
+  }
+
+  .logo-img {
+    width: 90px;
+    height: 90px;
   }
 
   .logo-text {
-    font-size: 40px;
+    font-size: 50px;
     font-family: "Segoe UI";
     font-weight: 600;
     color: #ff0000;

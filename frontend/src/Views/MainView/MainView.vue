@@ -14,10 +14,10 @@
           <img class="avatar" src="@/images/emptyPfp.png" />
           <div>{{ player2_name }}</div>
         </div>
-        <div class="member-slot">
+        <router-link to="/join" class="member-slot">
           <img class="avatar add" src="@/images/plus.png" />
           <div>Invite or join</div>
-        </div>
+        </router-link>
       </div>
     </div>
     <div class="logo-card" @click="handleLogoClick">
@@ -29,10 +29,12 @@
         <div>Play</div>
         <img class="button-img" src="@/images/play.png" />
       </div>
-      <div class="button about-button">
-        <div>About</div>
-        <img class="button-img" src="@/images/handshake.png" />
-      </div>
+      <router-link to="/about">
+        <div class="button about-button">
+          <div>About</div>
+          <img class="button-img" src="@/images/handshake.png" />
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -283,6 +285,10 @@ function handleLogoClick() {
   .button:hover {
     cursor: pointer;
   }
+}
+
+a {
+  all: unset;
 }
 
 @media (max-width: 550px) {

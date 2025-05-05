@@ -9,9 +9,9 @@ import AboutView from './Views/AboutView/AboutView.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { name: 'main', path: '/', component: MainView },
-    { name: 'about', path: '/about', component: AboutView },
-    { name: 'join', path: '/join', component: JoinView }
+    { path: '/', component: MainView },
+    { path: '/about', component: AboutView },
+    { path: '/join', component: JoinView }
   ]
 })
 

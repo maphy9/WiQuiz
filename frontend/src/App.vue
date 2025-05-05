@@ -1,11 +1,5 @@
 <template>
-  <div class="view-wrapper">
-    <router-view v-slot="{ Component }">
-      <transition :name="currentTransition">
-        <component :is="Component" :key="$route.fullPath" class="router-view-component" />
-      </transition>
-    </router-view>
-  </div>
+  <router-view />
 </template>
 
 <script setup lang="ts">

@@ -3,44 +3,38 @@
     <LanguageButton />
       <div class="content-square">
 
-        <div class="margin">
+        <div>
           <h1 class="title-text">Your code:</h1>
           <div class="input-group">
             <div class="code-input">
-              <input type="text"
-              class="input input-text"
-              :value="codeInput"
-              readonly />
+              <input
+                type="text"
+                class="input input-text"
+                :value="codeInput"
+                readonly
+              />
 
-              <button class="copy-button" @click="copyCode"/>
+              <button class="copy-button" @click="copyCode" />
             </div>
           </div>
-        </div>
+      </div>
 
-        <div class="margin-title">
-
-          <h1 class="title-text">Join team</h1>
-
+      <div>
+        <h1 class="title-text input-group">Join team</h1>
           <div class="input-group">
             <p class="text">Enter team code: </p>
             <div class="code-input">
+              <input
+                type="text"
+                class="input input-text"
+                maxlength="6"
+                value="1  2  4  5  3  6"
+              />
 
-            <input
-              type="text"
-              class="input input-text"
-              maxlength="6"
-              inputmode="numeric"
-              value="124536"
-              pattern="\d*"
-              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-            />
-
-            <button
-            class="paste-button" />
+              <button class="paste-button" />
             </div>
           </div>
-
-        </div>
+      </div>
 
       </div>
       <ReturnButton />
@@ -52,7 +46,7 @@ import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue';
 import { ref } from 'vue'
 
-const codeInput = ref(623162)
+const codeInput = ref("6  2  3  1  6  2")
 
 function copyCode() {
   if (codeInput.value) {
@@ -62,32 +56,19 @@ function copyCode() {
 
 </script>
 
-<style>
+<style scoped>
 
-.margin{
-  margin-top: 7vh;
-}
-.margin-title{
-  margin-top: 9vh;
-}
 .input-group {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.button-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-}
-
 .input-text{
   color: black;
   font-weight: bold;
-  font-size: 7vh;
+  font-size: 64px;
   font-family: "Titillium Web";
-  letter-spacing: 1vw;
   text-align: center;
 }
 
@@ -99,30 +80,29 @@ function copyCode() {
 }
 
 .copy-button{
-  width: 10vh;
-  height: calc(10vh + 2px);
+  width: 100px;
+  height: 100px;
   border: black;
   background-color: white;
   background-image: url('@/images/clipboard.png');
-  background-size: calc(10vh - 5px);
+  background-size: 100px;
   background-repeat: no-repeat;
-  padding-left: 10px;
   border-color: black;
   border-width: 1px;
   border-style: solid;
   transition: all 0.3s ease;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .paste-button{
-  width: 10vh;
-  height: calc(10vh + 2px);
+  width: 100px;
+  height: 100px;
   border: black;
   background-color: white;
   background-image: url('@/images/arrow.png');
-  background-size: calc(10vh);
+  background-size: 100px;
   background-repeat: no-repeat;
-  padding-left: 10px;
   border-color: black;
   border-width: 1px;
   border-style: solid;
@@ -130,6 +110,7 @@ function copyCode() {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
   cursor: pointer;
+  box-sizing: border-box;
 }
 .copy-button:active, .paste-button:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
@@ -142,20 +123,20 @@ function copyCode() {
 
 .text {
   color: white;
-  font-size: 4vh;
+  font-size: 48px;
   font-family: "Titillium Web";
 }
 
 .input {
   width: 400px;
-  height: 10vh;
+  height: 100px;
   border: black;
   background-color: white;
-  padding-left: 10px;
   border-color: black;
   border-width: 1px;
   border-style: solid;
   font-family: "Titillium Web";
+  box-sizing: border-box;
 }
 
 .join-view {
@@ -175,31 +156,36 @@ function copyCode() {
   color: white;
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
-  font-size: 7vh;
+  font-size: 64px;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 }
 
 .content-square {
-  height: 70vh;
-  width: 70vw;
+  margin-top: 70px;
+  margin-bottom: 80px;
+  width: 1332px;
   backdrop-filter: blur(5px);
   background-color: rgba(64, 77, 97, 0.7);
   border-color: black;
   border-width: 1px;
   border-style: solid;
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
 }
 @media (max-width: 550px) {
   .content-square {
+    margin-top: 80px;
     width: 95vw;
-    height: 60vh;
+    height: 600px;
     backdrop-filter: blur(3px);
     background-color: rgba(64, 77, 97, 0.7);
     border-width: 0;
   }
 
   .title-text {
-    font-size: 40px;
+    font-size: 48px;
     -webkit-text-stroke-width: 1px;
     margin-bottom: 4vh;
   }
@@ -210,16 +196,15 @@ function copyCode() {
   }
 
   .input-text {
-    font-size: 40px;
+    font-size: 42px;
     width: 100%;
-    letter-spacing: 23px;
     padding: 6px 0;
     text-align: center;
   }
 
   .input {
-    width: 100%;
-    height: 50px;
+    width: calc(100% - 70px);
+    height: 72px;
   }
 
   .input-group {
@@ -227,18 +212,12 @@ function copyCode() {
     flex-direction: column;
   }
 
-
   .copy-button,
   .paste-button {
-    width: 64px;
-    height: 64px;
-    background-size: 62px;
-    background-position: -5px;
-  }
+    width: 70px;
+    height: 72px;
+    background-size: 70px;
 
-  .margin,
-  .margin-title {
-    margin-top: 50px;
   }
 
   .join-view {

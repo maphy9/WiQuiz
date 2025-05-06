@@ -1,24 +1,30 @@
 <script setup lang="ts">
-import LanguageButton from '@/components/SharedComponents/LanguageButton.vue';
-import ReturnButton from '@/components/SharedComponents/ReturnButton.vue';
-
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 </script>
 
 <template>
-<div class="main">
-  <LanguageButton />
-  <div class="container">
-    <div class="title">Creators</div>
+  <div class="main">
+    <LanguageButton />
 
-    <ul class="content">
-      <li>Andrii Bialkovskyi - 253190</li>
-      <li>Dmytro Malinovskyi - 252501</li>
-      <li>Aliaksandr Yurusau - 253811</li>
-      <li>Mikita Dzeviatau - 253805</li>
-    </ul>
+    <div class="container">
+      <div class="title">
+        Creators
+      </div>
+
+      <ul class="content">
+        <li>Andrii Bialkovskyi - 253190</li>
+
+        <li>Dmytro Malinovskyi - 252501</li>
+
+        <li>Aliaksandr Yurusau - 253811</li>
+
+        <li>Mikita Dzeviatau - 253805</li>
+      </ul>
+    </div>
+
+    <ReturnButton />
   </div>
-  <ReturnButton />
-</div>
 </template>
 
 <style scoped>

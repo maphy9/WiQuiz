@@ -1,6 +1,8 @@
 <template>
   <div class="card-container">
-    <div class="card-circle" />
+    <div class="card-circle">
+      <img src="@/images/lock.png" alt="arrow" class="card-img" />
+    </div>
     <div class="card-text">
       Pochodne
     </div>
@@ -25,7 +27,6 @@
   border-color: black;
   border-width: 2px;
   border-style: solid;
-  border-radius: 600pxpx;
 }
 
 .card-container:active {
@@ -41,12 +42,17 @@
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 
-  background-image: url('@/images/arrow.png');
-  background-color: #80C997;
+  background-color: #8B231D;
   background-size: cover;
 
   border-radius: 50%;
   bottom: 10%;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 5px;
 }
 
 .card-text {

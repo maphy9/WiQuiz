@@ -1,41 +1,42 @@
 <script setup lang="ts">
-import LevelCard from '@/components/SharedComponents/LevelCard.vue';
+import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue';
+import LevelCard from '@/Views/LevelView/LevelCardGreen.vue';
+import LevelCardYellow from './LevelCardYellow.vue';
+import LevelCardRed from './LevelCardRed.vue';
 
 </script>
 
 <template>
   <div class="main">
-    <div class="progress-bar-outer">
-      <div class="progress-bar-middle">
+      <div class="progress-bar-outer">
         <div class="progress-bar-inner">
-          <span class="common-text">
+          <span class="progress-bar-text">
             70%
           </span>
 
         </div>
       </div>
-    </div>
 
     <div class="title-container">
-      <h1 class="title-text">
+      <h1 class="container-text">
         WYBÓR TEMATÓW
       </h1>
     </div>
 
     <div class="levels-group">
     <div class="left-column">
-      <LevelCard />
+      <LevelCardGreen />
       <div class="path-vertical"></div>
-      <LevelCard />
+      <LevelCardGreen />
       <div class="path-vertical"></div>
-      <LevelCard />
+      <LevelCardRed />
     </div>
     <div class="right-column">
-      <LevelCard />
+      <LevelCardGreen />
       <div class="path-vertical"></div>
-      <LevelCard />
+      <LevelCardYellow />
       <div class="path-vertical"></div>
-      <LevelCard />
+      <LevelCardRed />
     </div>
   </div>
  </div>
@@ -60,22 +61,17 @@ import LevelCard from '@/components/SharedComponents/LevelCard.vue';
 }
 
 .progress-bar-outer {
-  position: fixed;
-  top: 0;
-
-  left: 50%;
-  transform: translateX(-50%);
-
   width: 40%;
   height: 40px;
 
-  background-color: white;
-  padding: 3px;
-}
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 
-.progress-bar-middle {
-  width: 100%;
-  height: 100%;
+  border-style: solid;;
+  border-width: 4px;
+  border-color: rgb(255, 255, 255);
 
   background-color: gray;
 }
@@ -110,7 +106,7 @@ import LevelCard from '@/components/SharedComponents/LevelCard.vue';
 
 }
 
-.common-text {
+.progress-bar-text {
   color: white;
   user-select: none;
 
@@ -122,7 +118,7 @@ import LevelCard from '@/components/SharedComponents/LevelCard.vue';
   font-family: "Titillium Web", sans-serif;
 }
 
-.title-text {
+.container-text {
   color: white;
   user-select: none;
 

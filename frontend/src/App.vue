@@ -1,5 +1,11 @@
 <template>
-  <router-view />
+  <div class="view-wrapper">
+    <router-view v-slot="{ Component }">
+      <transition name="swipe-down">
+        <component :is="Component" :key="$route.fullPath" class="view" />
+      </transition>
+    </router-view>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -32,7 +38,7 @@ body,
   overflow: hidden;
 }
 
-.router-view-component {
+.view {
   position: absolute;
   top: 0;
   left: 0;
@@ -70,39 +76,6 @@ body,
 }
 .swipe-down-leave-to {
   transform: translateY(100%);
-  z-index: 1;
-}
-
-.swipe-up-enter-active,
-.swipe-up-leave-active {
-  transition: transform 0.5s ease;
-}
-.swipe-up-enter-from,
-.swipe-up-leave-from,
-.swipe-up-enter-to,
-.swipe-up-leave-to {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.swipe-up-enter-from {
-  transform: translateY(100%);
-  z-index: 2;
-}
-.swipe-up-enter-to {
-  transform: translateY(0);
-  z-index: 2;
-}
-
-.swipe-up-leave-from {
-  transform: translateY(0);
-  z-index: 1;
-}
-.swipe-up-leave-to {
-  transform: translateY(-100%);
   z-index: 1;
 }
 </style>

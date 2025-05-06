@@ -1,12 +1,23 @@
 <template>
   <div class="view-wrapper">
     <router-view v-slot="{ Component }">
-      <transition name="swipe-up">
-        <component :is="Component" :key="$route.fullPath" class="view" />
+      <transition :name="currentTransition">
+        <component :is="Component" :key="$route.fullPath" class="router-view-component" />
       </transition>
     </router-view>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+const currentTransition = computed(() => {
+  return route.name === "main" ? "swipe-down" : "swipe-up";
+});
+</script>
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap");
@@ -27,15 +38,13 @@ body,
   overflow: hidden;
 }
 
-.view {
+.router-view-component {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-
-/* swipe down animations */
 
 .swipe-down-enter-active,
 .swipe-down-leave-active {
@@ -69,8 +78,6 @@ body,
   transform: translateY(100%);
   z-index: 1;
 }
-
-/* swipe up animations */
 
 .swipe-up-enter-active,
 .swipe-up-leave-active {

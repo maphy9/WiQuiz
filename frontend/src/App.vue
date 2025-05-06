@@ -1,8 +1,8 @@
 <template>
   <div class="view-wrapper">
     <router-view v-slot="{ Component }">
-      <transition name="swipe-up">
-        <component :is="Component" :key="$route.fullPath" class="view" />
+      <transition :name="currentTransition">
+        <component :is="Component" :key="$route.fullPath" class="router-view-component" />
       </transition>
     </router-view>
   </div>
@@ -38,15 +38,13 @@ body,
   overflow: hidden;
 }
 
-.view {
+.router-view-component {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-
-/* swipe down animations */
 
 .swipe-down-enter-active,
 .swipe-down-leave-active {
@@ -80,8 +78,6 @@ body,
   transform: translateY(100%);
   z-index: 1;
 }
-
-/* swipe up animations */
 
 .swipe-up-enter-active,
 .swipe-up-leave-active {

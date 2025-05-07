@@ -4,7 +4,7 @@
       <img src="@/images/circleArrow.png" alt="arrow" class="card-img" />
     </div>
     <div class="card-text">
-      Pochodne
+      Granice
     </div>
   </div>
 </template>

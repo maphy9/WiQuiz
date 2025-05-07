@@ -4,7 +4,7 @@
       <img src="@/images/lock.png" alt="arrow" class="card-img" />
     </div>
     <div class="card-text">
-      Pochodne
+      Pierwotne
     </div>
   </div>
 </template>

@@ -3,6 +3,7 @@ import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue';
 import LevelCard from '@/Views/LevelView/LevelCardGreen.vue';
 import LevelCardYellow from './LevelCardYellow.vue';
 import LevelCardRed from './LevelCardRed.vue';
+import LevelPaths from './LevelRoute.vue';
 
 </script>
 
@@ -23,22 +24,35 @@ import LevelCardRed from './LevelCardRed.vue';
       </h1>
     </div>
 
-    <div class="levels-group">
-    <div class="left-column">
-      <LevelCardGreen />
-      <div class="path-vertical"></div>
-      <LevelCardGreen />
-      <div class="path-vertical"></div>
-      <LevelCardRed />
+    <div class="columns-container">
+
+      <div class="left-column">
+        <LevelCardGreen />
+        <LevelCardYellow />
+        <LevelCardRed />
+      </div>
+
+      <div class="path container">
+        <div class="first-route">
+        <LevelPaths />
+        </div>
+        <div class="second_route">
+          <LevelPaths />
+        </div>
+        <div class="third_route">
+          <LevelPaths />
+        </div>
+        <div class="fourth_route">
+          <LevelPaths />
+        </div>
+      </div>
+
+      <div class="right-column">
+        <LevelCardGreen />
+        <LevelCardRed />
+      </div>
+
     </div>
-    <div class="right-column">
-      <LevelCardGreen />
-      <div class="path-vertical"></div>
-      <LevelCardYellow />
-      <div class="path-vertical"></div>
-      <LevelCardRed />
-    </div>
-  </div>
  </div>
 
 </template>
@@ -130,35 +144,64 @@ import LevelCardRed from './LevelCardRed.vue';
   font-family: "Titillium Web", sans-serif;
 }
 
-.levels-group {
-  margin-top: 150px;
-  gap: 30vw;
+.columns-container {
+  width: 50vw;
+  height: 100vh;
 
+  position: relative;
   display: flex;
 }
 
-.left-column,
 .right-column {
+  margin-top: 320px;
+  gap: 80px;
+  right: 5%;
+
+  position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 0; /* gap controlled by path-vertical */
 }
 
-.path-vertical {
-  width: 30px;
-  height: 80px; /* space between cards */
+.left-column {
+  margin-top: 170px;
+  left: 5%;
+  gap: 80px;
 
-  justify-items: center;
-  align-items: center;
-  margin-left: 70px;
-  border-style: solid;;
-  border-width: 4px;
-  border-radius: 10px;
-  border-color: black;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
 
-  background-color: #ffffff;
+.path.container {
+  height: 950px;
+  left: 25%;;
+
+  position: relative;
+}
+
+.first-route {
+  bottom: 65%;
+  transform: rotate(15deg);
+}
+
+.second_route {
+  bottom: 49%;
+  transform: rotate(-15deg);
+}
+
+.third_route {
+  bottom: 32%;
+  transform: rotate(15deg);
 
 }
 
+.fourth_route {
+  bottom: 15%;
+  transform: rotate(-15deg);
+}
+
+.fourth_route, .third_route, .second_route, .first-route {
+  position: absolute;
+}
 
 </style>

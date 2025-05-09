@@ -3,7 +3,22 @@ import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue';
 import LevelCard from '@/Views/LevelView/LevelCardGreen.vue';
 import LevelCardYellow from './LevelCardYellow.vue';
 import LevelCardRed from './LevelCardRed.vue';
-import LevelPaths from './LevelRoute.vue';
+import LevelRoute from './LevelRoute.vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+const isMobile = ref(window.innerWidth <= 550)
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth <= 550
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 
 </script>
 
@@ -32,18 +47,18 @@ import LevelPaths from './LevelRoute.vue';
         <LevelCardRed />
       </div>
 
-      <div class="path container">
+      <div class="path-container">
         <div class="first-route">
-        <LevelPaths />
+        <component :is="isMobile ? null : LevelRoute" />
         </div>
         <div class="second_route">
-          <LevelPaths />
+          <component :is="isMobile ? null : LevelRoute" />
         </div>
         <div class="third_route">
-          <LevelPaths />
+          <component :is="isMobile ? null : LevelRoute" />
         </div>
         <div class="fourth_route">
-          <LevelPaths />
+          <component :is="isMobile ? null : LevelRoute" />
         </div>
       </div>
 
@@ -59,6 +74,7 @@ import LevelPaths from './LevelRoute.vue';
 
 <style scoped>
 
+
 .main {
   width: 100%;
   min-height: 100vh;
@@ -69,7 +85,6 @@ import LevelPaths from './LevelRoute.vue';
   display: flex;
 
   background-image: url('@/images/levelBackground.jpg');
-  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
@@ -117,7 +132,6 @@ import LevelPaths from './LevelRoute.vue';
 
   backdrop-filter: blur(5px);
   background-color: rgba(64, 77, 97, 0.7);
-
 }
 
 .progress-bar-text {
@@ -127,7 +141,7 @@ import LevelPaths from './LevelRoute.vue';
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 42px;
+  font-size: 36px;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 }
@@ -139,14 +153,14 @@ import LevelPaths from './LevelRoute.vue';
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 64px;
+  font-size: 3.5vw;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 }
 
 .columns-container {
-  width: 50vw;
-  height: 100vh;
+  width: 950px;
+  height: 950px;
 
   position: relative;
   display: flex;
@@ -155,11 +169,15 @@ import LevelPaths from './LevelRoute.vue';
 .right-column {
   margin-top: 320px;
   gap: 80px;
-  right: 5%;
+  right: 3vw;
+
+  flex: 1;
 
   position: absolute;
   display: flex;
   flex-direction: column;
+
+  z-index: 1;
 }
 
 .left-column {
@@ -167,14 +185,18 @@ import LevelPaths from './LevelRoute.vue';
   left: 5%;
   gap: 80px;
 
+  z-index: 1;
+
   position: absolute;
   display: flex;
   flex-direction: column;
 }
 
-.path.container {
+.path-container {
   height: 950px;
-  left: 25%;;
+  left: 230px;;
+
+  z-index: 0;
 
   position: relative;
 }
@@ -202,6 +224,64 @@ import LevelPaths from './LevelRoute.vue';
 
 .fourth_route, .third_route, .second_route, .first-route {
   position: absolute;
+}
+
+@media(max-width: 550px){
+  .main {
+  min-height: 130vh;
+
+  }
+  .progress-bar-outer {
+  width: 80%;
+  height: 30px;
+
+  z-index: 2;
+  }
+
+  .title-container {
+  width: 80%;
+  height: 50px;
+  top: 40px;
+
+  z-index: 2;
+  }
+
+  .progress-bar-text{
+  font-size: 32px;
+  }
+
+  .container-text {
+  font-size: 32px;
+  }
+
+  .columns-container{
+    padding-top: 100px;
+    width: 100%;
+  }
+
+  .path.container {
+  left: 40%;
+
+  z-index: 0;
+
+  position: relative;
+  }
+
+  .right-column {
+  margin-top: 150px;
+  right: 2%;
+  gap:200px;
+
+  z-index: 1;
+
+  }
+  .left-column {
+  margin-top: 0px;
+  left: 2%;
+  gap: 150px;
+
+  z-index: 1;
+  }
 }
 
 </style>

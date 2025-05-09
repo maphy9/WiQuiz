@@ -160,7 +160,6 @@ onBeforeUnmount(() => {
 
 .columns-container {
   width: 950px;
-  height: 950px;
 
   position: relative;
   display: flex;
@@ -170,8 +169,6 @@ onBeforeUnmount(() => {
   margin-top: 320px;
   gap: 80px;
   right: 3vw;
-
-  flex: 1;
 
   position: absolute;
   display: flex;
@@ -228,30 +225,30 @@ onBeforeUnmount(() => {
 
 @media(max-width: 550px){
   .main {
-  min-height: 130vh;
+    min-height: 100vh;
 
   }
   .progress-bar-outer {
-  width: 80%;
-  height: 30px;
+    width: 80%;
+    height: 30px;
 
-  z-index: 2;
+    z-index: 2;
   }
 
   .title-container {
-  width: 80%;
-  height: 50px;
-  top: 40px;
+    width: 80%;
+    height: 50px;
+    top: 40px;
 
-  z-index: 2;
+    z-index: 2;
   }
 
   .progress-bar-text{
-  font-size: 32px;
+    font-size: 32px;
   }
 
   .container-text {
-  font-size: 32px;
+    font-size: 32px;
   }
 
   .columns-container{
@@ -259,28 +256,20 @@ onBeforeUnmount(() => {
     width: 100%;
   }
 
-  .path.container {
-  left: 40%;
-
-  z-index: 0;
-
-  position: relative;
-  }
-
   .right-column {
-  margin-top: 150px;
-  right: 2%;
-  gap:200px;
+    margin-top: 150px;
+    right: 2%;
+    gap:200px;
 
-  z-index: 1;
+    z-index: 1;
 
   }
   .left-column {
-  margin-top: 0px;
-  left: 2%;
-  gap: 150px;
+    margin-top: 0px;
+    left: 2%;
+    gap: 150px;
 
-  z-index: 1;
+    z-index: 1;
   }
 }
 

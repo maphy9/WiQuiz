@@ -1,17 +1,20 @@
 <template>
   <div class="card-container">
     <div class="card-circle">
-      <img src="@/images/circleArrow.png" alt="arrow" class="card-img" />
+      <img
+        src="@/images/circleArrow.png"
+        alt="arrow"
+        class="card-img"
+      >
     </div>
+
     <div class="card-text">
       Granice
     </div>
   </div>
 </template>
 
-
 <style scoped>
-
 .card-container {
   width: 180px;
   height: 200px;

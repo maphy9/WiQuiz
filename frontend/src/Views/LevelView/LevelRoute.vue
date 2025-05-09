@@ -1,12 +1,14 @@
 <template>
   <div class="route-container">
-    <div class="route-rectangle" v-for="i in 3" :key="i" />
-   </div>
+    <div
+      v-for="i in 3"
+      :key="i"
+      class="route-rectangle"
+    />
+  </div>
 </template>
 
-
 <style scoped>
-
 .route-container {
   display: flex;
   gap:24px;
@@ -23,5 +25,4 @@
 
   background-color: white;
 }
-
 </style>

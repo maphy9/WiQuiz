@@ -1,17 +1,20 @@
 <template>
   <div class="card-container">
     <div class="card-circle">
-      <img src="@/images/lock.png" alt="arrow" class="card-img" />
+      <img
+        src="@/images/lock.png"
+        alt="arrow"
+        class="card-img"
+      >
     </div>
+
     <div class="card-text">
       Pierwotne
     </div>
   </div>
 </template>
 
-
 <style scoped>
-
 .card-container {
   width: 180px;
   height: 200px;

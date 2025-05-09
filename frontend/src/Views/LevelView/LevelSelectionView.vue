@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue';
-import LevelCard from '@/Views/LevelView/LevelCardGreen.vue';
-import LevelCardYellow from './LevelCardYellow.vue';
-import LevelCardRed from './LevelCardRed.vue';
-import LevelRoute from './LevelRoute.vue';
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import LevelCardRed from './LevelCardRed.vue'
+import LevelCardYellow from './LevelCardYellow.vue'
+import LevelRoute from './LevelRoute.vue'
 
 const isMobile = ref(window.innerWidth <= 550)
 
-const handleResize = () => {
+function handleResize() {
   isMobile.value = window.innerWidth <= 550
 }
 
@@ -19,19 +18,17 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
 })
-
 </script>
 
 <template>
   <div class="main">
-      <div class="progress-bar-outer">
-        <div class="progress-bar-inner">
-          <span class="progress-bar-text">
-            70%
-          </span>
-
-        </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner">
+        <span class="progress-bar-text">
+          70%
+        </span>
       </div>
+    </div>
 
     <div class="title-container">
       <h1 class="container-text">
@@ -40,41 +37,58 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="columns-container">
-
       <div class="left-column">
         <LevelCardGreen />
+
         <LevelCardYellow />
+
         <LevelCardRed />
       </div>
 
       <div class="path-container">
         <div class="first-route">
-        <component :is="isMobile ? null : LevelRoute" />
+          <component
+            :is="isMobile
+              ? null
+              : LevelRoute"
+          />
         </div>
+
         <div class="second_route">
-          <component :is="isMobile ? null : LevelRoute" />
+          <component
+            :is="isMobile
+              ? null
+              : LevelRoute"
+          />
         </div>
+
         <div class="third_route">
-          <component :is="isMobile ? null : LevelRoute" />
+          <component
+            :is="isMobile
+              ? null
+              : LevelRoute"
+          />
         </div>
+
         <div class="fourth_route">
-          <component :is="isMobile ? null : LevelRoute" />
+          <component
+            :is="isMobile
+              ? null
+              : LevelRoute"
+          />
         </div>
       </div>
 
       <div class="right-column">
         <LevelCardGreen />
+
         <LevelCardRed />
       </div>
-
     </div>
- </div>
-
+  </div>
 </template>
 
 <style scoped>
-
-
 .main {
   width: 100%;
   min-height: 100vh;
@@ -272,5 +286,4 @@ onBeforeUnmount(() => {
     z-index: 1;
   }
 }
-
 </style>

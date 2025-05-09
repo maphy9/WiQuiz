@@ -1,37 +1,57 @@
 <template>
-  <button class="block desktop " @click="toggleLanguage">
+  <button
+    class="block desktop"
+    type="button"
+    @click="toggleLanguage"
+  >
     <div class="language-button">
-      <img src="@/images/globe.png" alt="globe" />
+      <img
+        src="@/images/globe.png"
+        alt="globe"
+      >
     </div>
-    <h1 class="language-text">{{ language.name }} ({{ language.code }})</h1>
+
+    <h1 class="language-text">
+      {{ language.name }} ({{ language.code }})
+    </h1>
   </button>
 
-  <button class="block mobile" @click="toggleLanguage">
+  <button
+    class="block mobile"
+    type="button"
+    @click="toggleLanguage"
+  >
     <div class="language-button">
-      <img src="@/images/globe.png" alt="globe" />
+      <img
+        src="@/images/globe.png"
+        alt="globe"
+      >
     </div>
-    <h1 class="language-text">{{ language.code }}</h1>
+
+    <h1 class="language-text">
+      {{ language.code }}
+    </h1>
   </button>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
 const language = ref({
-  name: "English",
-  code: "EN",
+  name: 'English',
+  code: 'EN',
 })
 
 function toggleLanguage() {
-  if (language.value.name === "English") {
-    language.value.name = "Polski";
-    language.value.code = "PL";
-  } else {
-    language.value.name = "English";
-    language.value.code = "EN";
+  if (language.value.name === 'English') {
+    language.value.name = 'Polski'
+    language.value.code = 'PL'
+  }
+  else {
+    language.value.name = 'English'
+    language.value.code = 'EN'
   }
 }
-
 </script>
 
 <style>
@@ -43,10 +63,12 @@ function toggleLanguage() {
   align-items: center;
   justify-content: center;
 }
+
 .language-button img {
   width: 100%;
   height: 100%;
 }
+
 .block:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
@@ -78,21 +100,20 @@ function toggleLanguage() {
   font-family: "Titillium Web", sans-serif;
 }
 
-.block.desktop {
+.desktop {
   width: 390px;
 }
-.block.mobile {
+.mobile {
   width: 160px;
   display: none;
 }
 
 @media (max-width: 768px) {
-  .block.desktop {
+  .desktop {
     display: none;
   }
-  .block.mobile {
+  .mobile {
     display: inline-flex;
   }
 }
-
 </style>

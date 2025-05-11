@@ -59,6 +59,7 @@ import LevelRoute from './LevelRoute.vue'
 
 <style scoped>
 .main {
+  min-height: 100vh;
   justify-content: center;
   display: flex;
 

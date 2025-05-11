@@ -1,33 +1,57 @@
 <script setup lang="ts">
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Analiza Matematyczna')
 
-const leftCards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
+const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
   { cardText: 'Pochodne', state: 'passed' },
   { cardText: 'Pochodne', state: 'repeat' },
   { cardText: 'Pochodne', state: 'locked' },
-])
-
-const rightCards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
-  { cardText: 'Pochodne', state: 'passed' },
+  { cardText: 'Pochodne', state: 'locked' },
+  { cardText: 'Pochodne', state: 'locked' },
+  { cardText: 'Pochodne', state: 'locked' },
   { cardText: 'Pochodne', state: 'locked' },
 ])
 
-const levelRoutes = (ref([
-  { className: 'first-route' },
-  { className: 'second_route' },
-  { className: 'third_route' },
-  { className: 'fourth_route' },
-]))
+const leftCards = computed(() => cards.value.filter((_, i) => i % 2 === 0))
+const rightCards = computed(() => cards.value.filter((_, i) => i % 2 !== 0))
+
+const dynamicHeight = computed(() => {
+  const baseHeight = 100
+  const extraHeight = Math.floor(cards.value.length / 5) * 30
+
+  return baseHeight + extraHeight
+})
+
+const levelRoutes = computed(() => {
+  const routes = []
+
+  for (let i = 0; i < cards.value.length - 1; i++) {
+    const offset = 65 - i * 15
+    const rotation = (i % 2 === 0)
+      ? 15
+      : -15
+    routes.push({
+      style: {
+        bottom: `${offset}%`,
+        transform: `rotate(${rotation}deg)`,
+      },
+    })
+  }
+
+  return routes
+})
 </script>
 
 <template>
-  <div class="main">
+  <div
+    class="main"
+    :style="{'minHeight': `${dynamicHeight}vh`}"
+  >
     <div class="progress-bar-outer">
       <div
         :style="{'width': `${progress}%`}"
@@ -59,7 +83,8 @@ const levelRoutes = (ref([
         <div
           v-for="(route, index) in levelRoutes"
           :key="`route-${index}`"
-          :class="route.className"
+          class="route"
+          :style="route.style"
         >
           <LevelRoute />
         </div>
@@ -81,13 +106,13 @@ const levelRoutes = (ref([
 
 <style scoped>
 .main {
-  min-height: 100%;
-  justify-content: center;
   display: flex;
+  justify-content: center;
 
   background-image: url('@/images/levelBackground.jpg');
-  background-size: cover;
-  background-position: center;
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: 100%;
 }
 
 .progress-bar-outer {
@@ -212,28 +237,7 @@ const levelRoutes = (ref([
   position: relative;
 }
 
-.first-route {
-  bottom: 65%;
-  transform: rotate(15deg);
-}
-
-.second_route {
-  bottom: 49%;
-  transform: rotate(-15deg);
-}
-
-.third_route {
-  bottom: 32%;
-  transform: rotate(15deg);
-
-}
-
-.fourth_route {
-  bottom: 15%;
-  transform: rotate(-15deg);
-}
-
-.fourth_route, .third_route, .second_route, .first-route {
+.route {
   width: 100%;
   position: absolute;
 }
@@ -251,6 +255,7 @@ const levelRoutes = (ref([
   }
 
   .title-container {
+    width: calc(80% - 8px);
     height: 50px;
     top: 40px;
 
@@ -262,7 +267,7 @@ const levelRoutes = (ref([
   }
 
   .title-text {
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .columns-container{

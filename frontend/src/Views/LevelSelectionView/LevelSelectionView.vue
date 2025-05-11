@@ -1,23 +1,8 @@
 <script setup lang="ts">
 import LevelCardGreen from '@/Views/LevelSelectionView/LevelCardGreen.vue'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
 import LevelCardRed from './LevelCardRed.vue'
 import LevelCardYellow from './LevelCardYellow.vue'
 import LevelRoute from './LevelRoute.vue'
-
-const isMobile = ref(window.innerWidth <= 550)
-
-function handleResize() {
-  isMobile.value = window.innerWidth <= 550
-}
-
-onMounted(() => {
-  window.addEventListener('resize', handleResize)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
-})
 </script>
 
 <template>
@@ -47,35 +32,19 @@ onBeforeUnmount(() => {
 
       <div class="path-container">
         <div class="first-route">
-          <component
-            :is="isMobile
-              ? null
-              : LevelRoute"
-          />
+          <LevelRoute />
         </div>
 
         <div class="second_route">
-          <component
-            :is="isMobile
-              ? null
-              : LevelRoute"
-          />
+          <LevelRoute />
         </div>
 
         <div class="third_route">
-          <component
-            :is="isMobile
-              ? null
-              : LevelRoute"
-          />
+          <LevelRoute />
         </div>
 
         <div class="fourth_route">
-          <component
-            :is="isMobile
-              ? null
-              : LevelRoute"
-          />
+          <LevelRoute />
         </div>
       </div>
 
@@ -89,9 +58,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-* {
-  outline: 1px solid red;
-}
 .main {
   justify-content: center;
   display: flex;
@@ -249,8 +215,7 @@ onBeforeUnmount(() => {
 
 @media(max-width: 550px){
   .main {
-    overflow: none !important;
-    min-height: 100vh;
+    min-height: 150vh;
 
   }
   .progress-bar-outer {
@@ -283,6 +248,7 @@ onBeforeUnmount(() => {
 
   .path-container {
     width: 20%;
+    display: none;
   }
 
   .right-column {

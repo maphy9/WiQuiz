@@ -1,33 +1,47 @@
 <script setup lang="ts">
-import LevelCardGreen from '@/Views/LevelSelectionView/LevelCardGreen.vue'
-import LevelCardRed from './LevelCardRed.vue'
-import LevelCardYellow from './LevelCardYellow.vue'
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { ref } from 'vue'
+import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
+
+const progress = ref('30%')
 </script>
 
 <template>
   <div class="main">
     <div class="progress-bar-outer">
-      <div class="progress-bar-inner">
+      <div
+        :style="{'width': progress}"
+        class="progress-bar-inner"
+      >
         <span class="progress-bar-text">
-          70%
+          {{ progress }}
         </span>
       </div>
     </div>
 
     <div class="title-container">
-      <h1 class="container-text">
+      <h1 class="title-text">
         WYBÓR TEMATÓW
       </h1>
     </div>
 
     <div class="columns-container">
       <div class="left-column">
-        <LevelCardGreen />
+        <LevelCard
+          card-text="Pochodne"
+          state="passed"
+        />
 
-        <LevelCardYellow />
+        <LevelCard
+          card-text="Pochodne"
+          state="repeat"
+        />
 
-        <LevelCardRed />
+        <LevelCard
+          card-text="Pochodne"
+          state="locked"
+        />
       </div>
 
       <div class="path-container">
@@ -49,11 +63,19 @@ import LevelRoute from './LevelRoute.vue'
       </div>
 
       <div class="right-column">
-        <LevelCardGreen />
+        <LevelCard
+          card-text="Pochodne"
+          state="passed"
+        />
 
-        <LevelCardRed />
+        <LevelCard
+          card-text="Pochodne"
+          state="locked"
+        />
       </div>
     </div>
+
+    <ReturnButton />
   </div>
 </template>
 
@@ -69,7 +91,7 @@ import LevelRoute from './LevelRoute.vue'
 }
 
 .progress-bar-outer {
-  width: 40%;
+  width: calc(40% + 8px);
   height: 40px;
 
   position: fixed;
@@ -77,8 +99,7 @@ import LevelRoute from './LevelRoute.vue'
   left: 50%;
   transform: translateX(-50%);
 
-  border-style: solid;;
-  border-width: 4px;
+  border: 4px solid;
   border-color: rgb(255, 255, 255);
 
   background-color: gray;
@@ -86,7 +107,6 @@ import LevelRoute from './LevelRoute.vue'
 }
 
 .progress-bar-inner {
-  width: 70%;  /*progress */
   height: 100%;
 
   display: flex;
@@ -104,7 +124,7 @@ import LevelRoute from './LevelRoute.vue'
   left: 50%;
   transform: translateX(-50%);
 
-  width: 40%;
+  width: calc(40% + 8px);
   height: 100px;
 
   display: flex;
@@ -118,20 +138,25 @@ import LevelRoute from './LevelRoute.vue'
 }
 
 .progress-bar-text {
+  position: absolute;
+  font-size: 36px;
+  font-weight: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   color: white;
   user-select: none;
 
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 36px;
-  font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 
   z-index: 1;
 }
 
-.container-text {
+.title-text {
   color: white;
   user-select: none;
 
@@ -238,7 +263,7 @@ import LevelRoute from './LevelRoute.vue'
     font-size: 32px;
   }
 
-  .container-text {
+  .title-text {
     font-size: 32px;
   }
 

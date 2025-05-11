@@ -89,13 +89,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+* {
+  outline: 1px solid red;
+}
 .main {
-  width: 100%;
-  min-height: 100vh;
-  position: relative;
-
   justify-content: center;
-  align-items: center;
   display: flex;
 
   background-image: url('@/images/levelBackground.jpg');
@@ -117,6 +115,7 @@ onBeforeUnmount(() => {
   border-color: rgb(255, 255, 255);
 
   background-color: gray;
+  z-index: 1;
 }
 
 .progress-bar-inner {
@@ -128,6 +127,7 @@ onBeforeUnmount(() => {
   align-items: center;
 
   background-color: #80C997;
+  z-index: 1;
 }
 
 .title-container {
@@ -146,6 +146,8 @@ onBeforeUnmount(() => {
 
   backdrop-filter: blur(5px);
   background-color: rgba(64, 77, 97, 0.7);
+
+  z-index: 1;
 }
 
 .progress-bar-text {
@@ -158,6 +160,8 @@ onBeforeUnmount(() => {
   font-size: 36px;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
+
+  z-index: 1;
 }
 
 .container-text {
@@ -170,6 +174,8 @@ onBeforeUnmount(() => {
   font-size: 3.5vw;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
+
+  z-index: 1;
 }
 
 .columns-container {
@@ -177,10 +183,12 @@ onBeforeUnmount(() => {
 
   position: relative;
   display: flex;
+
+  z-index: 0;
 }
 
 .right-column {
-  margin-top: 320px;
+  margin-top: 33%;
   gap: 80px;
   right: 3vw;
 
@@ -192,7 +200,7 @@ onBeforeUnmount(() => {
 }
 
 .left-column {
-  margin-top: 170px;
+  margin-top: 18%;
   left: 5%;
   gap: 80px;
 
@@ -205,7 +213,7 @@ onBeforeUnmount(() => {
 
 .path-container {
   height: 950px;
-  left: 230px;
+  left: 25%;
   width: 50%;
 
   z-index: 0;
@@ -241,6 +249,7 @@ onBeforeUnmount(() => {
 
 @media(max-width: 550px){
   .main {
+    overflow: none !important;
     min-height: 100vh;
 
   }
@@ -279,7 +288,7 @@ onBeforeUnmount(() => {
   .right-column {
     margin-top: 150px;
     right: 2%;
-    gap:200px;
+    gap:90px;
 
     z-index: 1;
 
@@ -287,7 +296,7 @@ onBeforeUnmount(() => {
   .left-column {
     margin-top: 0px;
     left: 2%;
-    gap: 150px;
+    gap: 90px;
 
     z-index: 1;
   }

@@ -4,73 +4,73 @@ import { ref } from 'vue'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
-const progress = ref('30%')
+const progress = ref(70)
+const CourseName = ref('Analiza Matematyczna')
+
+const leftCards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
+  { cardText: 'Pochodne', state: 'passed' },
+  { cardText: 'Pochodne', state: 'repeat' },
+  { cardText: 'Pochodne', state: 'locked' },
+])
+
+const rightCards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
+  { cardText: 'Pochodne', state: 'passed' },
+  { cardText: 'Pochodne', state: 'locked' },
+])
+
+const levelRoutes = (ref([
+  { className: 'first-route' },
+  { className: 'second_route' },
+  { className: 'third_route' },
+  { className: 'fourth_route' },
+]))
 </script>
 
 <template>
   <div class="main">
     <div class="progress-bar-outer">
       <div
-        :style="{'width': progress}"
+        :style="{'width': `${progress}%`}"
         class="progress-bar-inner"
       >
         <span class="progress-bar-text">
-          {{ progress }}
+          {{ progress }}%
         </span>
       </div>
     </div>
 
     <div class="title-container">
       <h1 class="title-text">
-        WYBÓR TEMATÓW
+        {{ CourseName }}
       </h1>
     </div>
 
     <div class="columns-container">
       <div class="left-column">
         <LevelCard
-          card-text="Pochodne"
-          state="passed"
-        />
-
-        <LevelCard
-          card-text="Pochodne"
-          state="repeat"
-        />
-
-        <LevelCard
-          card-text="Pochodne"
-          state="locked"
+          v-for="(card, index) in leftCards"
+          :key="`left-${index}`"
+          :card-text="card.cardText"
+          :state="card.state"
         />
       </div>
 
       <div class="path-container">
-        <div class="first-route">
-          <LevelRoute />
-        </div>
-
-        <div class="second_route">
-          <LevelRoute />
-        </div>
-
-        <div class="third_route">
-          <LevelRoute />
-        </div>
-
-        <div class="fourth_route">
+        <div
+          v-for="(route, index) in levelRoutes"
+          :key="`route-${index}`"
+          :class="route.className"
+        >
           <LevelRoute />
         </div>
       </div>
 
       <div class="right-column">
         <LevelCard
-          card-text="Pochodne"
-          state="passed"
-        />
-
-        <LevelCard
-          card-text="Pochodne"
-          state="locked"
+          v-for="(card, index) in rightCards"
+          :key="`right-${index}`"
+          :card-text="card.cardText"
+          :state="card.state"
         />
       </div>
     </div>
@@ -81,7 +81,7 @@ const progress = ref('30%')
 
 <style scoped>
 .main {
-  min-height: 100vh;
+  min-height: 100%;
   justify-content: center;
   display: flex;
 
@@ -91,7 +91,7 @@ const progress = ref('30%')
 }
 
 .progress-bar-outer {
-  width: calc(40% + 8px);
+  width: calc(40% - 8px);
   height: 40px;
 
   position: fixed;
@@ -99,8 +99,7 @@ const progress = ref('30%')
   left: 50%;
   transform: translateX(-50%);
 
-  border: 4px solid;
-  border-color: rgb(255, 255, 255);
+  border: 4px solid white;
 
   background-color: gray;
   z-index: 1;
@@ -124,7 +123,7 @@ const progress = ref('30%')
   left: 50%;
   transform: translateX(-50%);
 
-  width: calc(40% + 8px);
+  width: 40%;
   height: 100px;
 
   display: flex;
@@ -245,14 +244,13 @@ const progress = ref('30%')
 
   }
   .progress-bar-outer {
-    width: 80%;
+    width: calc(80% - 8px);
     height: 30px;
 
     z-index: 2;
   }
 
   .title-container {
-    width: 80%;
     height: 50px;
     top: 40px;
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LevelCardGreen from '@/Views/LevelView/LevelCardGreen.vue'
+import LevelCardGreen from '@/Views/LevelSelectionView/LevelCardGreen.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import LevelCardRed from './LevelCardRed.vue'
 import LevelCardYellow from './LevelCardYellow.vue'

@@ -100,7 +100,7 @@ const imageSrc = computed(() => {
   bottom: 65%;
 }
 
-@media(max-width: 375px) {
+@media(max-width: 550px) {
   .card-container {
     width: 160px;
     height: 180px;

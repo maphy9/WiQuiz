@@ -9,7 +9,10 @@ const CourseName = ref('Analiza Matematyczna')
 
 const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
   { cardText: 'Pochodne', state: 'passed' },
+  { cardText: 'Pochodne', state: 'passed' },
+  { cardText: 'Pochodne', state: 'passed' },
   { cardText: 'Pochodne', state: 'repeat' },
+  { cardText: 'Pochodne', state: 'locked' },
   { cardText: 'Pochodne', state: 'locked' },
   { cardText: 'Pochodne', state: 'locked' },
   { cardText: 'Pochodne', state: 'locked' },
@@ -21,10 +24,8 @@ const leftCards = computed(() => cards.value.filter((_, i) => i % 2 === 0))
 const rightCards = computed(() => cards.value.filter((_, i) => i % 2 !== 0))
 
 const dynamicHeight = computed(() => {
-  const baseHeight = 100
-  const extraHeight = Math.floor(cards.value.length / 5) * 30
-
-  return baseHeight + extraHeight
+  const baseHeight = 950;
+  return baseHeight + (cards.value.length - 1) * 120;
 })
 
 const levelRoutes = computed(() => {
@@ -50,7 +51,6 @@ const levelRoutes = computed(() => {
 <template>
   <div
     class="main"
-    :style="{'minHeight': `${dynamicHeight}vh`}"
   >
     <div class="progress-bar-outer">
       <div
@@ -108,6 +108,8 @@ const levelRoutes = computed(() => {
 .main {
   display: flex;
   justify-content: center;
+  height: 100vh;
+  overflow-y: scroll;
 
   background-image: url('@/images/levelBackground.jpg');
   background-repeat: repeat-y;

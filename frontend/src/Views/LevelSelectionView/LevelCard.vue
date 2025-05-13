@@ -54,8 +54,6 @@ const imageSrc = computed(() => {
 
   backdrop-filter: blur(5px);
   background-color: rgba(178, 196, 217, 0.7);
-  transition: all 0.3s;
-  cursor: pointer;
 
   border: black 2px solid;
 }
@@ -63,6 +61,9 @@ const imageSrc = computed(() => {
 .card-container:active {
   transform: scale(1.05);
   background-color: rgba(141, 155, 170, 0.8);
+  transition: all 0.3s;
+  cursor: pointer;
+
 }
 
 .card-circle {

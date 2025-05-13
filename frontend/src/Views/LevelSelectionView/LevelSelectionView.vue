@@ -23,11 +23,6 @@ const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>
 const leftCards = computed(() => cards.value.filter((_, i) => i % 2 === 0))
 const rightCards = computed(() => cards.value.filter((_, i) => i % 2 !== 0))
 
-const dynamicHeight = computed(() => {
-  const baseHeight = 950;
-  return baseHeight + (cards.value.length - 1) * 120;
-})
-
 const levelRoutes = computed(() => {
   const routes = []
 

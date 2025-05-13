@@ -53,7 +53,6 @@ const imageSrc = computed(() => {
   display: flex;
   transition: all 0.3s;
 
-
   backdrop-filter: blur(5px);
   background-color: rgba(178, 196, 217, 0.7);
 

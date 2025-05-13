@@ -51,6 +51,8 @@ const imageSrc = computed(() => {
   align-items: center;
   justify-content: center;
   display: flex;
+  transition: all 0.3s;
+
 
   backdrop-filter: blur(5px);
   background-color: rgba(178, 196, 217, 0.7);
@@ -61,7 +63,6 @@ const imageSrc = computed(() => {
 .card-container:active {
   transform: scale(1.05);
   background-color: rgba(141, 155, 170, 0.8);
-  transition: all 0.3s;
   cursor: pointer;
 
 }

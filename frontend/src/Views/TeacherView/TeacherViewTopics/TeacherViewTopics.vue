@@ -1,121 +1,103 @@
 <template>
   <div class="background">
-    <div class="header">
-      <div class="header-logo">
-        <img src="@/images/logoPL.png" alt="Logo" />
-        <h1>WIKAMP WEEIA</h1>
-      </div>
-      <nav class="nav">
-        <div class="nav-button">
-          <span class="department-text">Wirtualne Wydziały</span>
-          <img class="header-arrow" src="@/images/arrowDown_icon.png" />
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/language_icon.png" />
-          <span class="header-language-text">Polski (pl) </span>
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/search_icon.png" />
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/accessibility_icon.png" />
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/bell_icon.png" />
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/msg_icon.png" />
-        </div>
-        <div class="nav-button">
-          <img class="nav-button-img" src="@/images/star_icon.png" />
-        </div>
-        <div class="header-user">
-          <span class="header-user-name">Bolesław R.</span>
-          <img class="header-user-img" src="@/images/emptyPfp.png" alt="User Icon" />
-          <img class="header-arrow" src="@/images/arrowDown_icon.png" />
-        </div>
-      </nav>
-    </div>
+    <Header />
+
     <div class="body">
       <div class="container">
         <span class="title-text"> Analiza Matematyczna I </span>
       </div>
+
       <div class="container">
         <div class="topics">
           <h3>Wybór tematu:</h3>
+
           <ul class="topics-list">
             <li class="topic-item">
               <span>Granice (limity)</span>
+
               <div class="actions">
-                <img class="default-icon" src="@/images/edit_icon.png" alt="Edit"/>
-                <img class="default-icon" src="@/images/delete_icon.png" alt="Delete"/>
+                <img
+                  class="default-icon"
+                  src="@/images/edit_icon.png"
+                >
+
+                <img
+                  class="default-icon"
+                  src="@/images/delete_icon.png"
+                >
               </div>
             </li>
+
             <li class="topic-item">
               <span>Ciągłość funkcji</span>
+
               <div class="actions">
-                <img class="default-icon" src="@/images/edit_icon.png" alt="Edit"/>
-                <img class="default-icon" src="@/images/delete_icon.png" alt="Delete"/>
+                <img
+                  class="default-icon"
+                  src="@/images/edit_icon.png"
+                >
+
+                <img
+                  class="default-icon"
+                  src="@/images/delete_icon.png"
+                >
               </div>
             </li>
+
             <li class="topic-item">
               <span>Pochodne</span>
+
               <div class="actions">
-                <img class="default-icon" src="@/images/edit_icon.png" alt="Edit"/>
-                <img class="default-icon" src="@/images/delete_icon.png" alt="Delete"/>
+                <img
+                  class="default-icon"
+                  src="@/images/edit_icon.png"
+                >
+
+                <img
+                  class="default-icon"
+                  src="@/images/delete_icon.png"
+                >
               </div>
             </li>
+
             <li class="topic-item">
               <span>Całki</span>
+
               <div class="actions">
-                <img class="default-icon" src="@/images/edit_icon.png" alt="Edit"/>
-                <img class="default-icon" src="@/images/delete_icon.png" alt="Delete"/>
+                <img
+                  class="default-icon"
+                  src="@/images/edit_icon.png"
+                >
+
+                <img
+                  class="default-icon"
+                  src="@/images/delete_icon.png"
+                >
               </div>
             </li>
           </ul>
+
           <div class="add-topic">
             <span>Dodaj nowy temat</span>
-            <img class="add-icon" src="@/images/add_icon.png" alt="Add"/>
+
+            <img
+              class="add-icon"
+              src="@/images/add_icon.png"
+            >
           </div>
         </div>
       </div>
     </div>
-    <div class="footer">
-      <div class="footer-section">
-        <span>
-          <img class="footer-logo" src="@/images/logoPL.png" alt="Logo"/>
-          <h3>Politechnika Łódzka</h3>
-        </span>
-        <p>ul. Żeromskiego 116</p>
-        <p>90-924 Łódź</p>
-        <p>NIP: 727 002 18 95</p>
-      </div>
-      <div class="footer-section">
-        <h2>Centrum E-Learningu</h2>
-        <p class="footer-underline-text">Strona główna CEL PŁ</p>
-        <p class="footer-underline-text">Lokalizacja</p>
-        <p class="footer-text-before-line footer-underline-text">Godziny pracy</p>
-        <p class="footer-text-after-line">Pomoc techniczna WIKAMP</p>
-        <p class="footer-underline-text">Email: bok@edu.p.lodz.pl</p>
-        <p class="footer-underline-text">Tel: +48 426312806</p>
-      </div>
-      <div class="footer-section">
-        <h2>Przydatne linki</h2>
-        <p class="footer-underline-text">Strona główna PŁ</p>
-        <p class="footer-text-before-line footer-underline-text">Biblioteka PŁ</p>
-        <p class="footer-text-after-line footer-underline-text">Poczta elektroniczna</p>
-        <p class="footer-underline-text">WebDziekanat</p>
-        <p class="footer-underline-text">Office</p>
-        <p class="footer-underline-text">VirTUL</p>
-      </div>
-    </div>
+
+    <Footer />
   </div>
 </template>
-  
-<script>
 
+<script setup lang="ts">
+import Footer from '@/components/TeacherViewComponents/Footer.vue'
+import Header from '@/components/TeacherViewComponents/Header.vue'
 </script>
-  
+
 <style scoped>
   .background {
     min-height: 100vh;
@@ -132,9 +114,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 4vh; 
-    background-color: #f2f4f6; 
-    z-index: 999; 
+    height: 4vh;
+    background-color: #f2f4f6;
+    z-index: 999;
   }
   .header {
     position: fixed;
@@ -151,17 +133,17 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
   }
-  
+
   .header-logo {
     display: flex;
     align-items: center;
   }
-  
+
   .header-logo img {
     height: 75px;
     margin-right: 15px;
   }
-  
+
   .header-logo h1 {
     font-family: "Titillium Web", sans-serif;
     font-weight: 400;
@@ -192,7 +174,7 @@
     gap: 15px;
   }
   .nav-button-img {
-    width: 20px; 
+    width: 20px;
     height: 20px;
     display: block;
   }
@@ -229,7 +211,7 @@
     background-color: #ffffff;
     backdrop-filter: blur(5px);
     border-radius: 10px;
-    margin-top: 60px; 
+    margin-top: 60px;
     padding: 20px 20px;
   }
   .title-text{
@@ -308,7 +290,7 @@
     background-color: #1a4a8f;
     color: white;
     padding: 30px 20px;
-    position: static; 
+    position: static;
     bottom: 0;
     display: flex;
     font-family: "Titillium Web", sans-serif;
@@ -338,9 +320,9 @@
     font-size: 16px;
   }
   .footer-section span {
-    display: flex; 
+    display: flex;
     align-items: center;
-    gap: 10px; 
+    gap: 10px;
   }
   .footer-logo {
     width: 60px;

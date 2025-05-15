@@ -35,6 +35,7 @@
                   <img
                     class="default-icon"
                     src="@/images/delete_icon.png"
+                    @click="openDeleteModal(idx)"
                   >
                 </div>
               </li>
@@ -62,6 +63,12 @@
       @save="saveTopic"
       @close="closeModal"
     />
+
+    <DeleteTopicModal
+      v-if="showDeleteModal"
+      @confirm="confirmDelete"
+      @close="closeDeleteModal"
+    />
   </div>
 </template>
 
@@ -69,6 +76,7 @@
 import { ref } from 'vue'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
+import DeleteTopicModal from '@/Views/TeacherView/TeacherViewTopics/DeleteTopicModal.vue'
 import EditTopicModal from '@/Views/TeacherView/TeacherViewTopics/EditTopicModal.vue'
 
 const topics = ref([
@@ -79,8 +87,10 @@ const topics = ref([
 ])
 
 const showModal = ref(false)
+const showDeleteModal = ref(false)
 const topicName = ref('')
 const editingIndex = ref<number | null>(null)
+const deletingIndex = ref<number | null>(null)
 
 function openEditModal(index: number) {
   editingIndex.value = index
@@ -108,6 +118,22 @@ function saveTopic() {
     topics.value.push({ name: topicName.value })
   }
   closeModal()
+}
+function openDeleteModal(index: number) {
+  deletingIndex.value = index
+  showDeleteModal.value = true
+}
+
+function closeDeleteModal() {
+  showDeleteModal.value = false
+  deletingIndex.value = null
+}
+
+function confirmDelete() {
+  if (deletingIndex.value !== null) {
+    topics.value.splice(deletingIndex.value, 1)
+  }
+  closeDeleteModal()
 }
 </script>
 

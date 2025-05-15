@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   modelValue: string

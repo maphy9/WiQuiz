@@ -56,14 +56,16 @@
     </div>
 
     <div class="buttons-card">
-      <div class="button play-button">
-        <div>Play</div>
+      <router-link to="/levelselect">
+        <div class="button play-button">
+          <div>Play</div>
 
-        <img
-          class="button-img"
-          src="@/images/play.png"
-        >
-      </div>
+          <img
+            class="button-img"
+            src="@/images/play.png"
+          >
+        </div>
+      </router-link>
 
       <router-link to="/about">
         <div class="about-button button">
@@ -80,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
-import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import { ref } from 'vue'
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 
 const player1_name = ref('Bolesław R.')
 const player2_name = ref('Adam K.')

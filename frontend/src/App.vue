@@ -124,7 +124,7 @@ body,
 }
 
 .swipe-left-enter-from {
-  transform: translateX(-100%);
+  transform: translateX(100%);
   z-index: 2;
 }
 .swipe-left-enter-to {
@@ -137,7 +137,7 @@ body,
   z-index: 1;
 }
 .swipe-left-leave-to {
-  transform: translateX(100%);
+  transform: translateX(-100%);
   z-index: 1;
 }
 

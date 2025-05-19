@@ -32,10 +32,9 @@ const score = toRef(props, 'score')
 <style scoped>
 .student-card {
   background: rgba(0, 0, 0, 0.3);
-  padding: 1rem;
   margin: 0.5rem;
-  min-width: 200px;
-  max-width: 700px;
+  width: 35rem;
+  height: 7rem;
   display: flex;
   align-items: center;
 }
@@ -64,6 +63,7 @@ const score = toRef(props, 'score')
   font-size:2rem;
   font-size: 2rem;
   margin-left: 2rem;
+  margin-right: 1rem;
 }
 
 .avatar {
@@ -73,5 +73,6 @@ const score = toRef(props, 'score')
   border-radius: 50%;
   margin-bottom: 4px;
   transition: all 0.3s ease !important;
+  margin-left: 1rem;
 }
 </style>

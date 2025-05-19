@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import StudentCard from './studentCard.vue'
+
+interface Student {
+  name: string
+  score: number
+}
 
 const levelNumber = ref(1)
 const levelTitle = ref('Funkcja wykładnicza')
-const correctAnswers = ref(3)
+const correctAnswers = ref(8)
 const numberAnswers = ref(12)
+const students = ref<Student[]>([
+  { name: 'Bolesław R.', score: 386 },
+  { name: 'Adam K.', score: 222 },
+  { name: 'Ewelina J.', score: 215 },
+])
 
 const level = computed(() => {
   return `Temat${levelNumber.value} - ${levelTitle.value}`
@@ -29,6 +40,15 @@ const score = computed(() => {
         />
 
         <span class="progress-bar-label">{{ Math.round(score) }}%</span>
+      </div>
+
+      <div class="student-cards">
+        <StudentCard
+          v-for="student in students"
+          :key="student.name"
+          :name="student.name"
+          :score="student.score"
+        />
       </div>
     </div>
   </div>
@@ -106,5 +126,9 @@ const score = computed(() => {
   line-height: normal;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
+}
+
+.student-cards{
+  margin-top: 3rem;
 }
 </style>

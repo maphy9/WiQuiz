@@ -1,9 +1,8 @@
 <template>
-  <div class="return-button">
+  <router-link to="/" class="return-button">
     <span class="return-button-text">Go back to main menu</span>
-
-    <img class="return-button-icon" src="@/images/home.png">
-  </div>
+    <img class="return-button-icon" src="@/images/home.png" />
+  </router-link>
 </template>
 
 <style scoped>
@@ -14,7 +13,7 @@
   border: 1px solid white;
   width: 426px;
   height: 70px;
-  background-color: #8B231D;
+  background-color: #8b231d;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -35,7 +34,7 @@
   text-transform: upper;
   color: white;
   font-size: 28px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
@@ -44,6 +43,10 @@
 .return-button-icon {
   width: 70px;
   height: 70px;
+}
+
+a {
+  all: unset;
 }
 
 @media only screen and (max-width: 550px) {

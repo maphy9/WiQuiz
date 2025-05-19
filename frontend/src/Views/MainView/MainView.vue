@@ -1,59 +1,103 @@
 <template>
   <div class="background">
-    <LanguageButton></LanguageButton>
+    <LanguageButton />
+
     <div class="team-card">
       <div class="team-card-top">
         <h3>Your team</h3>
       </div>
+
       <div class="team-members">
         <div class="member-slot">
-          <img class="avatar" src="@/images/emptyPfp.png" />
+          <img
+            class="avatar"
+            src="@/images/emptyPfp.png"
+          >
+
           <div>{{ player1_name }}</div>
         </div>
+
         <div class="member-slot">
-          <img class="avatar" src="@/images/emptyPfp.png" />
+          <img
+            class="avatar"
+            src="@/images/emptyPfp.png"
+          >
+
           <div>{{ player2_name }}</div>
         </div>
-        <div class="member-slot">
-          <img class="avatar add" src="@/images/plus.png" />
+
+        <router-link
+          to="/join"
+          class="member-slot"
+        >
+          <img
+            class="add avatar"
+            src="@/images/plus.png"
+          >
+
           <div>Invite or join</div>
-        </div>
+        </router-link>
       </div>
     </div>
-    <div class="logo-card" @click="handleLogoClick">
-      <img class="logo-img" src="@/images/logo.png" :class="{ rotate: rotateLogo }" />
-      <div class="logo-text">WIKQUIZ</div>
+
+    <div
+      class="logo-card"
+      @click="handleLogoClick"
+    >
+      <img
+        class="logo-img"
+        src="@/images/logo.png"
+        :class="{'rotate': rotateLogo}"
+      >
+
+      <div class="logo-text">
+        WIKQUIZ
+      </div>
     </div>
+
     <div class="buttons-card">
-      <div class="button play-button">
-        <div>Play</div>
-        <img class="button-img" src="@/images/play.png" />
-      </div>
-      <div class="button about-button">
-        <div>About</div>
-        <img class="button-img" src="@/images/handshake.png" />
-      </div>
+      <router-link to="/levelselect">
+        <div class="button play-button">
+          <div>Play</div>
+
+          <img
+            class="button-img"
+            src="@/images/play.png"
+          >
+        </div>
+      </router-link>
+
+      <router-link to="/about">
+        <div class="about-button button">
+          <div>About</div>
+
+          <img
+            class="button-img"
+            src="@/images/handshake.png"
+          >
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import LanguageButton from "@/components/SharedComponents/LanguageButton.vue";
+import { ref } from 'vue'
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 
-const player1_name = ref("Bolesław R.");
-const player2_name = ref("Adam K.");
-const logoClickCount = ref(0);
-const rotateLogo = ref(false);
+const player1_name = ref('Bolesław R.')
+const player2_name = ref('Adam K.')
+const logoClickCount = ref(0)
+const rotateLogo = ref(false)
 
 function handleLogoClick() {
-  logoClickCount.value++;
+  logoClickCount.value++
   if (logoClickCount.value >= 5) {
-    rotateLogo.value = true;
+    rotateLogo.value = true
     setTimeout(() => {
-      rotateLogo.value = false;
-      logoClickCount.value = 0;
-    }, 1000);
+      rotateLogo.value = false
+      logoClickCount.value = 0
+    }, 1000)
   }
 }
 </script>
@@ -283,6 +327,10 @@ function handleLogoClick() {
   .button:hover {
     cursor: pointer;
   }
+}
+
+a {
+  all: unset;
 }
 
 @media (max-width: 550px) {

@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   modelValue: string
@@ -73,10 +73,8 @@ function discardAndClose() {
 }
 
 onMounted(() => {
-  nextTick(() => {
-    const overlay = document.querySelector('.modal-overlay') as HTMLElement
-    overlay?.focus()
-  })
+  const overlay = document.querySelector('.modal-overlay') as HTMLElement
+  overlay?.focus()
 })
 </script>
 

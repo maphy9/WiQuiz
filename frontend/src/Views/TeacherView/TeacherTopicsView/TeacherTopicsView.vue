@@ -1,27 +1,28 @@
 <template>
   <div>
     <div
-      class="background"
-      :class="{'blurred': showEditModal || showDeleteModal}"
+      :class="`background${showModal || showDeleteModal
+        ? ' blurred'
+        : ''}`"
     >
       <Header />
 
       <div class="body">
         <div class="container">
-          <span class="title-text"> Analiza Matematyczna I </span>
+          <span class="title-text">{{ subjectName }}</span>
         </div>
 
         <div class="container">
           <div class="topics">
-            <h3>Nazwa tematu: Granice funkcji</h3>
+            <h3>Wybór tematu:</h3>
 
             <ul class="topics-list">
               <li
-                v-for="(q, idx) in questions"
+                v-for="(topic, idx) in topics"
                 :key="idx"
                 class="topic-item"
               >
-                <span>{{ idx + 1 }}. {{ q.text }}</span>
+                <span>{{ topic.name }}</span>
 
                 <div class="actions">
                   <img
@@ -37,19 +38,17 @@
                   >
                 </div>
               </li>
+
+              <div class="add-topic">
+                <span>Dodaj nowy temat</span>
+
+                <img
+                  class="add-icon"
+                  src="@/images/add_icon.png"
+                  @click="openAddModal()"
+                >
+              </div>
             </ul>
-
-            <div
-              class="add-topic"
-              @click="openAddModal"
-            >
-              <span>Dodaj pytanie</span>
-
-              <img
-                class="add-icon"
-                src="@/images/add_icon.png"
-              >
-            </div>
           </div>
         </div>
       </div>
@@ -57,14 +56,14 @@
       <Footer />
     </div>
 
-    <EditQuestionModal
-      v-if="showEditModal"
-      v-model="questionModel"
-      @save="saveQuestion"
-      @close="closeEditModal"
+    <EditTopicModal
+      v-if="showModal"
+      v-model="topicName"
+      @save="saveTopic"
+      @close="closeModal"
     />
 
-    <DeleteQuestionModal
+    <DeleteTopicModal
       v-if="showDeleteModal"
       @confirm="confirmDelete"
       @close="closeDeleteModal"
@@ -72,88 +71,70 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
-import DeleteQuestionModal from './DeleteQuestionModal.vue'
-import EditQuestionModal from './EditQuestionModal.vue'
+import DeleteTopicModal from '@/Views/TeacherView/TeacherTopicsView/DeleteTopicModal.vue'
+import EditTopicModal from '@/Views/TeacherView/TeacherTopicsView/EditTopicModal.vue'
 
-const questions = ref([
-  {
-    text: 'Oblicz granicę: lim(x → 2) (x² + 3x − 4)',
-    answers: ['2', '6', '1', 'nie istnieje'],
-    correctIndex: 1,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 0) (sin(x)/x)',
-    answers: ['1', '0', '∞', 'nie istnieje'],
-    correctIndex: 0,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → ∞) (1/x)',
-    answers: ['0', '∞', '1', 'nie istnieje'],
-    correctIndex: 0,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 1) (x³ − 1)/(x − 1)',
-    answers: ['3', '0', '1', 'nie istnieje'],
-    correctIndex: 3,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 0) (e^x − 1)/x',
-    answers: ['1', '0', '∞', 'nie istnieje'],
-    correctIndex: 0,
-  },
+const subjectName = ref('Analiza Matematyczna I')
 
+const topics = ref([
+  { name: 'Granice (limity)' },
+  { name: 'Ciągłość funkcji' },
+  { name: 'Pochodne' },
+  { name: 'Całki' },
 ])
 
-const showEditModal = ref(false)
+const showModal = ref(false)
 const showDeleteModal = ref(false)
-const editingIndex = ref(null)
-const deletingIndex = ref(null)
-const questionModel = ref({
-  text: '',
-  answers: ['', '', '', ''],
-  correctIndex: 0,
-})
+const topicName = ref('')
+const editingIndex = ref<number | null>(null)
+const deletingIndex = ref<number | null>(null)
 
-function openEditModal(idx) {
-  editingIndex.value = idx
-  questionModel.value = { ...questions.value[idx] }
-  showEditModal.value = true
+function openEditModal(index: number) {
+  editingIndex.value = index
+  topicName.value = topics.value[index].name
+  showModal.value = true
 }
+
 function openAddModal() {
   editingIndex.value = null
-  questionModel.value = { text: '', answers: ['', '', '', ''], correctIndex: 0 }
-  showEditModal.value = true
+  topicName.value = ''
+  showModal.value = true
 }
-function saveQuestion() {
+
+function closeModal() {
+  showModal.value = false
+}
+
+function saveTopic() {
+  if (topicName.value.trim() === '')
+    return
   if (editingIndex.value !== null) {
-    questions.value[editingIndex.value] = { ...questionModel.value }
+    topics.value[editingIndex.value].name = topicName.value
   }
   else {
-    questions.value.push({ ...questionModel.value })
+    topics.value.push({ name: topicName.value })
   }
-  showEditModal.value = false
+  closeModal()
 }
-function closeEditModal() {
-  showEditModal.value = false
-}
-function openDeleteModal(idx) {
-  deletingIndex.value = idx
+function openDeleteModal(index: number) {
+  deletingIndex.value = index
   showDeleteModal.value = true
 }
-function confirmDelete() {
-  if (deletingIndex.value !== null) {
-    questions.value.splice(deletingIndex.value, 1)
-  }
-  showDeleteModal.value = false
-  deletingIndex.value = null
-}
+
 function closeDeleteModal() {
   showDeleteModal.value = false
   deletingIndex.value = null
+}
+
+function confirmDelete() {
+  if (deletingIndex.value !== null) {
+    topics.value.splice(deletingIndex.value, 1)
+  }
+  closeDeleteModal()
 }
 </script>
 
@@ -177,13 +158,11 @@ function closeDeleteModal() {
     background-color: #f2f4f6;
     z-index: 999;
   }
-
   .body{
     display: flex;
     flex-direction: column;
     margin: 75px 0;
   }
-
   .container {
     width: 95vw;
     display: flex;
@@ -195,7 +174,6 @@ function closeDeleteModal() {
     margin-top: 60px;
     padding: 20px 20px;
   }
-
   .title-text{
     font-family: "Titillium Web", sans-serif;
     font-weight: 400;
@@ -203,7 +181,6 @@ function closeDeleteModal() {
     padding-left: 40px;
     text-align: left;;
   }
-
   .topics {
     width: 100%;
     padding: 20px;
@@ -230,11 +207,9 @@ function closeDeleteModal() {
     padding: 20px 60px;
     border-bottom: 1px solid #ccc;
   }
-
   .topic-item:first-child {
     border-top: 1px solid #ccc;
   }
-
   .topic-item span {
     font-family: "Titillium Web", sans-serif;
     font-size: 24px;
@@ -251,14 +226,12 @@ function closeDeleteModal() {
     margin-right: 75px;
     cursor: pointer;
   }
-
   .add-icon {
     width: 30px;
     height: 30px;
     margin-right: 180px;
     cursor: pointer;
   }
-
   .add-topic {
     display: flex;
     justify-content: space-between;
@@ -273,8 +246,8 @@ function closeDeleteModal() {
     cursor: pointer;
   }
   .blurred {
-    filter: blur(4px);
-    pointer-events: none;
-    user-select: none;
- }
-  </style>
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+</style>

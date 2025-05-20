@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{ modelValue: any }>()
 const emit = defineEmits<{
@@ -165,6 +165,7 @@ onBeforeUnmount(() => {
   width: 100%;
   margin-bottom: 12px;
   font-size: 18px;
+  resize: none;
 }
 .answers-section {
   margin-top: 12px;

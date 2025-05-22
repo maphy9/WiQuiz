@@ -32,17 +32,19 @@ const score = toRef(props, 'score')
 <style scoped>
 .student-card {
   background: rgba(0, 0, 0, 0.3);
-  margin: 0.5rem;
-  width: 35rem;
-  height: 7rem;
+  margin: 10px;
+  width: 35vw;
+  height: 17vh;
   display: flex;
   align-items: center;
+  min-width: 200px;
+  min-height: 50px;
 }
 
 .text {
   text-align: left;
   flex: 1;
-  padding-left: 3rem;
+  padding-left: 12px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -50,20 +52,19 @@ const score = toRef(props, 'score')
   width: 100%;
 }
 
-.text-name{
+.text-name {
   color: white;
   font-weight: 400;
-  font-size: 2rem;
+  font-size: 2vw;
 }
 
-.text-score{
+.text-score {
   align-items: right;
-  color:#80C997;
+  color: #80c997;
   font-weight: 600;
-  font-size:2rem;
-  font-size: 2rem;
-  margin-left: 2rem;
-  margin-right: 1rem;
+  font-size: 2.5vw;
+  margin-left: 2px;
+  margin-right: 12px;
 }
 
 .avatar {
@@ -73,6 +74,6 @@ const score = toRef(props, 'score')
   border-radius: 50%;
   margin-bottom: 4px;
   transition: all 0.3s ease !important;
-  margin-left: 1rem;
+  margin-left: 15px;
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import StudentCard from './studentCard.vue'
+import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
 interface Student {
   name: string
@@ -41,7 +41,9 @@ const textScore = computed(() => {
 
       <div class="progress-bar-outer">
         <div
-          :class="score >= 90 ? 'progress-bar-inner-green' : 'progress-bar-inner-yellow'"
+          :class="score >= 90
+            ? 'progress-bar-inner-green'
+            : 'progress-bar-inner-yellow'"
           :style="{'width': `${score}%`}"
         />
 
@@ -57,19 +59,43 @@ const textScore = computed(() => {
             :score="student.score"
           />
         </div>
+
         <div class="buttons-list">
-          <div v-if="score>=90" class="button next-level-button">
+          <div
+            v-if="score >= 90"
+            class="button next-level-button"
+          >
             <p>Następny temat</p>
-            <img src="@/images/arrow.png" class="arrow-img"/>
+
+            <img
+              src="@/images/arrow.png"
+              class="arrow-img"
+            >
           </div>
-          <p v-else class="next-level-access-text">Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na conajmniej 90% poprawnych odpowiedzi.</p>
+
+          <p
+            v-else
+            class="next-level-access-text"
+          >
+            Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na conajmniej 90% poprawnych odpowiedzi.
+          </p>
+
           <div class="button play-again-button">
             <p>Zagraj ponownie</p>
-            <img src="@/images/circleArrow.png" class="circle-arrow-img"/>
+
+            <img
+              src="@/images/circleArrow.png"
+              class="circle-arrow-img"
+            >
           </div>
+
           <div class="button choose-level-button">
             <p>Wybór tematu</p>
-            <img src="@/images/home.png" class="home-img"/>
+
+            <img
+              src="@/images/home.png"
+              class="home-img"
+            >
           </div>
         </div>
       </div>
@@ -97,17 +123,18 @@ const textScore = computed(() => {
 .container {
   border: 1px solid black;
   padding: 10px;
-  padding-bottom: 2rem;
-  width: calc(72.5% - 22px);
+  padding-bottom: 40px;
+  width: 70vw;
   background-color: rgba(69, 80, 97, 0.8);
   backdrop-filter: blur(5px);
+  min-width: 515px;
 }
 
 .title {
   color: white;
   text-align: center;
   font-weight: bold;
-  font-size: 4rem;
+  font-size: 4vw;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
@@ -116,17 +143,17 @@ const textScore = computed(() => {
   color: white;
   text-align: center;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 2vw;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
 
 .progress-bar-outer {
-  width: 40rem;
-  height: 3rem;
+  width: 40vw;
+  height: 5vh;
   border: 3px solid #fff;
   background: rgba(69, 80, 97, 0.5);
-  margin: 1rem auto 0 auto;
+  margin: 1vh auto 0 auto;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -156,7 +183,7 @@ const textScore = computed(() => {
   justify-content: center;
   color: #ffffff;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 2vw;
   text-shadow: 1px 1px 2px #fff, 0 0 2px #fff;
   pointer-events: none;
   line-height: normal;
@@ -191,22 +218,23 @@ background-color: #952823;
 .cards-and-buttons-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 2vw;
   align-items: start;
-  margin-top: 2rem;
+  margin-top: 2vh;
 }
 
 .student-cards{
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  margin-left: 3rem;
+  gap: 2vh;
+  margin-left: 3vw;
 }
 
 .buttons-list {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2vh;
+  margin-left: 3vw;
 }
 
 .student-card{
@@ -215,22 +243,23 @@ background-color: #952823;
 }
 
 .button {
-  height: 7rem;
-  margin: 0 2rem;
+  height: 17vh;
   box-sizing: border-box;
   border: 3px white solid;
   color: white;
-  font-size: 2rem;
+  font-size: 2vw;
   font-weight: 700;
-  width: 25rem;
+  width: 25vw;
+  min-width: 10vw;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 3px;
   cursor: pointer;
   transition: all 0.3s;
+  min-width: 200px;
+  min-height: 50px;
 }
 
 .button:active {
@@ -238,28 +267,28 @@ background-color: #952823;
 }
 
 .arrow-img{
-  height: 5rem;
-  width: 5rem;
-  margin: 0 0 0 2rem;
+  height: 8vh;
+  width: 8vh;
+  margin: 0 0 0 2vw;
   transform: rotate(180deg);
 }
 
 .circle-arrow-img{
-  height: 5rem;
-  width: 5rem;
-  margin: 0 0 0 1.7rem;
+  height: 8vh;
+  width: 8vh;
+  margin: 0 0 0 1.7vw;
 }
 
 .home-img{
-  height: 5rem;
-  width: 5rem;
-  margin: 0 0 0 4rem;
+  height: 8vh;
+  width: 8vh;
+  margin: 0 0 0 4vw;
 }
 
 .next-level-access-text{
-  height: 7rem;
+  height: 7vh;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.2vw;
   font-weight: 700;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;

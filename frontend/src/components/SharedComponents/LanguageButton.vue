@@ -3,6 +3,7 @@
     class="block desktop"
     type="button"
     @click="toggleLanguage"
+    @mousedown="playButtonSound"
   >
     <div class="language-button">
       <img
@@ -20,6 +21,7 @@
     class="block mobile"
     type="button"
     @click="toggleLanguage"
+    @mousedown="playButtonSound"
   >
     <div class="language-button">
       <img
@@ -36,6 +38,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useSound } from '@/composables/useSound'
+
+const { playButtonSound } = useSound()
 
 const language = ref({
   name: 'English',

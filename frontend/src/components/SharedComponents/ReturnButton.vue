@@ -1,9 +1,15 @@
 <template>
-  <router-link to="/" class="return-button">
+  <router-link to="/" class="return-button" @click="playButtonSound">
     <span class="return-button-text">Go back to main menu</span>
     <img class="return-button-icon" src="@/images/home.png" />
   </router-link>
 </template>
+
+<script setup lang="ts">
+import { useSound } from '@/composables/useSound'
+
+const { playButtonSound } = useSound()
+</script>
 
 <style scoped>
 .return-button {

@@ -2,6 +2,9 @@
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { ref } from 'vue'
+import { useSound } from '@/composables/useSound'
+
+const { playButtonSound } = useSound()
 
 const codeInput = ref('6  2  3  1  6  2')
 
@@ -33,6 +36,7 @@ function copyCode() {
             <button
               type="button"
               @click="copyCode"
+              @mousedown="playButtonSound"
             >
               <img src="@/images/clipboard.png">
             </button>
@@ -59,6 +63,7 @@ function copyCode() {
 
             <button
               type="button"
+              @mousedown="playButtonSound"
             >
               <img
                 id="paste-button-icon"

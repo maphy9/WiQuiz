@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useSound } from '@/composables/useSound'
+
+const { playButtonSound } = useSound()
 
 const props = defineProps<{
   cardText: string
@@ -26,7 +29,7 @@ const imageSrc = computed(() => {
 </script>
 
 <template>
-  <div class="card-container">
+  <div class="card-container" @click="playButtonSound">
     <div
       class="card-circle"
       :style="{'backgroundColor': bgColour}"

@@ -182,6 +182,7 @@ body {
 }
 
 .login-footer-bar {
+  width: 100vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -189,6 +190,8 @@ body {
   padding: 10px 20px;
   font-size: 14px;
   color: #666;
+  position: absolute;
+  bottom: 0;
 }
 
 .footer-left,
@@ -202,7 +205,10 @@ body {
 }
 .footer-center{
   flex-direction: column;
-  padding-left: 40px;
+  padding-left: 50px;
+}
+.footer-right {
+  padding-right: 40px;
 }
 .footer-left img {
   width: 30px;

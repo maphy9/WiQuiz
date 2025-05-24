@@ -42,13 +42,13 @@
 
             <div
               class="add-topic"
-              @click="openAddModal"
             >
               <span>Dodaj pytanie</span>
 
               <img
                 class="add-icon"
                 src="@/images/add_icon.png"
+                @click="openAddModal"
               >
             </div>
           </div>
@@ -275,7 +275,6 @@ function closeDeleteModal() {
     padding-left: 30px;
     padding-right:60px;
     margin-top: 10px;
-    cursor: pointer;
   }
   .blurred {
     filter: blur(4px);

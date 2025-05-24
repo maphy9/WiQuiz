@@ -166,6 +166,8 @@ onBeforeUnmount(() => {
   margin-bottom: 12px;
   font-size: 18px;
   resize: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 .answers-section {
   margin-top: 12px;

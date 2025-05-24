@@ -243,7 +243,6 @@ function confirmDelete() {
     padding-left: 30px;
     padding-right:60px;
     margin-top: 10px;
-    cursor: pointer;
   }
   .blurred {
   filter: blur(4px);

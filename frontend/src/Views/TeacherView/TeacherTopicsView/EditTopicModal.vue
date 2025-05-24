@@ -23,6 +23,7 @@
           class="modal-input"
           type="text"
           autocomplete="off"
+          maxlength="50"
           @keyup.enter="save"
         >
       </div>

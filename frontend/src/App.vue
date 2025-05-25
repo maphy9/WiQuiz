@@ -13,9 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue'
 
 const route = useRoute()
 
@@ -23,17 +22,19 @@ const mainTheme = ref<HTMLAudioElement | null>(null)
 const mainThemeVolume = ref(0.1)
 
 onMounted(() => {
-  if(!(window as any).musicIsPlaying) {
+  if (!(window as any).musicIsPlaying) {
     mainTheme.value = new Audio('/src/sounds/mainTheme.mp3')
     mainTheme.value.volume = mainThemeVolume.value
     mainTheme.value.loop = true
 
     const playMainTheme = () => {
-      if (mainTheme.value){
-        mainTheme.value.play().catch(() => {})
-        ;(window as any).musicIsPlaying = true
+      if (mainTheme.value) {
+        mainTheme.value.play().then(() => {
+          (window as any).musicIsPlaying = true
+        }).catch(() => {
+        })
+        window.removeEventListener('click', playMainTheme)
       }
-      window.removeEventListener('click', playMainTheme)
     }
     window.addEventListener('click', playMainTheme)
   }

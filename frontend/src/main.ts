@@ -4,6 +4,7 @@ import App from './App.vue'
 import AboutView from './Views/AboutView/AboutView.vue'
 import JoinView from './Views/JoinView/JoinView.vue'
 import LevelSelectionView from './Views/LevelSelectionView/LevelSelectionView.vue'
+import LoginView from './Views/LoginView/LoginView.vue'
 import MainView from './Views/MainView/MainView.vue'
 import TeacherQuestionsView from './Views/TeacherView/TeacherQuestionsView/TeacherQuestionsView.vue'
 import TeacherTopicsView from './Views/TeacherView/TeacherTopicsView/TeacherTopicsView.vue'
@@ -17,6 +18,8 @@ const router = createRouter({
     { name: 'levelselect', path: '/levelselect', component: LevelSelectionView },
     { name: 'teacher-topics', path: '/teacher-topics', component: TeacherTopicsView },
     { name: 'teacher-questions', path: '/teacher-questions', component: TeacherQuestionsView },
+    { name: 'teacher-questions', path: '/teacher-questions', component: TeacherQuestionsView },
+    { name: 'login', path: '/login', component: LoginView },
   ],
 })
 

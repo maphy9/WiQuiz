@@ -9,7 +9,7 @@ interface Student {
 
 const levelNumber = ref(1)
 const levelTitle = ref('Funkcja wykładnicza')
-const correctAnswers = ref(11)
+const correctAnswers = ref(12)
 const numberAnswers = ref(12)
 const students = ref<Student[]>([
   { name: 'Bolesław R.', score: 386 },
@@ -71,7 +71,8 @@ const textScore = computed(() => {
 
             <img
               src="@/images/arrow.png"
-              class="arrow-img"
+              class="button-icon"
+              :style="{'transform': 'rotate(180deg)'}"
             >
           </div>
 
@@ -89,7 +90,7 @@ const textScore = computed(() => {
 
             <img
               src="@/images/circleArrow.png"
-              class="circle-arrow-img"
+              class="button-icon"
             >
           </div>
 
@@ -100,7 +101,7 @@ const textScore = computed(() => {
 
             <img
               src="@/images/home.png"
-              class="home-img"
+              class="button-icon"
             >
           </div>
         </div>
@@ -128,19 +129,20 @@ const textScore = computed(() => {
 
 .container {
   border: 1px solid black;
-  padding: 10px;
-  padding-bottom: 40px;
-  width: 70vw;
+  padding: 0 10px;
+  padding-bottom: 6vh;
+  width: calc(80vw - 22px);
   background-color: rgba(69, 80, 97, 0.8);
   backdrop-filter: blur(5px);
   min-width: 515px;
 }
 
 .title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
   text-align: center;
   font-weight: bold;
-  font-size: 4vw;
+  font-size: 48px;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
@@ -149,17 +151,17 @@ const textScore = computed(() => {
   color: white;
   text-align: center;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 36px;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
 
 .progress-bar-outer {
-  width: 40vw;
-  height: 5vh;
+  width: 52vw;
+  height: 62px;
   border: 3px solid #fff;
+  margin: 0 auto 0 auto;
   background: rgba(69, 80, 97, 0.5);
-  margin: 1vh auto 0 auto;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -189,8 +191,7 @@ const textScore = computed(() => {
   justify-content: center;
   color: #ffffff;
   font-weight: bold;
-  font-size: 2vw;
-  text-shadow: 1px 1px 2px #fff, 0 0 2px #fff;
+  font-size: 48px;
   pointer-events: none;
   line-height: normal;
   -webkit-text-stroke-width: 1px;
@@ -222,46 +223,41 @@ const textScore = computed(() => {
 }
 
 .cards-and-buttons-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2vw;
-  align-items: start;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+  width: calc(100% - 4vw);
+  padding: 0 2vw;
   margin-top: 2vh;
 }
 
 .student-cards {
+  width: 40vw;
   display: flex;
   flex-direction: column;
-  gap: 2vh;
-  margin-left: 3vw;
+  gap: 36px;
 }
 
 .buttons-list {
   display: flex;
   flex-direction: column;
-  gap: 2vh;
-  margin-left: 3vw;
-}
-
-.student-card {
-  margin: 0;
-  box-sizing: border-box;
+  width: calc(100% - 40vw - 32px);
+  gap: 36px;
 }
 
 .button {
-  height: 17vh;
-  box-sizing: border-box;
+  height: 112px;
   border: 3px white solid;
-  color: white;
-  font-size: 5vh;
-  font-weight: 700;
-  width: 25vw;
-  min-width: 10vw;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  box-sizing: border-box;
+  border-radius: 3px;
+  font-weight: bold;
+  width: calc(100% - 20px);
+  padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.3s;
   min-width: 200px;
@@ -270,122 +266,126 @@ const textScore = computed(() => {
 }
 
 .button-text {
-  margin-left: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  font-size: 32px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
 }
 
 .button:active {
   transform: scale(1.04);
 }
 
-.arrow-img {
-  height: 8vh;
-  width: 8vh;
-  transform: rotate(180deg);
-  margin-right: 10px;
-}
-
-.circle-arrow-img {
-  height: 8vh;
-  width: 8vh;
-  margin-right: 10px;
-}
-
-.home-img {
-  height: 8vh;
-  width: 8vh;
-  margin-right: 10px;
+.button-icon {
+  height: 64px;
+  width: 64px;
 }
 
 .next-level-access-text {
-  height: 17vh;
+  height: 112px;
+  font-size: 25px;
   color: white;
-  font-size: 2.7vh;
   font-weight: 700;
+  text-align: left;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 1300px) {
+  .next-level-access-text {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1100px) {
   .background {
     height: 100vh;
     width: 100vw;
+  }
+
+  .cards-and-buttons-container {
+    flex-direction: column;
+    gap: 2vh;
+    width: 100%;
     margin: 0;
     padding: 0;
   }
 
-  .cards-and-buttons-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2vh;
-    width: 100%;
-  }
-
   .container {
-    width: 90vw;
+    width: calc(95vw - 30px);
     min-width: unset;
-    padding: 15px;
-    margin: 0 auto;
-    box-sizing: border-box;
+    justify-content: start !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    max-height: 90vh;
+    padding: 30px 15px;
   }
 
   .title {
-    font-size: 6vw;
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-
-  .text-score {
-    font-size: 5vw;
+    -webkit-text-stroke-width: 0;
+    font-size: 24px;
     margin-bottom: 10px;
   }
 
+  .text-score {
+    font-size: 20px;
+    font-weight: bold;
+    -webkit-text-stroke-width: 0;
+  }
+
   .progress-bar-outer {
-    width: 80vw;
-    margin-bottom: 15px;
+    width: 100%;
+    height: 48px;
   }
 
   .progress-bar-label {
-    font-size: 20px;
+    font-size: 32px;
   }
 
   .button {
-    width: 85vw;
-    font-size: 30px;
-    height: 10vh;
+    width: 100%;
+    height: 72px;
     min-width: unset;
     margin: 0;
   }
 
+  .button-text {
+    font-size: 32px !important;
+  }
+
   .next-level-access-text {
-  height: 10vh;
-  color: white;
-  font-size: 2.5vh;
-  font-weight: 700;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
-   text-align: center;
-    width: 85vw;
-}
+    height: fit-content;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 0 10px;
+  }
 
   .student-cards {
-    margin: 0 auto;
     align-items: center;
+    margin-top: 20px;
     width: 100%;
+    gap: 1.5vh;
     padding: 0;
   }
 
   .buttons-list {
-    margin: 0 auto;
     align-items: center;
     width: 100%;
+    gap: 1.5vh;
     padding: 0;
   }
 
-  .arrow-img,
-  .circle-arrow-img,
-  .home-img {
-    height: 6vh;
-    width: 6vh;
+  .button-icon {
+    height: 48px;
+    width: 48px;
+  }
+}
+
+@media (max-width: 400px) {
+    .button-text {
+    font-size: 24px !important;
   }
 }
 </style>

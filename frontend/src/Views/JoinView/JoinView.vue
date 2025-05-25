@@ -80,6 +80,46 @@ function copyCode() {
 </template>
 
 <style scoped>
+.main {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: auto;
+
+  background-image: url('@/images/mainBackground.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.title {
+  font-size: 64px;
+  font-weight: 700;
+  font-family: "Titillium Web", sans-serif;
+
+  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 1px;
+
+  color: white;
+}
+
+.container {
+  margin-top: 70px;
+  margin-bottom: 80px;
+  width: 1332px;
+  gap: 100px;
+
+  display: flex;
+  flex-direction: column;
+
+  backdrop-filter: blur(5px);
+  background-color: rgba(64, 77, 97, 0.7);
+  border: 1px solid black;
+}
+
 .input-group {
   display: flex;
   align-items: center;
@@ -87,36 +127,47 @@ function copyCode() {
 }
 
 input {
-  color: black;
-  font-weight: bold;
-  font-size: 64px;
-  font-family: "Titillium Web";
-  text-align: center;
   width: 400px;
   height: 100px;
+  font-size: 64px;
+
+  font-weight: bold;
+  font-family: "Titillium Web";
+  text-align: center;
+
+  box-sizing: border-box;
+  color: black;
+
   border: black;
   background-color: white;
   border-color: black;
   border-width: 1px;
   border-style: solid;
-  font-family: "Titillium Web";
-  box-sizing: border-box;
+
 }
 
 .code-input {
+  margin: 16px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 16px;
 }
 
 button {
   width: 100px;
   height: 100px;
+
   border: black;
   background-color: white;
   border: 1px solid black;
+
   transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgba(237, 240, 243, 0.8);
 }
 
 button img {
@@ -134,43 +185,10 @@ button:active {
 }
 
 .code-input-label {
-  color: white;
   font-size: 48px;
   font-family: "Titillium Web";
-}
 
-.main {
-  min-height: 100vh;
-  width: 100%;
-  margin: auto;
-  background-image: url('@/images/mainBackground.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
   color: white;
-  -webkit-text-stroke-color: black;
-  -webkit-text-stroke-width: 1px;
-  font-size: 64px;
-  font-weight: 700;
-  font-family: "Titillium Web", sans-serif;
-}
-
-.container {
-  margin-top: 70px;
-  margin-bottom: 80px;
-  width: 1332px;
-  backdrop-filter: blur(5px);
-  background-color: rgba(64, 77, 97, 0.7);
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  gap: 100px;
 }
 
 @media (max-width: 550px) {

@@ -241,7 +241,7 @@ const levelRoutes = computed(() => {
 
 @media(max-width: 550px){
   .main {
-    min-height: 150vh;
+    min-height: auto;
 
   }
   .progress-bar-outer {

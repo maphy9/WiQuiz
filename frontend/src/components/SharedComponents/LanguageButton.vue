@@ -60,13 +60,35 @@ function toggleLanguage() {
 </script>
 
 <style>
+.block {
+  top: 0;
+  right: 0;
+  width: 390px;
+  height: 70px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  position: fixed;
+
+  backdrop-filter: blur(5px);
+  background-color: rgba(61, 79, 105, 0.7);
+  border-width: 1px;
+
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
 .language-button {
   width: 74px;
   height: 100%;
-  background-color: rgba(53, 74, 104, 0.3);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background-color: rgba(53, 74, 104, 0.3);
 }
 
 .language-button img {
@@ -80,19 +102,13 @@ function toggleLanguage() {
   background-color: rgba(61, 79, 105, 0.7);
 }
 
-.block {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 390px;
-  height: 70px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
-  backdrop-filter: blur(5px);
-  background-color: rgba(61, 79, 105, 0.7);
-  border-width: 1px;
+.block:hover {
+  background-color: rgba(61, 79, 105, 0.8);
+}
+
+.block:active {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
 .language-text {
@@ -105,9 +121,6 @@ function toggleLanguage() {
   font-family: "Titillium Web", sans-serif;
 }
 
-.desktop {
-  width: 390px;
-}
 .mobile {
   width: 160px;
   display: none;

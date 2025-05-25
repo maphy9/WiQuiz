@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="teacher-questions-view">
     <div
       :class="`background${showEditModal || showDeleteModal
         ? ' blurred'
@@ -163,6 +163,10 @@ function closeDeleteModal() {
 </script>
 
 <style scoped>
+  .teacher-questions-view {
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+  }
   .background {
     min-height: 100vh;
     width: 100vw;

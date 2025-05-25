@@ -45,7 +45,6 @@ const score = toRef(props, 'score')
 }
 
 .text {
-  text-align: left;
   flex: 1;
   display: flex;
   flex-direction: row;
@@ -61,7 +60,6 @@ const score = toRef(props, 'score')
 }
 
 .text-score {
-  align-items: right;
   color: #80c997;
   font-weight: bold;
   font-size: 32px;

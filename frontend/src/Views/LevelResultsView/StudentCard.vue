@@ -76,4 +76,35 @@ const score = toRef(props, 'score')
   transition: all 0.3s ease !important;
   margin-left: 15px;
 }
+
+@media (max-width: 550px){
+  .student-card {
+    background: rgba(0, 0, 0, 0.3);
+    margin: 0;
+    width: 85vw;
+    height: 7vh;
+    display: flex;
+    align-items: center;
+    min-width: unset;
+    min-height: 50px;
+  }
+
+  .avatar {
+    width: 25px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin-bottom: 4px;
+    transition: all 0.3s ease !important;
+    margin-left: 15px;
+  }
+
+  .text-name {
+    font-size: 4vw;
+  }
+
+  .text-score {
+    font-size: 4vw;
+  }
+}
 </style>

@@ -203,7 +203,7 @@ const textScore = computed(() => {
 }
 
 .next-level-button:hover {
-  background-color: #8ad2a1;
+  background-color: rgb(112, 182, 134)
 }
 
 .play-again-button {
@@ -211,7 +211,7 @@ const textScore = computed(() => {
 }
 
 .play-again-button:hover {
-  background-color: #ffe16b;
+  background-color: rgb(230, 202, 91);
 }
 
 .choose-level-button {
@@ -219,7 +219,7 @@ const textScore = computed(() => {
 }
 
 .choose-level-button:hover {
-  background-color: #952823;
+ background-color: #7f1e19;
 }
 
 .cards-and-buttons-container {

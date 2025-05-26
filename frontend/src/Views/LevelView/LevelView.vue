@@ -16,25 +16,34 @@ const { levelIndex } = toRefs(props)
 const router = useRouter()
 const currentQuestionIndex = ref(0)
 const showExitMenu = ref(false)
-const canExit = ref(false)
+const canGoToLevelSelection = ref(false)
+const canGoToLevelResults = ref(false)
 
 const gameStore = useGame()
 const { initTeam, initStats } = gameStore
 const { currentLevel, levels } = storeToRefs(gameStore)
 const currentQuestion: Ref<Question | null> = ref(null)
 
-onBeforeRouteLeave(() => {
-  if (!canExit.value) {
+onBeforeRouteLeave((to) => {
+  if (canGoToLevelResults.value && to.name === 'level-results') {
+    return true
+  }
+
+  if (!canGoToLevelSelection.value) {
     showExitMenu.value = true
 
     return false
   }
 
-  return true
+  if (to.name === 'level-selection') {
+    return true
+  }
+
+  return false
 })
 
 function exitToLevelSelection() {
-  canExit.value = true
+  canGoToLevelSelection.value = true
   router.push({ name: 'level-selection' })
 }
 
@@ -49,7 +58,7 @@ watch(currentQuestionIndex, () => {
     return
   }
   if (currentQuestionIndex.value === currentLevel.value.questions.length) {
-    canExit.value = true
+    canGoToLevelResults.value = true
     router.push('/level-results')
   }
   else {

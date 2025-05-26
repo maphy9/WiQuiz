@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import LevelCard from './LevelCard.vue'
@@ -36,9 +36,24 @@ const levelRoutes = computed(() => {
   return routes
 })
 
+const canGoToLevel = ref(false)
+
 function handleClick(levelIndex: number) {
+  canGoToLevel.value = true
   router.push({ name: 'level', params: { levelIndex } })
 }
+
+onBeforeRouteLeave((to) => {
+  if (to.name === 'main') {
+    return true
+  }
+
+  if (canGoToLevel.value && to.name === 'level') {
+    return true
+  }
+
+  return { name: 'main' }
+})
 </script>
 
 <template>

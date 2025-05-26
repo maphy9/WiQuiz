@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
+const router = useRouter()
 const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
@@ -57,9 +59,11 @@ const textScore = computed(() => {
           <div
             v-if="score >= 90"
             class="button next-level-button"
+            @click="router.push({'name': 'level',
+                                 'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
           >
             <p class="button-text">
-              Następny temat
+              Next level
             </p>
 
             <img
@@ -73,12 +77,16 @@ const textScore = computed(() => {
             v-else
             class="next-level-access-text"
           >
-            Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na conajmniej 90% poprawnych odpowiedzi.
+            To access the next topic you must answer at least 90% correct.
           </p>
 
-          <div class="button play-again-button">
+          <div
+            class="button play-again-button"
+            @click="router.push({'name': 'level',
+                                 'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
+          >
             <p class="button-text">
-              Zagraj ponownie
+              Play again
             </p>
 
             <img
@@ -87,9 +95,12 @@ const textScore = computed(() => {
             >
           </div>
 
-          <div class="button choose-level-button">
+          <div
+            class="button choose-level-button"
+            @click="router.push({'name': 'level-selection'})"
+          >
             <p class="button-text">
-              Wybór tematu
+              Choose level
             </p>
 
             <img

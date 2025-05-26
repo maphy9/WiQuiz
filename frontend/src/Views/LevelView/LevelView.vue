@@ -74,18 +74,14 @@ const gameStore = useGame()
 const { initTeam } = gameStore
 const { currentQuestion } = storeToRefs(gameStore)
 
-onBeforeRouteLeave((to) => {
+onBeforeRouteLeave(() => {
   if (!canExit.value) {
     showExitMenu.value = true
 
     return false
   }
 
-  if (to.name !== 'levelselect') {
-    return { name: 'levelselect' }
-  }
-
-  return undefined
+  return true
 })
 
 function exitToLevelSelection() {
@@ -94,7 +90,13 @@ function exitToLevelSelection() {
 }
 
 watch(currentQuestionIndex, () => {
-  currentQuestion.value = questions.value[currentQuestionIndex.value]
+  if (currentQuestionIndex.value === questions.value.length) {
+    canExit.value = true
+    router.push('/result')
+  }
+  else {
+    currentQuestion.value = questions.value[currentQuestionIndex.value]
+  }
 }, { immediate: true })
 
 onMounted(() => {

@@ -1,6 +1,6 @@
-import type { Answer } from './Answer'
+import type Answer from './Answer'
 
-export interface Question {
+export default interface Question {
   title: string
   text: string
   answers: Answer[]

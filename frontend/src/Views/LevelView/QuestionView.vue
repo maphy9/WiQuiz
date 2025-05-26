@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import type { Answer } from '@/types/Answer'
+import type Answer from '@/types/Answer'
+import type Question from '@/types/Question'
 import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRefs, watch } from 'vue'
 import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
 import MessageCard from './MessageCard.vue'
 import TeammateCard from './TeammateCard.vue'
+
+const props = defineProps<{
+  question: Question
+}>()
 
 const emit = defineEmits<{
   nextQuestion: []
@@ -18,7 +23,7 @@ const emit = defineEmits<{
 const gameStore = useGame()
 
 // Question
-const { currentQuestion } = storeToRefs(gameStore)
+const { question } = toRefs(props)
 const answers: Ref<any[]> = ref([])
 const chosenAnswer: Ref<Answer | null> = ref(null)
 const isChosen = ref(false)
@@ -68,7 +73,7 @@ function useMistakeBonus() {
     return
   }
   let index = Math.floor(Math.random() * 4)
-  while (currentQuestion.value.answers[index].isCorrect) {
+  while (question.value.answers[index].isCorrect) {
     index = Math.floor(Math.random() * 4)
   }
   answers.value[index].isActive = false
@@ -166,7 +171,7 @@ function handleChooseAnswer() {
 
 function handleSelect(answer: any) {
   selectAnswer(answer)
-  for (let i = 0; i < currentQuestion.value.answers.length; i++) {
+  for (let i = 0; i < question.value.answers.length; i++) {
     if (answers.value[i] !== answer) {
       answers.value[i].isActive = false
     }
@@ -199,7 +204,7 @@ function initQuestion() {
   ]
 
   for (let i = 0; i < 4; i++) {
-    answers.value.push({ ...currentQuestion.value.answers[i], ...answerProps[i] })
+    answers.value.push({ ...question.value.answers[i], ...answerProps[i] })
   }
 
   removeSelectedAnswers()
@@ -215,7 +220,7 @@ function initQuestion() {
   }, 1000)
 }
 
-watch(currentQuestion, () => {
+watch(question, () => {
   initQuestion()
 }, { immediate: true })
 </script>
@@ -234,11 +239,11 @@ watch(currentQuestion, () => {
 
     <div class="question">
       <div class="question-title">
-        {{ currentQuestion.title }}
+        {{ question.title }}
       </div>
 
       <div class="question-text">
-        {{ currentQuestion.text }}
+        {{ question.text }}
       </div>
 
       <div class="messages">

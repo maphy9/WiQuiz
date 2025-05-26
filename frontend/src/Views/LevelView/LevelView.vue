@@ -1,78 +1,27 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import type { Question } from '@/types/Question'
+import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import { useGame } from '@/stores/gameStore'
 import QuestionView from './QuestionView.vue'
 
-// const props = defineProps<{
-//   levelId: string
-// }>()
+const props = defineProps<{
+  levelIndex: string
+}>()
 
-// const { levelId } = toRefs(props) // for fetching data
+const { levelIndex } = toRefs(props)
 
 const router = useRouter()
-const questions: Ref<Question[]> = ref([
-  {
-    title: 'Variable Declaration',
-    text: 'Which keyword is used to declare a constant in JavaScript?',
-    answers: [
-      { text: 'var', isCorrect: false },
-      { text: 'let', isCorrect: false },
-      { text: 'const', isCorrect: true },
-      { text: 'define', isCorrect: false },
-    ],
-  },
-  {
-    title: 'Strict Equality',
-    text: 'What does the "===" operator do in JavaScript?',
-    answers: [
-      { text: 'Compares only values', isCorrect: false },
-      { text: 'Assigns a value', isCorrect: false },
-      { text: 'Compares value and type', isCorrect: true },
-      { text: 'Checks for null or undefined', isCorrect: false },
-    ],
-  },
-  {
-    title: 'Data Types',
-    text: 'Which of the following is NOT a JavaScript data type?',
-    answers: [
-      { text: 'String', isCorrect: false },
-      { text: 'Number', isCorrect: false },
-      { text: 'Character', isCorrect: true },
-      { text: 'Boolean', isCorrect: false },
-    ],
-  },
-  {
-    title: 'Arrow Functions',
-    text: 'How do you define an arrow function in JavaScript?',
-    answers: [
-      { text: 'function => {}', isCorrect: false },
-      { text: '() => {}', isCorrect: true },
-      { text: '=> () {}', isCorrect: false },
-      { text: 'func => () {}', isCorrect: false },
-    ],
-  },
-  {
-    title: 'Falsy Values',
-    text: 'Which of these is a falsy value in JavaScript?',
-    answers: [
-      { text: '[]', isCorrect: false },
-      { text: '{}', isCorrect: false },
-      { text: '0', isCorrect: true },
-      { text: '"false"', isCorrect: false },
-    ],
-  },
-])
 const currentQuestionIndex = ref(0)
 const showExitMenu = ref(false)
 const canExit = ref(false)
 
 const gameStore = useGame()
-const { initTeam } = gameStore
-const { currentQuestion } = storeToRefs(gameStore)
+const { initTeam, initStats } = gameStore
+const { currentLevel, levels } = storeToRefs(gameStore)
+const currentQuestion: Ref<Question | null> = ref(null)
 
 onBeforeRouteLeave(() => {
   if (!canExit.value) {
@@ -86,16 +35,25 @@ onBeforeRouteLeave(() => {
 
 function exitToLevelSelection() {
   canExit.value = true
-  router.push({ name: 'levelselect' })
+  router.push({ name: 'level-selection' })
 }
 
+watch(levelIndex, () => {
+  currentLevel.value = levels.value[Number.parseInt(levelIndex.value)]
+  initTeam()
+  initStats()
+}, { immediate: true })
+
 watch(currentQuestionIndex, () => {
-  if (currentQuestionIndex.value === questions.value.length) {
+  if (!currentLevel.value) {
+    return
+  }
+  if (currentQuestionIndex.value === currentLevel.value.questions.length) {
     canExit.value = true
-    router.push('/result')
+    router.push('/level-results')
   }
   else {
-    currentQuestion.value = questions.value[currentQuestionIndex.value]
+    currentQuestion.value = currentLevel.value.questions[currentQuestionIndex.value]
   }
 }, { immediate: true })
 
@@ -105,11 +63,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="main">
+  <div
+    v-if="currentLevel !== null && currentQuestion !== null"
+    class="main"
+  >
     <QuestionView
-      v-if="currentQuestionIndex < questions.length"
+      v-if="currentQuestionIndex < currentLevel.questions.length"
+      :question="currentQuestion"
       @next-question="currentQuestionIndex++"
-      @game-over="currentQuestionIndex = questions.length"
+      @game-over="currentQuestionIndex = currentLevel.questions.length"
     />
 
     <div

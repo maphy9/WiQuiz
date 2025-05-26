@@ -1,32 +1,25 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
-interface Student {
-  name: string
-  score: number
-}
-
-const levelNumber = ref(1)
-const levelTitle = ref('Funkcja wykładnicza')
-const correctAnswers = ref(12)
-const numberAnswers = ref(12)
-const students = ref<Student[]>([
-  { name: 'Bolesław R.', score: 386 },
-  { name: 'Adam K.', score: 222 },
-  { name: 'Ewelina J.', score: 215 },
-])
+const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `Temat${levelNumber.value} - ${levelTitle.value}`
+  return `Temat${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
 })
 
 const score = computed(() => {
-  return (100 * correctAnswers.value) / numberAnswers.value
+  if (!currentLevel.value) {
+    return 0
+  }
+
+  return (100 * correctAnswers.value) / currentLevel.value?.questions.length
 })
 
 const textScore = computed(() => {
-  return `${correctAnswers.value} poprawnych odpowiedzi z ${numberAnswers.value}`
+  return `${correctAnswers.value} poprawnych odpowiedzi z ${currentLevel.value?.questions.length}`
 })
 </script>
 
@@ -53,10 +46,10 @@ const textScore = computed(() => {
       <div class="cards-and-buttons-container">
         <div class="student-cards">
           <StudentCard
-            v-for="student in students"
-            :key="student.name"
-            :name="student.name"
-            :score="student.score"
+            v-for="teammate in team"
+            :key="teammate.user.name"
+            :name="teammate.user.name"
+            :score="teammate.score"
           />
         </div>
 

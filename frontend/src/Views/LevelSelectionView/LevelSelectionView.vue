@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { useGame } from '@/stores/gameStore'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
@@ -10,26 +12,15 @@ const CourseName = ref('Analiza Matematyczna')
 
 const router = useRouter()
 
-const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'repeat' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-])
+const { levels } = storeToRefs(useGame())
 
-const leftCards = computed(() => cards.value.filter((_, i) => i % 2 === 0))
-const rightCards = computed(() => cards.value.filter((_, i) => i % 2 !== 0))
+const leftCards = computed(() => levels.value.filter((_, i) => i % 2 === 0))
+const rightCards = computed(() => levels.value.filter((_, i) => i % 2 !== 0))
 
 const levelRoutes = computed(() => {
   const routes = []
 
-  for (let i = 0; i < cards.value.length - 1; i++) {
+  for (let i = 0; i < levels.value.length - 1; i++) {
     const offset = 65 - i * 15
     const rotation = (i % 2 === 0)
       ? 15
@@ -45,8 +36,8 @@ const levelRoutes = computed(() => {
   return routes
 })
 
-function handleClick(levelId: number) {
-  router.push({ name: 'level', params: { levelId } })
+function handleClick(levelIndex: number) {
+  router.push({ name: 'level', params: { levelIndex } })
 }
 </script>
 
@@ -74,10 +65,9 @@ function handleClick(levelId: number) {
     <div class="columns-container">
       <div class="left-column">
         <LevelCard
-          v-for="(card, index) in leftCards"
+          v-for="(level, index) in leftCards"
           :key="index"
-          :card-text="card.cardText"
-          :state="card.state"
+          :level="level"
           @click="handleClick(index * 2)"
         />
       </div>
@@ -95,10 +85,9 @@ function handleClick(levelId: number) {
 
       <div class="right-column">
         <LevelCard
-          v-for="(card, index) in rightCards"
+          v-for="(level, index) in rightCards"
           :key="index"
-          :card-text="card.cardText"
-          :state="card.state"
+          :level="level"
           @click="handleClick(index * 2 + 1)"
         />
       </div>

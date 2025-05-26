@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Analiza Matematyczna')
+
+const router = useRouter()
 
 const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
   { cardText: 'Pochodne', state: 'passed' },
@@ -41,6 +44,10 @@ const levelRoutes = computed(() => {
 
   return routes
 })
+
+function handleClick(levelId: number) {
+  router.push({ name: 'level', params: { levelId } })
+}
 </script>
 
 <template>
@@ -68,16 +75,17 @@ const levelRoutes = computed(() => {
       <div class="left-column">
         <LevelCard
           v-for="(card, index) in leftCards"
-          :key="`left-${index}`"
+          :key="index"
           :card-text="card.cardText"
           :state="card.state"
+          @click="handleClick(index * 2)"
         />
       </div>
 
       <div class="path-container">
         <div
           v-for="(route, index) in levelRoutes"
-          :key="`route-${index}`"
+          :key="index"
           class="route"
           :style="route.style"
         >
@@ -88,9 +96,10 @@ const levelRoutes = computed(() => {
       <div class="right-column">
         <LevelCard
           v-for="(card, index) in rightCards"
-          :key="`right-${index}`"
+          :key="index"
           :card-text="card.cardText"
           :state="card.state"
+          @click="handleClick(index * 2 + 1)"
         />
       </div>
     </div>

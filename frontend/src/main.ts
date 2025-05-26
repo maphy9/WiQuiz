@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import AboutView from './Views/AboutView/AboutView.vue'
 import JoinView from './Views/JoinView/JoinView.vue'
+import LevelResultsView from './Views/LevelResultsView/LevelResultsView.vue'
 import LevelSelectionView from './Views/LevelSelectionView/LevelSelectionView.vue'
 import LoginView from './Views/LoginView/LoginView.vue'
 import MainView from './Views/MainView/MainView.vue'
@@ -20,6 +21,7 @@ const router = createRouter({
     { name: 'teacher-questions', path: '/teacher-questions', component: TeacherQuestionsView },
     { name: 'teacher-questions', path: '/teacher-questions', component: TeacherQuestionsView },
     { name: 'login', path: '/login', component: LoginView },
+    { name: 'levelResult', path: '/result', component: LevelResultsView },
   ],
 })
 

@@ -80,8 +80,8 @@ onBeforeRouteLeave((to) => {
     return false
   }
 
-  if (to.name !== 'levelselection') {
-    return { name: 'levelselection' }
+  if (to.name !== 'levelselect') {
+    return { name: 'levelselect' }
   }
 
   return undefined
@@ -89,7 +89,7 @@ onBeforeRouteLeave((to) => {
 
 function exitToLevelSelection() {
   canExit.value = true
-  router.push({ name: 'levelselection' })
+  router.push({ name: 'levelselect' })
 }
 
 watch(currentQuestionIndex, () => {
@@ -250,5 +250,11 @@ onMounted(() => {
 
 .exit-no:hover {
   background-color: rgb(189, 56, 56);
+}
+
+@media only screen and (max-width: 800px) {
+  .exit-button {
+    display: none;
+  }
 }
 </style>

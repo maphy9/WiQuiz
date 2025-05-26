@@ -9,7 +9,6 @@ export const useTeam = defineStore('teamStore', () => {
 
   const team: Ref<Teammate[]> = ref([
     { user: user.value, isAlive: true, selectedAnswer: null },
-    { user: user.value, isAlive: true, selectedAnswer: null },
   ])
 
   return {

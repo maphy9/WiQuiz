@@ -24,6 +24,10 @@ const { bonus } = toRefs(props)
   transition: all 0.3s;
 }
 
+.bonus-icon:hover {
+  background-color: rgba(69, 80, 97, 0.5);
+}
+
 .available {
   opacity: 1;
   cursor: pointer;
@@ -34,5 +38,12 @@ const { bonus } = toRefs(props)
   opacity: 0.5;
   cursor: not-allowed;
   transition: all 0.3s;
+}
+
+@media only screen and (max-width: 800px) {
+  .bonus-icon {
+    width: 30vw;
+    height: 30vw;
+  }
 }
 </style>

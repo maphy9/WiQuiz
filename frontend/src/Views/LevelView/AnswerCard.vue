@@ -6,6 +6,7 @@ import { computed, toRefs } from 'vue'
 const props = defineProps<{
   answer: any
   chosenAnswer: Answer | null
+  isChosen: boolean
   me: Teammate | undefined
 }>()
 
@@ -13,7 +14,7 @@ const emit = defineEmits<{
   selectAnswer: [answer: any]
 }>()
 
-const { answer, chosenAnswer, me } = toRefs(props)
+const { answer, chosenAnswer, isChosen, me } = toRefs(props)
 const answerColor = computed(() => {
   switch (answer.value.color) {
     case 'RED':
@@ -28,23 +29,23 @@ const answerColor = computed(() => {
 })
 
 const isSelectable = computed(() => {
-  return chosenAnswer.value === null && answer.value.isActive && me.value?.isAlive
+  return !isChosen.value && answer.value.isActive && me.value?.isAlive
 })
 </script>
 
 <template>
   <div
     :class="`answer ${chosenAnswer === null
-      ? answer.isActive && me?.isAlive
+      ? me?.isAlive && answer.isActive
         ? 'active'
         : 'inactive'
       : ''} ${chosenAnswer === answer
       ? chosenAnswer?.isCorrect
         ? 'correct active'
         : 'incorrect active'
-      : chosenAnswer === null
-        ? ''
-        : 'inactive'}`"
+      : isChosen
+        ? 'hidden'
+        : ''}`"
     :style="{
       'backgroundColor': answerColor,
     }"
@@ -73,36 +74,10 @@ const isSelectable = computed(() => {
   justify-content: center;
   align-items: center;
   transition: filter 0.3s;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-.answer::-webkit-scrollbar {
-  width: 8px;
-}
-
-.answer::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 8px;
-}
-
-.answer::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 8px;
-  border: 2px solid #f0f0f0;
-}
-
-.answer::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
 }
 
 .answer:hover {
   filter: brightness(85%);
-}
-
-.answer-icon {
-  width: 72px;
-  height: 72px;
 }
 
 .answer-text {
@@ -111,6 +86,24 @@ const isSelectable = computed(() => {
   font-weight: bold;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow: -moz-scrollbars-none;
+  scrollbar-width: none;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.answer-icon {
+  width: 72px;
+  height: 72px;
 }
 
 .active {
@@ -120,7 +113,7 @@ const isSelectable = computed(() => {
 }
 
 .inactive {
-  opacity: 0;
+  opacity: 0.5;
   cursor: not-allowed;
   transition: all 0.3s;
 }
@@ -190,5 +183,21 @@ const isSelectable = computed(() => {
 .correct {
   scale: 1.05;
   animation: correct-animation 2s;
+}
+
+@media only screen and (max-width: 800px) {
+  .answer {
+    width: calc(90% - 2px);
+    height: calc(7vh - 2px);
+  }
+
+  .answer-text {
+    font-size: 3.5vh;
+  }
+
+  .answer-icon {
+    width: 5vh;
+    height: 5vh;
+  }
 }
 </style>

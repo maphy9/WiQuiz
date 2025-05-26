@@ -31,7 +31,6 @@ const messageColor = computed(() => {
 
 <style scoped>
 .message {
-  height: 68px;
   width: calc(100% - 28px);
   padding: 0 12px;
   margin: 10px 0;
@@ -48,5 +47,16 @@ const messageColor = computed(() => {
   font-weight: bold;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
+}
+
+@media only screen and (max-width: 800px) {
+  .message {
+    margin: 4px 0;
+  }
+  .message-text {
+    font-size: 2.5vh;
+    font-weight: 400;
+    color: black;
+  }
 }
 </style>

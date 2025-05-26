@@ -67,4 +67,26 @@ const { user } = storeToRefs(useUser())
   text-decoration: line-through;
   transition: all 0.3s;
 }
+
+@media only screen and (max-width: 800px) {
+  .teammate {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 25%;
+    height: 34px;
+  }
+
+  .teammate-avatar {
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+  }
+
+  .teammate-name {
+    font-size: 15px;
+    color: white;
+  }
+}
 </style>

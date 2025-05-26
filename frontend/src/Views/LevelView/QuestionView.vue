@@ -18,10 +18,13 @@ const emit = defineEmits<{
   gameOver: []
 }>()
 
+// Question
 const { currentQuestion } = storeToRefs(useQuestions())
 const answers: Ref<any[]> = ref([])
 const chosenAnswer: Ref<Answer | null> = ref(null)
+const isChosen = ref(false)
 
+// Team
 const { removeSelectedAnswers, killRandom, selectAnswer, getChosenAnswer } = useTeamManager()
 const { team } = storeToRefs(useTeam())
 const { user } = storeToRefs(useUser())
@@ -29,7 +32,8 @@ const me = computed(() => {
   return team.value.find((teammate: Teammate) => teammate.user === user.value)
 })
 
-const initialTime = 3
+// Timer
+const initialTime = 100
 const maxTime = ref(initialTime)
 const timeLeft = ref(initialTime)
 const timeLeftFormatted = computed(() => {
@@ -54,6 +58,7 @@ const progressColor = computed(() => {
 })
 const timeLeftInterval: Ref<number | null> = ref(null)
 
+// Bonuses
 const bonuses = ref({
   mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
   timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
@@ -104,6 +109,7 @@ function useReviveBonus() {
   bonuses.value.reviveBonus.isAvailable = false
 }
 
+// Messages
 const messages: Ref<any[]> = ref([])
 
 function showMessage(text: string, color: string) {
@@ -114,6 +120,7 @@ function showMessage(text: string, color: string) {
   }, 3000)
 }
 
+// Handlers
 function handleChooseAnswer() {
   const answer = getChosenAnswer()
 
@@ -131,6 +138,7 @@ function handleChooseAnswer() {
     clearInterval(timeLeftInterval.value)
   }
   chosenAnswer.value = answer
+  isChosen.value = true
 
   let areAllDead = true
   for (const teammate of team.value) {
@@ -183,6 +191,7 @@ function initQuestion() {
   timeLeft.value = initialTime
   answers.value = []
   chosenAnswer.value = null
+  isChosen.value = false
 
   const answerProps = [
     { color: 'YELLOW', image: '/images/triangle.png', isActive: true, isChosen: false },
@@ -267,6 +276,7 @@ watch(currentQuestion, () => {
         :answer="answer"
         :me="me"
         :chosen-answer="chosenAnswer"
+        :is-chosen="isChosen"
         @select-answer="handleSelect"
       />
     </div>
@@ -281,19 +291,22 @@ watch(currentQuestion, () => {
   flex-direction: column;
   align-items: center;
   padding: 6px 0;
+  overflow-y: auto;
 }
 
 .timebar {
   width: calc(67.5% - 6px);
-  min-height: 48px;
+  position: absolute;
+  top: 0;
+  height: 48px;
   border: solid white 3px;
   background-color: #636B73;
   display: flex;
   align-items: center;
-  margin-bottom: 28px;
 }
 
 .timebar-progress {
+  position: absolute;
   background-color: #80C997;
   height: 100%;
 }
@@ -310,8 +323,9 @@ watch(currentQuestion, () => {
 }
 
 .question {
+  margin-top: 82px;
   width: 75vw;
-  height: 60vh;
+  min-height: 500px;
   background: url('@/images/questionBoard.png') no-repeat;
   background-size: 100% 100%;
   background-position: center;
@@ -377,17 +391,79 @@ watch(currentQuestion, () => {
   align-items: center;
 }
 
-.bonus-icon:hover {
-  background-color: rgba(69, 80, 97, 0.5);
-}
-
 .answers {
-  position: absolute;
-  bottom: 10px;
   display: grid;
   grid-template-columns: repeat(2, 38vw);
   grid-template-rows: repeat(2, 100px);
   grid-column-gap: 32px;
   grid-row-gap: 32px;
+}
+
+@media only screen and (max-width: 800px) {
+  .timebar {
+    width: calc(100% - 6px);
+    height: 34px;
+  }
+
+  .timebar-time-left {
+    font-size: 24px;
+  }
+
+  .team {
+    width: calc(100% - 24px);
+    padding: 0 12px;
+    height: 50px;
+    top: 48px;
+    display: flex;
+    flex-direction: row;
+    transform: translate(0, 0);
+    gap: 4px;
+  }
+
+  .question {
+    margin-top: 100px;
+    width: 100%;
+    max-height: 35vh;
+    min-height: 35vh;
+  }
+
+  .question-title {
+    margin-top: 32px;
+    width: calc(100% - 14%);
+    padding: 0 7%;
+    font-size: 28px;
+  }
+
+  .question-text {
+    width: calc(100% - 14%);
+    padding: 0 7%;
+    font-size: 2.5vh;
+  }
+
+  .messages {
+    width: calc(100% - 14vw);
+    padding: 0 7vw;
+    margin-top: 10px;
+  }
+
+  .answers {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+    width: 100%;
+  }
+
+  .bonuses {
+    width: 100%;
+    height: 30vw;
+    top: initial;
+    bottom: 0;
+    transform: translate(0, 0);
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 </style>

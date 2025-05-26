@@ -4,8 +4,7 @@ import type { Question } from '@/types/Question'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
-import useTeamManager from '@/composables/useTeamManager'
-import { useQuestions } from '@/stores/questionStore'
+import { useGame } from '@/stores/gameStore'
 import QuestionView from './QuestionView.vue'
 
 // const props = defineProps<{
@@ -70,8 +69,10 @@ const questions: Ref<Question[]> = ref([
 const currentQuestionIndex = ref(0)
 const showExitMenu = ref(false)
 const canExit = ref(false)
-const { currentQuestion } = storeToRefs(useQuestions())
-const { initTeam } = useTeamManager()
+
+const gameStore = useGame()
+const { initTeam } = gameStore
+const { currentQuestion } = storeToRefs(gameStore)
 
 onBeforeRouteLeave((to) => {
   if (!canExit.value) {

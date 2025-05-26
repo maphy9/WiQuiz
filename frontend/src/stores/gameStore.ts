@@ -1,12 +1,21 @@
+import type { Ref } from 'vue'
 import type { Answer } from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
-import { storeToRefs } from 'pinia'
-import { useTeam } from '@/stores/teamStore'
-import { useUser } from '@/stores/userStore'
+import type User from '@/types/User'
+import { nanoid } from 'nanoid'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export default function useTeamManager() {
-  const { team } = storeToRefs(useTeam())
-  const { user } = storeToRefs(useUser())
+export const useGame = defineStore('questionStore', () => {
+  const user: Ref<User> = ref({
+    id: nanoid(),
+    name: 'Robert',
+    avatar: '/images/emptyPfp.png',
+  })
+
+  const team: Ref<Teammate[]> = ref([
+    { user: user.value, isAlive: true, selectedAnswer: null, score: 0 },
+  ])
 
   function selectAnswer(answer: Answer) {
     for (const teammate of team.value) {
@@ -82,11 +91,16 @@ export default function useTeamManager() {
     }
   }
 
+  const currentQuestion: Ref<any> = ref(null)
+
   return {
-    initTeam,
-    removeSelectedAnswers,
-    killRandom,
+    user,
+    team,
     selectAnswer,
     getChosenAnswer,
+    removeSelectedAnswers,
+    killRandom,
+    initTeam,
+    currentQuestion,
   }
-}
+})

@@ -4,10 +4,7 @@ import type { Answer } from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import useTeamManager from '@/composables/useTeamManager'
-import { useQuestions } from '@/stores/questionStore'
-import { useTeam } from '@/stores/teamStore'
-import { useUser } from '@/stores/userStore'
+import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
 import MessageCard from './MessageCard.vue'
@@ -18,16 +15,17 @@ const emit = defineEmits<{
   gameOver: []
 }>()
 
+const gameStore = useGame()
+
 // Question
-const { currentQuestion } = storeToRefs(useQuestions())
+const { currentQuestion } = storeToRefs(gameStore)
 const answers: Ref<any[]> = ref([])
 const chosenAnswer: Ref<Answer | null> = ref(null)
 const isChosen = ref(false)
 
 // Team
-const { removeSelectedAnswers, killRandom, selectAnswer, getChosenAnswer } = useTeamManager()
-const { team } = storeToRefs(useTeam())
-const { user } = storeToRefs(useUser())
+const { removeSelectedAnswers, killRandom, selectAnswer, getChosenAnswer } = gameStore
+const { team, user } = storeToRefs(gameStore)
 const me = computed(() => {
   return team.value.find((teammate: Teammate) => teammate.user === user.value)
 })

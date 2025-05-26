@@ -2,14 +2,14 @@
 import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
 import { toRefs } from 'vue'
-import { useUser } from '@/stores/userStore'
+import { useGame } from '@/stores/gameStore'
 
 const props = defineProps<{
   teammate: Teammate
 }>()
 
 const { teammate } = toRefs(props)
-const { user } = storeToRefs(useUser())
+const { user } = storeToRefs(useGame())
 </script>
 
 <template>

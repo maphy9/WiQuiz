@@ -36,7 +36,7 @@ const me = computed(() => {
 })
 
 // Timer
-const initialTime = 100
+const initialTime = 9999
 const maxTime = ref(initialTime)
 const timeLeft = ref(initialTime)
 const timeLeftFormatted = computed(() => {
@@ -326,9 +326,10 @@ watch(question, () => {
 }
 
 .question {
-  margin-top: 82px;
+  position: absolute;
+  top: 8.5vh;
   width: 75vw;
-  min-height: 500px;
+  min-height: 60vh;
   background: url('@/images/questionBoard.png') no-repeat;
   background-size: 100% 100%;
   background-position: center;
@@ -338,7 +339,7 @@ watch(question, () => {
   margin-top: 40px;
   width: calc(100% - 12vw);
   padding: 0 6vw;
-  font-size: 48px;
+  font-size: 5.8vh;
   text-align: center;
   color: black;
   font-weight: bold;
@@ -347,7 +348,7 @@ watch(question, () => {
 .question-text {
   width: calc(100% - 12vw);
   padding: 0 6vw;
-  font-size: 32px;
+  font-size: 3.8vh;
   color: black;
 }
 
@@ -395,11 +396,13 @@ watch(question, () => {
 }
 
 .answers {
+  position: absolute;
+  bottom: 8px;
   display: grid;
   grid-template-columns: repeat(2, 38vw);
-  grid-template-rows: repeat(2, 100px);
+  grid-template-rows: repeat(2, 10vh);
   grid-column-gap: 32px;
-  grid-row-gap: 32px;
+  grid-row-gap: 4vh;
 }
 
 @media only screen and (max-width: 800px) {
@@ -424,6 +427,7 @@ watch(question, () => {
   }
 
   .question {
+    position: inherit;
     margin-top: 100px;
     width: 100%;
     max-height: 35vh;
@@ -450,6 +454,7 @@ watch(question, () => {
   }
 
   .answers {
+    position: inherit;
     margin-top: 10px;
     display: flex;
     flex-direction: column;

@@ -65,7 +65,7 @@ const isSelectable = computed(() => {
 <style scoped>
 .answer {
   width: calc(38vw - 2px);
-  height: 98px;
+  height: calc(10vh - 2px);
   border: 1px solid white;
   border-radius: 3px;
   display: flex;
@@ -81,7 +81,7 @@ const isSelectable = computed(() => {
 }
 
 .answer-text {
-  font-size: 40px;
+  font-size: 4vh;
   color: white;
   font-weight: bold;
   -webkit-text-stroke-width: 1px;
@@ -102,8 +102,8 @@ const isSelectable = computed(() => {
 }
 
 .answer-icon {
-  width: 72px;
-  height: 72px;
+  width: 7.5vh;
+  height: 7.5vh;
 }
 
 .active {

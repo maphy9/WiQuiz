@@ -33,7 +33,7 @@ const messageColor = computed(() => {
 .message {
   width: calc(100% - 28px);
   padding: 0 12px;
-  margin: 10px 0;
+  margin: 1.2vh 0;
   border: 1px solid black;
   border-radius: 3px;
   display: flex;
@@ -43,7 +43,7 @@ const messageColor = computed(() => {
 
 .message-text {
   color: white;
-  font-size: 48px;
+  font-size: 5.8vh;
   font-weight: bold;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;

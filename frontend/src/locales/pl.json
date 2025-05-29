@@ -15,5 +15,12 @@
     "choose-level": "Wybierz poziom",
     "next-level": "Następny poziom",
     "points": "Punktów"
+  },
+  "login-view": {
+    "enter-your-username": "Wprowadź imię użytkownika",
+    "password": "Hasło",
+    "enter-your-password": "Wprowadź hasło",
+    "login": "Załoguj się",
+    "security-alert": "Ze wzgłędu bezpieczeństwa prosimy wyłogować się po korzystaniu i zamknąć przegłądarkę"
   }
 }

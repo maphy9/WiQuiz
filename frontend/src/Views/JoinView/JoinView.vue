@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { ref } from 'vue'
 import { useSound } from '@/composables/useSound'
 
 const { playButtonSound } = useSound()
@@ -22,7 +22,7 @@ function copyCode() {
     <div class="container">
       <div>
         <h1 class="title">
-          Your code:
+          {{ $t('join-view.your-code') }}
         </h1>
 
         <div class="input-group">

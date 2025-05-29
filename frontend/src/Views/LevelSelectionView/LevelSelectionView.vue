@@ -1,32 +1,26 @@
 <script setup lang="ts">
-import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
+import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { useGame } from '@/stores/gameStore'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Analiza Matematyczna')
 
-const cards = ref<{ cardText: string, state: 'passed' | 'repeat' | 'locked' }[]>([
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'passed' },
-  { cardText: 'Pochodne', state: 'repeat' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-  { cardText: 'Pochodne', state: 'locked' },
-])
+const router = useRouter()
 
-const leftCards = computed(() => cards.value.filter((_, i) => i % 2 === 0))
-const rightCards = computed(() => cards.value.filter((_, i) => i % 2 !== 0))
+const { levels } = storeToRefs(useGame())
+
+const leftCards = computed(() => levels.value.filter((_, i) => i % 2 === 0))
+const rightCards = computed(() => levels.value.filter((_, i) => i % 2 !== 0))
 
 const levelRoutes = computed(() => {
   const routes = []
 
-  for (let i = 0; i < cards.value.length - 1; i++) {
+  for (let i = 0; i < levels.value.length - 1; i++) {
     const offset = 65 - i * 15
     const rotation = (i % 2 === 0)
       ? 15
@@ -40,6 +34,25 @@ const levelRoutes = computed(() => {
   }
 
   return routes
+})
+
+const canGoToLevel = ref(false)
+
+function handleClick(levelIndex: number) {
+  canGoToLevel.value = true
+  router.push({ name: 'level', params: { levelIndex } })
+}
+
+onBeforeRouteLeave((to) => {
+  if (to.name === 'main') {
+    return true
+  }
+
+  if (canGoToLevel.value && to.name === 'level') {
+    return true
+  }
+
+  return { name: 'main' }
 })
 </script>
 
@@ -67,17 +80,17 @@ const levelRoutes = computed(() => {
     <div class="columns-container">
       <div class="left-column">
         <LevelCard
-          v-for="(card, index) in leftCards"
-          :key="`left-${index}`"
-          :card-text="card.cardText"
-          :state="card.state"
+          v-for="(level, index) in leftCards"
+          :key="index"
+          :level="level"
+          @click="handleClick(index * 2)"
         />
       </div>
 
       <div class="path-container">
         <div
           v-for="(route, index) in levelRoutes"
-          :key="`route-${index}`"
+          :key="index"
           class="route"
           :style="route.style"
         >
@@ -87,10 +100,10 @@ const levelRoutes = computed(() => {
 
       <div class="right-column">
         <LevelCard
-          v-for="(card, index) in rightCards"
-          :key="`right-${index}`"
-          :card-text="card.cardText"
-          :state="card.state"
+          v-for="(level, index) in rightCards"
+          :key="index"
+          :level="level"
+          @click="handleClick(index * 2 + 1)"
         />
       </div>
     </div>

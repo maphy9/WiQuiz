@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import type Level from '@/types/Level'
+import { computed, toRefs } from 'vue'
 import { useSound } from '@/composables/useSound'
 
-const { playButtonSound } = useSound()
-
 const props = defineProps<{
-  cardText: string
-  state: 'passed' | 'locked' | 'repeat'
+  level: Level
 }>()
 
+const { playButtonSound } = useSound()
+const { level } = toRefs(props)
+
 const bgColour = computed(() => {
-  switch (props.state) {
+  switch (level.value.state) {
     case 'passed': return '#80C997'
     case 'locked': return '#8B231D'
     case 'repeat': return '#FFD966'
@@ -19,7 +20,7 @@ const bgColour = computed(() => {
 })
 
 const imageSrc = computed(() => {
-  switch (props.state) {
+  switch (level.value.state) {
     case 'passed': return new URL('@/images/arrow.png', import.meta.url).href
     case 'locked': return new URL('@/images/lock.png', import.meta.url).href
     case 'repeat': return new URL('@/images/circleArrow.png', import.meta.url).href
@@ -29,7 +30,10 @@ const imageSrc = computed(() => {
 </script>
 
 <template>
-  <div class="card-container" @click="playButtonSound">
+  <div
+    class="card-container"
+    @click="playButtonSound"
+  >
     <div
       class="card-circle"
       :style="{'backgroundColor': bgColour}"
@@ -41,7 +45,7 @@ const imageSrc = computed(() => {
       >
     </div>
 
-    <span class="card-text">{{ cardText }}</span>
+    <span class="card-text">{{ level.title }}</span>
   </div>
 </template>
 
@@ -62,7 +66,6 @@ const imageSrc = computed(() => {
 
   border: black 2px solid;
 }
-
 
 .card-container:hover {
   background-color: rgba(158, 180, 202, 0.8);

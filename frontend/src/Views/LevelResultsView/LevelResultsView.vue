@@ -1,32 +1,27 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
-interface Student {
-  name: string
-  score: number
-}
-
-const levelNumber = ref(1)
-const levelTitle = ref('Funkcja wykładnicza')
-const correctAnswers = ref(12)
-const numberAnswers = ref(12)
-const students = ref<Student[]>([
-  { name: 'Bolesław R.', score: 386 },
-  { name: 'Adam K.', score: 222 },
-  { name: 'Ewelina J.', score: 215 },
-])
+const router = useRouter()
+const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `Temat${levelNumber.value} - ${levelTitle.value}`
+  return `Temat${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
 })
 
 const score = computed(() => {
-  return (100 * correctAnswers.value) / numberAnswers.value
+  if (!currentLevel.value) {
+    return 0
+  }
+
+  return (100 * correctAnswers.value) / currentLevel.value?.questions.length
 })
 
 const textScore = computed(() => {
-  return `${correctAnswers.value} poprawnych odpowiedzi z ${numberAnswers.value}`
+  return `${correctAnswers.value} poprawnych odpowiedzi z ${currentLevel.value?.questions.length}`
 })
 </script>
 
@@ -53,10 +48,10 @@ const textScore = computed(() => {
       <div class="cards-and-buttons-container">
         <div class="student-cards">
           <StudentCard
-            v-for="student in students"
-            :key="student.name"
-            :name="student.name"
-            :score="student.score"
+            v-for="teammate in team"
+            :key="teammate.user.name"
+            :name="teammate.user.name"
+            :score="teammate.score"
           />
         </div>
 
@@ -64,9 +59,11 @@ const textScore = computed(() => {
           <div
             v-if="score >= 90"
             class="button next-level-button"
+            @click="router.push({'name': 'level',
+                                 'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
           >
             <p class="button-text">
-              Następny temat
+              Next level
             </p>
 
             <img
@@ -80,12 +77,16 @@ const textScore = computed(() => {
             v-else
             class="next-level-access-text"
           >
-            Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na conajmniej 90% poprawnych odpowiedzi.
+            To access the next topic you must answer at least 90% correct.
           </p>
 
-          <div class="button play-again-button">
+          <div
+            class="button play-again-button"
+            @click="router.push({'name': 'level',
+                                 'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
+          >
             <p class="button-text">
-              Zagraj ponownie
+              Play again
             </p>
 
             <img
@@ -94,9 +95,12 @@ const textScore = computed(() => {
             >
           </div>
 
-          <div class="button choose-level-button">
+          <div
+            class="button choose-level-button"
+            @click="router.push({'name': 'level-selection'})"
+          >
             <p class="button-text">
-              Wybór tematu
+              Choose level
             </p>
 
             <img

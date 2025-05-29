@@ -8,7 +8,10 @@
       </div>
 
       <div class="team-members">
-        <div class="member-slot" @click="playButtonSound">
+        <div
+          class="member-slot"
+          @click="playButtonSound"
+        >
           <img
             class="avatar"
             src="@/images/emptyPfp.png"
@@ -17,7 +20,10 @@
           <div>{{ player1_name }}</div>
         </div>
 
-        <div class="member-slot" @click="playButtonSound">
+        <div
+          class="member-slot"
+          @click="playButtonSound"
+        >
           <img
             class="avatar"
             src="@/images/emptyPfp.png"
@@ -57,8 +63,11 @@
     </div>
 
     <div class="buttons-card">
-      <router-link to="/levelselect">
-        <div class="button play-button" @click="playButtonSound">
+      <router-link to="/level-selection">
+        <div
+          class="button play-button"
+          @click="playButtonSound"
+        >
           <div>Play</div>
 
           <img
@@ -69,7 +78,10 @@
       </router-link>
 
       <router-link to="/about">
-        <div class="about-button button" @click="playButtonSound">
+        <div
+          class="about-button button"
+          @click="playButtonSound"
+        >
           <div>About</div>
 
           <img
@@ -83,9 +95,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useSound } from '@/composables/useSound'
+import { ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
+import { useSound } from '@/composables/useSound'
 
 const player1_name = ref('Bolesław R.')
 const player2_name = ref('Adam K.')
@@ -103,7 +115,6 @@ function handleLogoClick() {
     }, 1000)
   }
 }
-
 </script>
 
 <style scoped>

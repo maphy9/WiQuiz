@@ -46,12 +46,12 @@ function copyCode() {
 
       <div>
         <h1 class="title">
-          Join team
+          {{ $t('join-view.join-team') }}
         </h1>
 
         <div class="input-group">
           <p class="code-input-label">
-            Enter team code:
+            {{ $t('join-view.enter-team-code') }}
           </p>
 
           <div class="code-input">

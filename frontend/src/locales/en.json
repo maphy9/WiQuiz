@@ -1,3 +1,10 @@
 {
-
+  "join-view": {
+    "your-code": "Your code:",
+    "join-team": "Join team",
+    "enter-team-code": "Enter team code:"
+  },
+  "return-button": {
+    "go-back-to-main-menu": "Go back to main menu"
+  }
 }

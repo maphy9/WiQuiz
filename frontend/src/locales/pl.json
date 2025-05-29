@@ -3,5 +3,8 @@
     "your-code": "Twój kod:",
     "join-team": "Dołącz do zespołu",
     "enter-team-code": "Wprowadź kod zespołu:"
+  },
+  "return-button": {
+    "go-back-to-main-menu": "Menu główne"
   }
 }

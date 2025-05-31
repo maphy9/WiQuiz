@@ -14,7 +14,7 @@
 
         <div class="container">
           <div class="topics">
-            <h3>Wybór tematu:</h3>
+            <h3>{{ $t('teacher-topics.choose-topic') }}</h3>
 
             <ul class="topics-list">
               <li
@@ -40,7 +40,7 @@
               </li>
 
               <div class="add-topic">
-                <span>Dodaj nowy temat</span>
+                <span>{{ $t('teacher-topics.add-new-topic') }}</span>
 
                 <img
                   class="add-icon"

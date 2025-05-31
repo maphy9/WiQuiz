@@ -6,7 +6,7 @@
   >
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">Dodaj/Zmień Temat</span>
+        <span class="modal-title">{{ $t('teacher-topics.add-edit-topic') }}</span>
 
         <span
           class="modal-close"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="modal-body">
-        <label for="topicName">Nazwa Tematu:</label>
+        <label for="topicName">{{ $t('teacher-topics.topic-name') }}:</label>
 
         <input
           id="topicName"
@@ -33,7 +33,7 @@
         type="button"
         @click="save"
       >
-        Zapisz zmiany
+        {{ $t('teacher-topics.save-changes') }}
       </button>
     </div>
   </div>

@@ -9,7 +9,7 @@ import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 
     <div class="container">
       <div class="title">
-        Creators
+        {{ $t('about-view.creators') }}
       </div>
 
       <ul class="content">

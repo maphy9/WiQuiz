@@ -4,7 +4,7 @@
 
     <div class="team-card">
       <div class="team-card-top">
-        <h3>Your team</h3>
+        <h3>{{ $t('main-view.your-team') }}</h3>
       </div>
 
       <div class="team-members">
@@ -42,7 +42,7 @@
             src="@/images/plus.png"
           >
 
-          <div>Invite or join</div>
+          <div>{{ $t('main-view.invite-or-join') }}</div>
         </router-link>
       </div>
     </div>
@@ -68,7 +68,7 @@
           class="button play-button"
           @click="playButtonSound"
         >
-          <div>Play</div>
+          <div>{{ $t('main-view.play') }}</div>
 
           <img
             class="button-img"
@@ -82,7 +82,7 @@
           class="about-button button"
           @click="playButtonSound"
         >
-          <div>About</div>
+          <div>{{ $t('main-view.about') }}</div>
 
           <img
             class="button-img"

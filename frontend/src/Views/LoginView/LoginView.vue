@@ -23,28 +23,28 @@
           id="username"
           v-model="username"
           type="text"
-          placeholder="Enter your username"
+          :placeholder="t('login-view.enter-your-username')"
         >
 
-        <label for="password">Password:</label>
+        <label for="password">{{ $t('login-view.password') }}</label>
 
         <input
           id="password"
           v-model="password"
           type="password"
-          placeholder="Enter your password"
+          :placeholder="t('login-view.enter-your-password')"
         >
 
         <button
           type="button"
           @click="handleLogin"
         >
-          LOGIN
+          {{ $t('login-view.login') }}
         </button>
       </div>
 
       <div class="login-footer">
-        <p>For security reasons, log off after use and close the browser!</p>
+        <p>{{ $t('login-view.security-alert') }}</p>
       </div>
     </main>
 
@@ -73,6 +73,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const username = ref('')
 const password = ref('')

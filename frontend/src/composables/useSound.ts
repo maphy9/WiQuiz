@@ -5,13 +5,12 @@ export function useSound() {
   const buttonClickVolume = ref(0.4)
 
   function playButtonSound() {
-  buttonClickSound.volume = buttonClickVolume.value
-  buttonClickSound.currentTime = 0
-  buttonClickSound.play()
+    buttonClickSound.volume = buttonClickVolume.value
+    buttonClickSound.currentTime = 0
+    buttonClickSound.play()
   }
 
   return {
     playButtonSound,
   }
-
 }

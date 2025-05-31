@@ -11,7 +11,7 @@
       </p>
 
       <p class="text-score">
-        {{ score }} punktów
+        {{ score }} {{ $t('result-view.points') }}
       </p>
     </div>
   </div>

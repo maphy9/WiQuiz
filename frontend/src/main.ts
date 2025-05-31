@@ -1,7 +1,10 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
+import en from './locales/en.json'
+import pl from './locales/pl.json'
 import AboutView from './Views/AboutView/AboutView.vue'
 import JoinView from './Views/JoinView/JoinView.vue'
 import LevelResultsView from './Views/LevelResultsView/LevelResultsView.vue'
@@ -32,10 +35,18 @@ const router = createRouter({
   ],
 })
 
+const i18n = createI18n({
+  locale: 'pl',
+  messages: {
+    en,
+    pl,
+  },
+})
+
 const app = createApp(App)
 
 app.use(router)
-
+app.use(i18n)
 const pinia = createPinia()
 app.use(pinia)
 

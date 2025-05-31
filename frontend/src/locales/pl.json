@@ -1,0 +1,80 @@
+{
+  "join-view": {
+    "your-code": "Twój kod",
+    "join-team": "Dołącz do zespołu",
+    "enter-team-code": "Wprowadź kod zespołu"
+  },
+  "return-button": {
+    "go-back-to-main-menu": "Menu główne"
+  },
+  "result-view": {
+    "topic": "Temat",
+    "correct-answers-from": "poprawnych odpowiedzi z",
+    "access-message": "Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na co najmniej 90% poprawnych odpowiedzi.",
+    "play-again": "Zagraj ponownie",
+    "choose-level": "Wybierz poziom",
+    "next-level": "Następny poziom",
+    "points": "Punktów"
+  },
+  "login-view": {
+    "enter-your-username": "Wprowadź imię użytkownika",
+    "password": "Hasło",
+    "enter-your-password": "Wprowadź hasło",
+    "login": "Zaloguj się",
+    "security-alert": "Ze wzgłędu bezpieczeństwa prosimy wyłogować się po korzystaniu i zamknąć przegłądarkę"
+  },
+  "main-view": {
+    "your-team": "Twój zespół",
+    "invite-or-join": "Dodaj/dołącz się",
+    "play": "Zagraj",
+    "about": "Twórcy"
+  },
+  "about-view": {
+    "creators": "Twórcy"
+  },
+  "teacher-topics": {
+    "choose-topic": "Wybór tematu",
+    "add-new-topic": "Dodaj nowy temat",
+    "add-edit-topic": "Dodaj/Zmień Temat",
+    "topic-name": "Nazwa Tematu",
+    "save-changes": "Zapisz zmiany",
+    "confirm-delete": "Potwierdź usunięcie",
+    "really-delete": "Czy naprawdę chcesz usunąć ten temat?",
+    "yes": "Tak",
+    "no": "Nie"
+  },
+  "teacher-questions": {
+    "topic-name": "Nazwa tematu",
+    "add-question": "Dodaj pytanie",
+    "add-edit-question": "Dodaj/Zmień pytanie",
+    "question-content": "Treść pytania",
+    "answer-options": "Warianty odpowiedzi",
+    "correct-answer": "Poprawna odpowiedź",
+    "save-question": "Zapisz pytanie"
+  },
+  "teacher-views-header": {
+    "platforms": "Wirtualne wydziały"
+  },
+  "teacher-views-footer": {
+    "university-name": "Politechnika Łódzka",
+    "CEL-main-page": "Strona główna CEL PŁ",
+    "localization": "Lokalizacja",
+    "working-hours": "Godziny pracy",
+    "technical-support": "Pomoc techniczna WIKAMP",
+    "phone": "Tel",
+    "helpful-links": "Przydatne linki",
+    "main-page": "Strona główna PŁ",
+    "library": "Biblioteka PŁ",
+    "email": "Poczta elektroniczna"
+  },
+  "level-view": {
+    "want-to-leave": "Czy chcesz wyjść?",
+    "no": "Nie",
+    "yes": "Tak",
+    "was-revived": "został wskrzeszony",
+    "no-answer": "Brak odpowiedzi",
+    "correct-answer": "Poprawna odpowiedź!",
+    "incorrect-answer": "Odpowiedź nieprawidłowa",
+    "killed": "zabity"
+  }
+}

@@ -37,24 +37,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSound } from '@/composables/useSound'
 
 const { playButtonSound } = useSound()
+const { locale } = useI18n()
 
 const language = ref({
   name: 'English',
   code: 'EN',
 })
 
-function toggleLanguage() {
-  if (language.value.name === 'English') {
-    language.value.name = 'Polski'
-    language.value.code = 'PL'
+onMounted(() => {
+  if (locale.value === 'pl') {
+    language.value = { name: 'Polski', code: 'PL' }
   }
   else {
-    language.value.name = 'English'
-    language.value.code = 'EN'
+    language.value = { name: 'English', code: 'EN' }
+  }
+})
+
+function toggleLanguage() {
+  if (language.value.code === 'EN') {
+    language.value = { name: 'Polski', code: 'PL' }
+    locale.value = 'pl'
+  }
+  else {
+    language.value = { name: 'English', code: 'EN' }
+    locale.value = 'en'
   }
 }
 </script>

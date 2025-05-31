@@ -6,7 +6,7 @@
   >
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">Potwierdź usunięcie</span>
+        <span class="modal-title">{{ $t('teacher-topics.confirm-delete') }}</span>
 
         <span
           class="modal-close"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="modal-body">
-        <span>Czy naprawdę chcesz usunąć ten temat?</span>
+        <span>{{ $t('teacher-topics.really-delete') }}</span>
       </div>
 
       <div class="modal-actions">
@@ -24,7 +24,7 @@
           type="button"
           @click="$emit('confirm')"
         >
-          Tak
+          {{ $t('teacher-topics.yes') }}
         </button>
 
         <button
@@ -32,7 +32,7 @@
           type="button"
           @click="$emit('close')"
         >
-          Nie
+          {{ $t('teacher-topics.no') }}
         </button>
       </div>
     </div>

@@ -5,6 +5,7 @@ import type Question from '@/types/Question'
 import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
 import { computed, ref, toRefs, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
@@ -20,6 +21,7 @@ const emit = defineEmits<{
   gameOver: []
 }>()
 
+const { t } = useI18n()
 const gameStore = useGame()
 
 // Question
@@ -107,7 +109,7 @@ function useReviveBonus() {
   while (team.value[index].isAlive) {
     index = Math.floor(Math.random() * team.value.length)
   }
-  showMessage(`${team.value[index].user.name} was revived`, 'WHITE')
+  showMessage(`${team.value[index].user.name} ${t('level-view.was-revived')}`, 'WHITE')
   team.value[index].isAlive = true
   bonuses.value.reviveBonus.isAvailable = false
 }
@@ -128,14 +130,14 @@ function handleChooseAnswer() {
   const answer = getChosenAnswer()
 
   if (!answer) {
-    showMessage('No answer', 'WHITE')
+    showMessage(t('level-view.no-answer'), 'WHITE')
   }
   else if (answer.isCorrect) {
-    showMessage('Correct answer!', 'GREEN')
+    showMessage(t('level-view.correct-answer'), 'GREEN')
   }
   else {
     const killedTeammate = killRandom()
-    showMessage(`Incorrect answer - ${killedTeammate.user.name} killed`, 'RED')
+    showMessage(`${t('level-view.incorrect-answer')} - ${killedTeammate.user.name} ${t('level-view.killed')}`, 'RED')
   }
   if (timeLeftInterval.value) {
     clearInterval(timeLeftInterval.value)

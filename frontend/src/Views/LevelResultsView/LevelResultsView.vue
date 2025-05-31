@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
+const { t } = useI18n()
 const router = useRouter()
 const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `Temat${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
+  return `${t('result-view.topic')}${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
 })
 
 const score = computed(() => {
@@ -21,7 +23,7 @@ const score = computed(() => {
 })
 
 const textScore = computed(() => {
-  return `${correctAnswers.value} poprawnych odpowiedzi z ${currentLevel.value?.questions.length}`
+  return `${correctAnswers.value} ${t('result-view.correct-answers-from')} ${currentLevel.value?.questions.length}`
 })
 </script>
 
@@ -63,7 +65,7 @@ const textScore = computed(() => {
                                  'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
           >
             <p class="button-text">
-              Next level
+              {{ $t('result-view.next-level') }}
             </p>
 
             <img
@@ -77,7 +79,7 @@ const textScore = computed(() => {
             v-else
             class="next-level-access-text"
           >
-            To access the next topic you must answer at least 90% correct.
+            {{ $t('result-view.access-message') }}
           </p>
 
           <div
@@ -86,7 +88,7 @@ const textScore = computed(() => {
                                  'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
           >
             <p class="button-text">
-              Play again
+              {{ $t('result-view.play-again') }}
             </p>
 
             <img
@@ -100,7 +102,7 @@ const textScore = computed(() => {
             @click="router.push({'name': 'level-selection'})"
           >
             <p class="button-text">
-              Choose level
+              {{ $t('result-view.choose-level') }}
             </p>
 
             <img

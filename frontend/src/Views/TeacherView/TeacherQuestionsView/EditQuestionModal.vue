@@ -6,7 +6,7 @@
   >
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">Dodaj/Zmień pytanie</span>
+        <span class="modal-title">{{ $t('teacher-questions.add-edit-question') }}</span>
 
         <span
           class="modal-close"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="modal-body">
-        <label class="modal-label">Treść pytania:</label>
+        <label class="modal-label">{{ $t('teacher-questions.question-content') }}:</label>
 
         <textarea
           v-model="localQuestion.text"
@@ -26,9 +26,9 @@
 
         <div class="answers-section">
           <div class="answers-header-row">
-            <label class="answers-label">Warianty odpowiedzi:</label>
+            <label class="answers-label">{{ $t('teacher-questions.answer-options') }}:</label>
 
-            <span class="correct-label">Poprawna odpowiedź</span>
+            <span class="correct-label">{{ $t('teacher-questions.correct-answer') }}</span>
           </div>
 
           <div
@@ -60,7 +60,7 @@
         type="button"
         @click="save"
       >
-        Zapisz pytanie
+        {{ $t('teacher-questions.save-question') }}
       </button>
     </div>
   </div>

@@ -1,7 +1,15 @@
 <template>
-  <router-link to="/" class="return-button" @click="playButtonSound">
-    <span class="return-button-text">Go back to main menu</span>
-    <img class="return-button-icon" src="@/images/home.png" />
+  <router-link
+    to="/"
+    class="return-button"
+    @click="playButtonSound"
+  >
+    <span class="return-button-text">{{ $t('return-button.go-back-to-main-menu') }}</span>
+
+    <img
+      class="return-button-icon"
+      src="@/images/home.png"
+    >
   </router-link>
 </template>
 

@@ -4,11 +4,14 @@ import { ref } from 'vue'
 export const useSoundStore = defineStore('sound', () => {
   const buttonClickSound = new Audio('/src/sounds/buttonClick.mp3')
   const levelMusic = new Audio('/src/sounds/gameInProcess.mp3')
+  const incorrectAnswerSound = new Audio('/src/sounds/incorrectAnswer.mp3')
+  const correctAnswerSound = new Audio('/src/sounds/correctAnswer.mp3')
   const mainTheme = ref<HTMLAudioElement | null>(null)
 
   const buttonClickVolume = ref(0.4)
   const levelMusicVolume = ref(0.2)
   const mainThemeVolume = ref(0.1)
+  const answerVolume = ref(0.4)
 
   function onMountMainTheme() {
     if (!(window as any).musicIsPlaying) {
@@ -26,6 +29,30 @@ export const useSoundStore = defineStore('sound', () => {
       }
       window.addEventListener('click', playMainTheme)
     }
+  }
+
+  function playCorrectSound() {
+    levelMusic.pause()
+
+    correctAnswerSound.volume = answerVolume.value
+    correctAnswerSound.currentTime = 0
+    correctAnswerSound.play()
+
+    setTimeout(() => {
+      levelMusic.play()
+    }, 3000)
+  }
+
+  function playInCorrectSound() {
+    levelMusic.pause()
+
+    incorrectAnswerSound.volume = answerVolume.value
+    incorrectAnswerSound.currentTime = 0
+    incorrectAnswerSound.play()
+
+    setTimeout(() => {
+      levelMusic.play()
+    }, 3000)
   }
 
   function playButtonSound() {
@@ -70,7 +97,10 @@ export const useSoundStore = defineStore('sound', () => {
   }
 
   return {
+    levelMusic,
     playButtonSound,
+    playInCorrectSound,
+    playCorrectSound,
     stopLevelMusic,
     playLevelMusic,
     startMainTheme,

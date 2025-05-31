@@ -12,6 +12,8 @@ const props = defineProps<{
   levelIndex: string
 }>()
 
+const { playButtonSound } = useSoundStore()
+
 const { startMainTheme, stopLevelMusic } = useSoundStore()
 
 const { levelIndex } = toRefs(props)
@@ -88,7 +90,7 @@ onMounted(() => {
 
     <div
       class="exit-button"
-      @click="showExitMenu = true"
+      @click="playButtonSound(); showExitMenu = true"
     >
       <img src="@/images/exit.png">
     </div>
@@ -106,7 +108,7 @@ onMounted(() => {
           <button
             class="exit-menu-button exit-no"
             type="button"
-            @click="showExitMenu = false"
+            @click="playButtonSound(); showExitMenu = false"
           >
             {{ $t('level-view.no') }}
           </button>
@@ -114,7 +116,7 @@ onMounted(() => {
           <button
             class="exit-menu-button exit-yes"
             type="button"
-            @click="exitToLevelSelection(); stopLevelMusic(); startMainTheme();"
+            @click="playButtonSound(); exitToLevelSelection(); stopLevelMusic(); startMainTheme();"
           >
             {{ $t('level-view.yes') }}
           </button>

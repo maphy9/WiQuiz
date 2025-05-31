@@ -66,5 +66,15 @@
     "main-page": "Strona główna PŁ",
     "library": "Biblioteka PŁ",
     "email": "Poczta elektroniczna"
+  },
+  "level-view":{
+    "want-to-leave": "Czy chcesz wyjść?",
+    "no": "Nie",
+    "yes": "Tak",
+    "was-revived": "został wskrzeszony",
+    "no-answer": "Bral odpowiedzi",
+    "correct-answer": "Poprawna odpowiedź!",
+    "incorrect-answer": "Odpowiedź nieprawidłowa",
+    "killed": "zabity"
   }
 }

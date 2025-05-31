@@ -28,5 +28,8 @@
     "invite-or-join": "Dodaj/dołącz się",
     "play": "Zagraj",
     "about": "Twórcy"
+  },
+  "about-view": {
+    "creators": "Twórcy"
   }
 }

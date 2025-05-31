@@ -27,6 +27,12 @@ const imageSrc = computed(() => {
     default: return ''
   }
 })
+
+const dynamicFontSize = computed(() => {
+  return level.value.title.length > 12
+    ? '25px'
+    : '32px'
+})
 </script>
 
 <template>
@@ -45,7 +51,12 @@ const imageSrc = computed(() => {
       >
     </div>
 
-    <span class="card-text">{{ level.title }}</span>
+    <span
+      class="card-text"
+      :style="{'fontSize': dynamicFontSize}"
+    >
+      {{ level.title }}
+    </span>
   </div>
 </template>
 
@@ -55,15 +66,14 @@ const imageSrc = computed(() => {
   height: 200px;
 
   position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  display: flex;
   transition: all 0.3s;
   cursor: pointer;
 
   backdrop-filter: blur(5px);
   background-color: rgba(178, 196, 217, 0.7);
-
   border: black 2px solid;
 }
 
@@ -81,12 +91,10 @@ const imageSrc = computed(() => {
   height: 115px;
 
   position: absolute;
-  -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
-
   background-size: cover;
-  border-radius: 50%;
 
+  border-radius: 50%;
   bottom: 10%;
 }
 
@@ -99,19 +107,19 @@ const imageSrc = computed(() => {
 .card-text {
   color: white;
   user-select: none;
-
   position: absolute;
+  text-align: center;
+
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 36px;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 
   bottom: 65%;
 }
 
-@media(max-width: 550px) {
+@media (max-width: 550px) {
   .card-container {
     width: 160px;
     height: 180px;

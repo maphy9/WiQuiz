@@ -1,6 +1,14 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { useSoundStore } from '@/composables/useSound'
+
+const { onMountMainTheme } = useSoundStore()
+
+onMounted(() => {
+  onMountMainTheme()
+})
 </script>
 
 <template>

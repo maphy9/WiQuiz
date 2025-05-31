@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useSoundStore } from '@/composables/useSound'
@@ -13,6 +13,12 @@ function copyCode() {
     navigator.clipboard.writeText(codeInput.value.toString())
   }
 }
+
+const { onMountMainTheme } = useSoundStore()
+
+onMounted(() => {
+  onMountMainTheme()
+})
 </script>
 
 <template>

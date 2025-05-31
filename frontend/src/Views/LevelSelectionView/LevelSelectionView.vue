@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { useSoundStore } from '@/composables/useSound'
 import { useGame } from '@/stores/gameStore'
 import LevelCard from './LevelCard.vue'
+
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
@@ -53,6 +55,12 @@ onBeforeRouteLeave((to) => {
   }
 
   return { name: 'main' }
+})
+
+const { onMountMainTheme } = useSoundStore()
+
+onMounted(() => {
+  onMountMainTheme()
 })
 </script>
 

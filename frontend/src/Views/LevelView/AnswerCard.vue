@@ -56,7 +56,7 @@ watch(chosenAnswer, (newVal) => {
         : 'inactive'
       : ''} ${chosenAnswer === answer
       ? chosenAnswer?.isCorrect
-        ? 'correct active' && playCorrectSound()
+        ? 'correct active'
         : 'incorrect active'
       : isChosen
         ? 'hidden'

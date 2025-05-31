@@ -7,7 +7,7 @@ const props = defineProps<{
   level: Level
 }>()
 
-const { playButtonSound, playLevelMusic } = useSoundStore()
+const { playButtonSound } = useSoundStore()
 const { level } = toRefs(props)
 
 const bgColour = computed(() => {
@@ -32,7 +32,7 @@ const imageSrc = computed(() => {
 <template>
   <div
     class="card-container"
-    @click="playButtonSound(); playLevelMusic();"
+    @click="playButtonSound();"
   >
     <div
       class="card-circle"

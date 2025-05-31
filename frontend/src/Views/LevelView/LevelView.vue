@@ -2,7 +2,7 @@
 import type { Ref } from 'vue'
 import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref, toRefs, watch } from 'vue'
+import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import { useSoundStore } from '@/composables/useSound'
 import { useGame } from '@/stores/gameStore'
@@ -12,9 +12,7 @@ const props = defineProps<{
   levelIndex: string
 }>()
 
-const { playButtonSound } = useSoundStore()
-
-const { startMainTheme, stopLevelMusic } = useSoundStore()
+const { startMainTheme, stopLevelMusic, playButtonSound, playLevelMusic } = useSoundStore()
 
 const { levelIndex } = toRefs(props)
 
@@ -72,7 +70,12 @@ watch(currentQuestionIndex, () => {
 }, { immediate: true })
 
 onMounted(() => {
+  playLevelMusic()
   initTeam()
+})
+
+onUnmounted(() => {
+  stopLevelMusic()
 })
 </script>
 

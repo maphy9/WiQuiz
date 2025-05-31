@@ -22,5 +22,11 @@
     "enter-your-password": "Wprowadź hasło",
     "login": "Załoguj się",
     "security-alert": "Ze wzgłędu bezpieczeństwa prosimy wyłogować się po korzystaniu i zamknąć przegłądarkę"
+  },
+  "main-view": {
+    "your-team": "Twój zespół",
+    "invite-or-join": "Dodaj/dołącz się",
+    "play": "Zagraj",
+    "about": "Twórcy"
   }
 }

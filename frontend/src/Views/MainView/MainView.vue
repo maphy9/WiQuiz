@@ -97,13 +97,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/composables/useSound'
 
 const player1_name = ref('Bolesław R.')
 const player2_name = ref('Adam K.')
 const logoClickCount = ref(0)
 const rotateLogo = ref(false)
-const { playButtonSound } = useSound()
+const { playButtonSound } = useSoundStore()
 
 function handleLogoClick() {
   logoClickCount.value++

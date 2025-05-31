@@ -4,12 +4,15 @@ import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
+import { useSoundStore } from '@/composables/useSound'
 import { useGame } from '@/stores/gameStore'
 import QuestionView from './QuestionView.vue'
 
 const props = defineProps<{
   levelIndex: string
 }>()
+
+const { startMainTheme, stopLevelMusic } = useSoundStore()
 
 const { levelIndex } = toRefs(props)
 
@@ -111,7 +114,7 @@ onMounted(() => {
           <button
             class="exit-menu-button exit-yes"
             type="button"
-            @click="exitToLevelSelection"
+            @click="exitToLevelSelection(); stopLevelMusic(); startMainTheme();"
           >
             {{ $t('level-view.yes') }}
           </button>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type Level from '@/types/Level'
 import { computed, toRefs } from 'vue'
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/composables/useSound'
 
 const props = defineProps<{
   level: Level
 }>()
 
-const { playButtonSound } = useSound()
+const { playButtonSound, playLevelMusic } = useSoundStore()
 const { level } = toRefs(props)
 
 const bgColour = computed(() => {
@@ -32,7 +32,7 @@ const imageSrc = computed(() => {
 <template>
   <div
     class="card-container"
-    @click="playButtonSound"
+    @click="playButtonSound(); playLevelMusic();"
   >
     <div
       class="card-circle"

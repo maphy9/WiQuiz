@@ -13,10 +13,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useSoundStore } from '@/composables/useSound'
 
 const route = useRoute()
+const { onMountMainTheme } = useSoundStore()
+
+onMounted(() => {
+  onMountMainTheme()
+})
 
 const currentTransition = computed(() => {
   return route.name === 'main'

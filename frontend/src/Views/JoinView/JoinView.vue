@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/composables/useSound'
 
-const { playButtonSound } = useSound()
+const { playButtonSound } = useSoundStore()
 
 const codeInput = ref('6  2  3  1  6  2')
 

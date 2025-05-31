@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/composables/useSound'
 
-const { playButtonSound } = useSound()
+const { playButtonSound } = useSoundStore()
 </script>
 
 <style scoped>

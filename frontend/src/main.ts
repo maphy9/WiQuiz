@@ -6,6 +6,7 @@ import App from './App.vue'
 import en from './locales/en.json'
 import pl from './locales/pl.json'
 import AboutView from './Views/AboutView/AboutView.vue'
+import Game from './Views/Game.vue'
 import JoinView from './Views/JoinView/JoinView.vue'
 import LevelResultsView from './Views/LevelResultsView/LevelResultsView.vue'
 import LevelSelectionView from './Views/LevelSelectionView/LevelSelectionView.vue'
@@ -18,19 +19,30 @@ import TeacherTopicsView from './Views/TeacherView/TeacherTopicsView/TeacherTopi
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { name: 'main', path: '/', component: MainView },
-    { name: 'about', path: '/about', component: AboutView },
-    { name: 'join', path: '/join', component: JoinView },
-    { name: 'level-selection', path: '/level-selection', component: LevelSelectionView },
-    { name: 'teacher-topics', path: '/teacher-topics', component: TeacherTopicsView },
-    { name: 'teacher-questions', path: '/teacher-questions', component: TeacherQuestionsView },
-    { name: 'login', path: '/login', component: LoginView },
-    { name: 'level-results', path: '/level-results', component: LevelResultsView },
     {
-      name: 'level',
-      path: '/level/:levelIndex(\\d+)',
-      component: LevelView,
-      props: true,
+      path: '/',
+      children: [
+        { name: 'teacher-topics', path: '/', component: TeacherTopicsView },
+        { name: 'teacher-questions', path: '/questions', component: TeacherQuestionsView },
+      ],
+    },
+    {
+      path: '/game/',
+      component: Game,
+      children: [
+        { name: 'main', path: '', component: MainView },
+        { name: 'about', path: 'about', component: AboutView },
+        { name: 'join', path: 'join', component: JoinView },
+        { name: 'level-selection', path: 'level-selection', component: LevelSelectionView },
+        { name: 'login', path: 'login', component: LoginView },
+        { name: 'level-results', path: 'level-results', component: LevelResultsView },
+        {
+          name: 'level',
+          path: 'level/:levelIndex(\\d+)',
+          component: LevelView,
+          props: true,
+        },
+      ],
     },
   ],
 })

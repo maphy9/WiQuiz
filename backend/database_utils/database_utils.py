@@ -86,20 +86,18 @@ def add_Question(cursor: Cursor, questionText: str, orderNumber: int, levelId: i
 
 def get_all_Questions(cursor: Cursor, levelId: int):
     cursor.execute(
-    """
-    SELECT QuestionId, QuestionText, OrderNumber
-    FROM Question
-    WHERE LevelId = ?
-    """, (levelId)
+        """
+        SELECT QuestionId, QuestionText, OrderNumber
+        FROM Question
+        WHERE LevelId = ?
+        """, (levelId,)
     )
     output = cursor.fetchall()
-    result = [{
-        'QuestionId': level[0],
-        'QuestionText': level[1],
-        'OrderNumber': level[2],
-        'LevelId': level[3],
-    } for level in output]
-    return result
+    return [{
+        'QuestionId': row[0],
+        'QuestionText': row[1],
+        'OrderNumber': row[2]
+    } for row in output]
 
 def add_Answer(cursor: Cursor, answerText: str, isCorrect: bool, questionId: int):
     cursor.execute(
@@ -109,7 +107,7 @@ def add_Answer(cursor: Cursor, answerText: str, isCorrect: bool, questionId: int
     """, (answerText, isCorrect, questionId)
     )
 
-def get_Question_Answers(cursor: Cursor, questionId):
+def get_Question_Answers(cursor: Cursor, questionId: int):
     cursor.execute(
     """
     SELECT AnswerId, AnswerText, isCorrect

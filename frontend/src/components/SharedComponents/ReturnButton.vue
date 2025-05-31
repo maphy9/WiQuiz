@@ -1,6 +1,6 @@
 <template>
   <router-link
-    to="/"
+    :to="{'name': 'main'}"
     class="return-button"
     @click="playButtonSound"
   >

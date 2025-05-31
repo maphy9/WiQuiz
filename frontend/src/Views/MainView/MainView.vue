@@ -33,7 +33,7 @@
         </div>
 
         <router-link
-          to="/join"
+          :to="{'name': 'join'}"
           class="member-slot"
           @click="playButtonSound"
         >
@@ -63,7 +63,7 @@
     </div>
 
     <div class="buttons-card">
-      <router-link to="/level-selection">
+      <router-link :to="{'name': 'level-selection'}">
         <div
           class="button play-button"
           @click="playButtonSound"
@@ -77,7 +77,7 @@
         </div>
       </router-link>
 
-      <router-link to="/about">
+      <router-link :to="{'name': 'about'}">
         <div
           class="about-button button"
           @click="playButtonSound"

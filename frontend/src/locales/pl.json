@@ -1,8 +1,8 @@
 {
   "join-view": {
-    "your-code": "Twój kod:",
+    "your-code": "Twój kod",
     "join-team": "Dołącz do zespołu",
-    "enter-team-code": "Wprowadź kod zespołu:"
+    "enter-team-code": "Wprowadź kod zespołu"
   },
   "return-button": {
     "go-back-to-main-menu": "Menu główne"
@@ -72,7 +72,7 @@
     "no": "Nie",
     "yes": "Tak",
     "was-revived": "został wskrzeszony",
-    "no-answer": "Bral odpowiedzi",
+    "no-answer": "Brak odpowiedzi",
     "correct-answer": "Poprawna odpowiedź!",
     "incorrect-answer": "Odpowiedź nieprawidłowa",
     "killed": "zabity"

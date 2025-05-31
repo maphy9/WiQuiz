@@ -1,10 +1,80 @@
 {
   "join-view": {
-    "your-code": "Your code:",
+    "your-code": "Your code",
     "join-team": "Join team",
-    "enter-team-code": "Enter team code:"
+    "enter-team-code": "Enter team code"
   },
   "return-button": {
     "go-back-to-main-menu": "Go back to main menu"
+  },
+  "result-view": {
+    "topic": "Topic",
+    "correct-answers-from": "correct answers from",
+    "access-message": "To access the next topic you must answer at least 90% correct.",
+    "play-again": "Play again",
+    "choose-level": "Choose level",
+    "next-level": "Next level",
+    "points": "Points"
+  },
+  "login-view": {
+    "enter-your-username": "Enter your username",
+    "password": "Password",
+    "enter-your-password": "Enter your password",
+    "login": "Log In",
+    "security-alert": "For security reasons, please log off after use and close the browser."
+  },
+  "main-view": {
+    "your-team": "Your team",
+    "invite-or-join": "Invite or join",
+    "play": "Play",
+    "about": "About"
+  },
+  "about-view": {
+    "creators": "Creators"
+  },
+  "teacher-topics": {
+    "choose-topic": "Choose topic",
+    "add-new-topic": "Add new topic",
+    "add-edit-topic": "Add/Edit topic",
+    "topic-name": "Topic name",
+    "save-changes": "Save changes",
+    "confirm-delete": "Confirm delete",
+    "really-delete": "Do you really want to delete this topic?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "teacher-questions": {
+    "topic-name": "Topic name",
+    "add-question": "Add question",
+    "add-edit-question": "Add/Edit question",
+    "question-content": "Question content",
+    "answer-options": "Answer options",
+    "correct-answer": "Correct answer",
+    "save-question": "Save question"
+  },
+  "teacher-views-header": {
+    "platforms": "WIKAMP Platforms"
+  },
+  "teacher-views-footer": {
+    "university-name": "Technical University of Lodz",
+    "CEL-main-page": "Main page CEL TUL",
+    "localization": "Loocalization",
+    "working-hours": "Working hours",
+    "technical-support": "Technical support WIKAMP",
+    "phone": "Phone",
+    "helpful-links": "Helpful links",
+    "main-page": "Main Page TUL",
+    "library": "Library TUL",
+    "email": "Email"
+  },
+  "level-view":{
+    "want-to-leave": "Do you want to leave?",
+    "no": "No",
+    "yes": "Yes",
+    "was-revived": "was revived",
+    "no-answer": "No answer",
+    "correct-answer": "Correct answer!",
+    "incorrect-answer": "Incorrect answer",
+    "killed": "killed"
   }
 }

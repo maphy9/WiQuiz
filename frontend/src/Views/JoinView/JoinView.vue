@@ -22,7 +22,7 @@ function copyCode() {
     <div class="container">
       <div>
         <h1 class="title">
-          {{ $t('join-view.your-code') }}
+          {{ $t('join-view.your-code') }}:
         </h1>
 
         <div class="input-group">
@@ -51,7 +51,7 @@ function copyCode() {
 
         <div class="input-group">
           <p class="code-input-label">
-            {{ $t('join-view.enter-team-code') }}
+            {{ $t('join-view.enter-team-code') }}:
           </p>
 
           <div class="code-input">

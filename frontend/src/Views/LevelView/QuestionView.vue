@@ -6,10 +6,12 @@ import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
 import { computed, ref, toRefs, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
 import MessageCard from './MessageCard.vue'
+
 import TeammateCard from './TeammateCard.vue'
 
 const props = defineProps<{
@@ -21,7 +23,9 @@ const emit = defineEmits<{
   gameOver: []
 }>()
 
+const { playBonusSound } = useSoundStore()
 const { t } = useI18n()
+
 const gameStore = useGame()
 
 // Question
@@ -65,9 +69,18 @@ const timeLeftInterval: Ref<number | null> = ref(null)
 
 // Bonuses
 const bonuses = ref({
-  mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
-  timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
-  reviveBonus: { image: '/images/reviveBonus.png', onClick: useReviveBonus, isAvailable: true },
+  mistakeBonus: { image: '/images/mistakeBonus.png', onClick: () => {
+    useMistakeBonus()
+    playBonusSound()
+  }, isAvailable: true },
+  timeBonus: { image: '/images/timeBonus.png', onClick: () => {
+    useTimeBonus()
+    playBonusSound()
+  }, playBonusSound, isAvailable: true },
+  reviveBonus: { image: '/images/reviveBonus.png', onClick: () => {
+    useReviveBonus()
+    playBonusSound()
+  }, isAvailable: true },
 })
 
 function useMistakeBonus() {

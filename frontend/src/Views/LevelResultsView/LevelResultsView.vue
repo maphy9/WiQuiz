@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
 const { t } = useI18n()
+const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic } = useSoundStore()
 const router = useRouter()
 const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
@@ -24,6 +26,15 @@ const score = computed(() => {
 
 const textScore = computed(() => {
   return `${correctAnswers.value} ${t('result-view.correct-answers-from')} ${currentLevel.value?.questions.length}`
+})
+
+onMounted(() => {
+  playResultsMusic()
+})
+
+onUnmounted(() => {
+  stopLevelMusic()
+  stopResultsMusic()
 })
 </script>
 
@@ -61,8 +72,8 @@ const textScore = computed(() => {
           <div
             v-if="score >= 90"
             class="button next-level-button"
-            @click="router.push({'name': 'level',
-                                 'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
+            @click="playButtonSound(); router.push({'name': 'level',
+                                                    'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
           >
             <p class="button-text">
               {{ $t('result-view.next-level') }}
@@ -84,8 +95,8 @@ const textScore = computed(() => {
 
           <div
             class="button play-again-button"
-            @click="router.push({'name': 'level',
-                                 'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
+            @click="playButtonSound(); playLevelMusic(); router.push({'name': 'level',
+                                                                      'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
           >
             <p class="button-text">
               {{ $t('result-view.play-again') }}
@@ -99,7 +110,7 @@ const textScore = computed(() => {
 
           <div
             class="button choose-level-button"
-            @click="router.push({'name': 'level-selection'})"
+            @click="playButtonSound(); router.push({'name': 'level-selection'})"
           >
             <p class="button-text">
               {{ $t('result-view.choose-level') }}

@@ -2,14 +2,17 @@
 import type { Ref } from 'vue'
 import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref, toRefs, watch } from 'vue'
+import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import QuestionView from './QuestionView.vue'
 
 const props = defineProps<{
   levelIndex: string
 }>()
+
+const { startMainTheme, stopLevelMusic, playButtonSound, playLevelMusic } = useSoundStore()
 
 const { levelIndex } = toRefs(props)
 
@@ -67,7 +70,12 @@ watch(currentQuestionIndex, () => {
 }, { immediate: true })
 
 onMounted(() => {
+  playLevelMusic()
   initTeam()
+})
+
+onUnmounted(() => {
+  stopLevelMusic()
 })
 </script>
 
@@ -85,7 +93,7 @@ onMounted(() => {
 
     <div
       class="exit-button"
-      @click="showExitMenu = true"
+      @click="playButtonSound(); showExitMenu = true"
     >
       <img src="@/images/exit.png">
     </div>
@@ -103,7 +111,7 @@ onMounted(() => {
           <button
             class="exit-menu-button exit-no"
             type="button"
-            @click="showExitMenu = false"
+            @click="playButtonSound(); showExitMenu = false"
           >
             {{ $t('level-view.no') }}
           </button>
@@ -111,7 +119,7 @@ onMounted(() => {
           <button
             class="exit-menu-button exit-yes"
             type="button"
-            @click="exitToLevelSelection"
+            @click="playButtonSound(); exitToLevelSelection(); stopLevelMusic(); startMainTheme();"
           >
             {{ $t('level-view.yes') }}
           </button>

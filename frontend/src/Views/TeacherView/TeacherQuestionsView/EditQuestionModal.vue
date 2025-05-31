@@ -60,7 +60,7 @@
         type="button"
         @click="save"
       >
-        {{$t('teacher-questions.save-question')}}
+        {{ $t('teacher-questions.save-question') }}
       </button>
     </div>
   </div>

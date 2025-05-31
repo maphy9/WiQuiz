@@ -96,7 +96,7 @@ onMounted(() => {
     >
       <div class="exit-menu-container">
         <span class="exit-menu-text">
-          {{$t('level-view.want-to-leave')}}
+          {{ $t('level-view.want-to-leave') }}
         </span>
 
         <div class="exit-menu-buttons">
@@ -105,7 +105,7 @@ onMounted(() => {
             type="button"
             @click="showExitMenu = false"
           >
-            {{$t('level-view.no')}}
+            {{ $t('level-view.no') }}
           </button>
 
           <button
@@ -113,7 +113,7 @@ onMounted(() => {
             type="button"
             @click="exitToLevelSelection"
           >
-            {{$t('level-view.yes')}}
+            {{ $t('level-view.yes') }}
           </button>
         </div>
       </div>

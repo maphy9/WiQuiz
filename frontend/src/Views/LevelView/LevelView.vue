@@ -4,7 +4,7 @@ import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
 import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import QuestionView from './QuestionView.vue'
 

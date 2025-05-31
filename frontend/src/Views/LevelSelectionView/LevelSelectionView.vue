@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import LevelCard from './LevelCard.vue'
 

@@ -2,7 +2,7 @@
 import type { Answer } from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
 import { computed, toRefs, watch } from 'vue'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
   answer: any

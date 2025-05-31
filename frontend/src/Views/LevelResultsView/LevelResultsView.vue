@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 

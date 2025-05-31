@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const player1_name = ref('Bolesław R.')
 const player2_name = ref('Adam K.')

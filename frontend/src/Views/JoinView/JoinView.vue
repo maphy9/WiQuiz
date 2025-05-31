@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const { playButtonSound } = useSoundStore()
 

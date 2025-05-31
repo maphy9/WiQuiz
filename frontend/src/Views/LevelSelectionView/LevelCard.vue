@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type Level from '@/types/Level'
 import { computed, toRefs } from 'vue'
-import { useSoundStore } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
   level: Level

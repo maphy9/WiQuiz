@@ -10,7 +10,7 @@
   "result-view": {
     "topic": "Temat",
     "correct-answers-from": "poprawnych odpowiedzi z",
-    "access-message": "Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na conajmniej 90% poprawnych odpowiedzi.",
+    "access-message": "Żeby otrzymać dostęp do następnego tematu musisz odpowiedzieć na co najmniej 90% poprawnych odpowiedzi.",
     "play-again": "Zagraj ponownie",
     "choose-level": "Wybierz poziom",
     "next-level": "Następny poziom",

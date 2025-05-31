@@ -8,7 +8,7 @@
 
     <nav class="nav">
       <div class="nav-button">
-        <span class="department-text">Wirtualne Wydziały</span>
+        <span class="department-text">{{ $t('teacher-views-header.platforms') }}</span>
 
         <img
           class="header-arrow"
@@ -22,7 +22,10 @@
           src="@/images/language_icon.png"
         >
 
-        <span class="header-language-text">Polski (pl) </span>
+        <span
+          class="header-language-text"
+          @click="toggleLanguage"
+        >{{ language }}</span>
       </div>
 
       <div class="nav-button">
@@ -76,6 +79,34 @@
     </nav>
   </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const language = ref('')
+const { locale } = useI18n()
+
+onMounted(() => {
+  if (locale.value === 'pl') {
+    language.value = 'Polski (PL)'
+  }
+  else {
+    language.value = 'English (EN)'
+  }
+})
+
+function toggleLanguage() {
+  if (language.value === 'English (EN)') {
+    language.value = 'Polski (PL)'
+    locale.value = 'pl'
+  }
+  else {
+    language.value = 'English (EN)'
+    locale.value = 'en'
+  }
+}
+</script>
 
 <style scoped>
   .header {

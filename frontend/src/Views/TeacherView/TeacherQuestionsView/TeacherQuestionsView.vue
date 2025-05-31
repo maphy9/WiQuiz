@@ -14,7 +14,7 @@
 
         <div class="container">
           <div class="topics">
-            <h3>Nazwa tematu: {{ topicName }}</h3>
+            <h3>{{ $t('teacher-questions.topic-name') }}: {{ topicName }}</h3>
 
             <ul class="topics-list">
               <li
@@ -43,7 +43,7 @@
             <div
               class="add-topic"
             >
-              <span>Dodaj pytanie</span>
+              <span>{{ $t('teacher-questions.add-question') }}</span>
 
               <img
                 class="add-icon"

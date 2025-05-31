@@ -7,7 +7,7 @@
           src="@/images/logoPL.png"
         >
 
-        <h3>Politechnika Łódzka</h3>
+        <h3>{{ $t('teacher-views-footer.university-name') }}</h3>
       </span>
 
       <p>ul. Żeromskiego 116</p>
@@ -21,19 +21,19 @@
       <h2>Centrum E-Learningu</h2>
 
       <p class="footer-underline-text">
-        Strona główna CEL PŁ
+        {{ $t('teacher-views-footer.CEL-main-page') }}
       </p>
 
       <p class="footer-underline-text">
-        Lokalizacja
+        {{ $t('teacher-views-footer.localization') }}
       </p>
 
       <p class="footer-text-before-line footer-underline-text">
-        Godziny pracy
+        {{ $t('teacher-views-footer.working-hours') }}
       </p>
 
       <p class="footer-text-after-line">
-        Pomoc techniczna WIKAMP
+        {{ $t('teacher-views-footer.technical-support') }}
       </p>
 
       <p class="footer-underline-text">
@@ -41,23 +41,23 @@
       </p>
 
       <p class="footer-underline-text">
-        Tel: +48 426312806
+        {{ $t('teacher-views-footer.phone') }}: +48 426312806
       </p>
     </div>
 
     <div class="footer-section">
-      <h2>Przydatne linki</h2>
+      <h2>{{ $t('teacher-views-footer.helpful-links') }}</h2>
 
       <p class="footer-underline-text">
-        Strona główna PŁ
+        {{ $t('teacher-views-footer.main-page') }}
       </p>
 
       <p class="footer-text-before-line footer-underline-text">
-        Biblioteka PŁ
+        {{ $t('teacher-views-footer.library') }}
       </p>
 
       <p class="footer-text-after-line footer-underline-text">
-        Poczta elektroniczna
+        {{ $t('teacher-views-footer.email') }}
       </p>
 
       <p class="footer-underline-text">

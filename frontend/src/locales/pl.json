@@ -31,5 +31,40 @@
   },
   "about-view": {
     "creators": "Twórcy"
+  },
+  "teacher-topics": {
+    "choose-topic": "Wybór tematu",
+    "add-new-topic": "Dodaj nowy temat",
+    "add-edit-topic": "Dodaj/Zmień Temat",
+    "topic-name": "Nazwa Tematu",
+    "save-changes": "Zapisz zmiany",
+    "confirm-delete": "Potwierdź usunięcie",
+    "really-delete": "Czy naprawdę chcesz usunąć ten temat?",
+    "yes": "Tak",
+    "no": "Nie"
+  },
+  "teacher-questions": {
+    "topic-name": "Nazwa tematu",
+    "add-question": "Dodaj pytanie",
+    "add-edit-question": "Dodaj/Zmień pytanie",
+    "question-content": "Treść pytania",
+    "answer-options": "Warianty odpowiedzi",
+    "correct-answer": "Poprawna odpowiedź",
+    "save-question": "Zapisz pytanie"
+  },
+  "teacher-views-header": {
+    "platforms": "Wirtualne wydziały"
+  },
+  "teacher-views-footer": {
+    "university-name": "Politechnika Łódzka",
+    "CEL-main-page": "Strona główna CEL PŁ",
+    "localization": "Lokalizacja",
+    "working-hours": "Godziny pracy",
+    "technical-support": "Pomoc techniczna WIKAMP",
+    "phone": "Tel",
+    "helpful-links": "Przydatne linki",
+    "main-page": "Strona główna PŁ",
+    "library": "Biblioteka PŁ",
+    "email": "Poczta elektroniczna"
   }
 }

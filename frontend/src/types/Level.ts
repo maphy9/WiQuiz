@@ -1,8 +1,9 @@
 import type Question from './Question'
 
 export default interface Level {
-  title: string
-  orderNumber: number
+  LevelId: number
+  LevelTitle: string
+  OrderNumber: number
+  CourseId: number
   questions: Question[]
-  state: 'passed' | 'repeat' | 'locked'
 }

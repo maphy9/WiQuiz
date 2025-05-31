@@ -88,7 +88,7 @@ function useMistakeBonus() {
     return
   }
   let index = Math.floor(Math.random() * 4)
-  while (question.value.answers[index].isCorrect) {
+  while (question.value.answers[index].IsCorrect) {
     index = Math.floor(Math.random() * 4)
   }
   answers.value[index].isActive = false
@@ -254,11 +254,11 @@ watch(question, () => {
 
     <div class="question">
       <div class="question-title">
-        {{ question.title }}
+        {{ question.QuestionTitle }}
       </div>
 
       <div class="question-text">
-        {{ question.text }}
+        {{ question.QuestionText }}
       </div>
 
       <div class="messages">

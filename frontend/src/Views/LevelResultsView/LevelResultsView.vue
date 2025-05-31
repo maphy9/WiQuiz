@@ -3,8 +3,8 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
+import { useSoundStore } from '@/stores/useSoundStore'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
 const { t } = useI18n()
@@ -13,7 +13,7 @@ const router = useRouter()
 const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `${t('result-view.topic')}${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
+  return `${t('result-view.topic')}${currentLevel.value?.OrderNumber} - ${currentLevel.value?.LevelTitle}`
 })
 
 const score = computed(() => {
@@ -73,7 +73,7 @@ onUnmounted(() => {
             v-if="score >= 90"
             class="button next-level-button"
             @click="playButtonSound(); router.push({'name': 'level',
-                                                    'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
+                                                    'params': {'levelIndex': (currentLevel?.OrderNumber as number) + 1}})"
           >
             <p class="button-text">
               {{ $t('result-view.next-level') }}
@@ -96,7 +96,7 @@ onUnmounted(() => {
           <div
             class="button play-again-button"
             @click="playButtonSound(); playLevelMusic(); router.push({'name': 'level',
-                                                                      'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
+                                                                      'params': {'levelIndex': (currentLevel?.OrderNumber as number)}})"
           >
             <p class="button-text">
               {{ $t('result-view.play-again') }}

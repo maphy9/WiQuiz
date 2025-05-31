@@ -40,6 +40,7 @@ def create_database(cursor: Cursor):
   cursor.execute("""
   CREATE TABLE IF NOT EXISTS Question (
     QuestionId INTEGER PRIMARY KEY AUTOINCREMENT,
+    QuestionTitle TEXT,
     QuestionText TEXT,
     OrderNumber INTEGER,
     LevelId INTEGER,

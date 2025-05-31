@@ -9,7 +9,7 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">{{ subjectName }}</span>
+          <span class="title-text">Programowanie webowe</span>
         </div>
 
         <div class="container">
@@ -18,23 +18,29 @@
 
             <ul class="topics-list">
               <li
-                v-for="(topic, idx) in topics"
+                v-for="(level, idx) in levels"
                 :key="idx"
                 class="topic-item"
               >
-                <span>{{ topic.name }}</span>
+                <span>{{ level.LevelTitle }}</span>
 
                 <div class="actions">
                   <img
                     class="default-icon"
+                    src="@/images/goto_icon.svg"
+                    @click="gotoQuestions(level)"
+                  >
+
+                  <img
+                    class="default-icon"
                     src="@/images/edit_icon.png"
-                    @click="openEditModal(idx)"
+                    @click="openEditModal(level)"
                   >
 
                   <img
                     class="default-icon"
                     src="@/images/delete_icon.png"
-                    @click="openDeleteModal(idx)"
+                    @click="openDeleteModal(level)"
                   >
                 </div>
               </li>
@@ -58,7 +64,7 @@
 
     <EditTopicModal
       v-if="showModal"
-      v-model="topicName"
+      v-model="levelTitle"
       @save="saveTopic"
       @close="closeModal"
     />
@@ -72,36 +78,35 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import type Level from '@/types/Level'
+import { storeToRefs } from 'pinia'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
+import { useGame } from '@/stores/gameStore'
+import { createLevel, deleteLevel, getLevels, updateLevel } from '@/utils/fetchUtils'
 import DeleteTopicModal from '@/Views/TeacherView/TeacherTopicsView/DeleteTopicModal.vue'
 import EditTopicModal from '@/Views/TeacherView/TeacherTopicsView/EditTopicModal.vue'
 
-const subjectName = ref('Analiza Matematyczna I')
-
-const topics = ref([
-  { name: 'Granice (limity)' },
-  { name: 'Ciągłość funkcji' },
-  { name: 'Pochodne' },
-  { name: 'Całki' },
-])
-
 const showModal = ref(false)
 const showDeleteModal = ref(false)
-const topicName = ref('')
-const editingIndex = ref<number | null>(null)
-const deletingIndex = ref<number | null>(null)
+const { levels, currentLevel } = storeToRefs(useGame())
+const levelTitle = ref('')
+const editedLevel = ref<Level | null>(null)
+const deletedLevel = ref<Level | null>(null)
 
-function openEditModal(index: number) {
-  editingIndex.value = index
-  topicName.value = topics.value[index].name
+const router = useRouter()
+
+function openEditModal(level: Level) {
+  editedLevel.value = level
+  levelTitle.value = level.LevelTitle
   showModal.value = true
 }
 
 function openAddModal() {
-  editingIndex.value = null
-  topicName.value = ''
+  editedLevel.value = null
+  levelTitle.value = ''
   showModal.value = true
 }
 
@@ -109,33 +114,51 @@ function closeModal() {
   showModal.value = false
 }
 
-function saveTopic() {
-  if (topicName.value.trim() === '')
+async function saveTopic() {
+  if (levelTitle.value.trim() === '')
     return
-  if (editingIndex.value !== null) {
-    topics.value[editingIndex.value].name = topicName.value
+  if (editedLevel.value !== null) {
+    await updateLevel(
+      editedLevel.value.LevelId,
+      { ...editedLevel.value, LevelTitle: levelTitle.value },
+    )
+    if (editedLevel.value.LevelTitle !== levelTitle.value) {
+      editedLevel.value.LevelTitle = levelTitle.value
+    }
   }
   else {
-    topics.value.push({ name: topicName.value })
+    const newLevel = await createLevel({ LevelTitle: levelTitle.value, OrderNumber: levels.value.length })
+    levels.value.push(newLevel)
   }
   closeModal()
 }
-function openDeleteModal(index: number) {
-  deletingIndex.value = index
+
+function openDeleteModal(level: Level) {
+  deletedLevel.value = level
   showDeleteModal.value = true
 }
 
 function closeDeleteModal() {
   showDeleteModal.value = false
-  deletingIndex.value = null
+  deletedLevel.value = null
 }
 
 function confirmDelete() {
-  if (deletingIndex.value !== null) {
-    topics.value.splice(deletingIndex.value, 1)
+  if (deletedLevel.value) {
+    levels.value = levels.value.filter((level: Level) => level.LevelId !== deletedLevel.value?.LevelId)
+    deleteLevel(deletedLevel.value?.LevelId)
   }
   closeDeleteModal()
 }
+
+function gotoQuestions(level: Level) {
+  currentLevel.value = level
+  router.push({ name: 'teacher-questions' })
+}
+
+onMounted(async () => {
+  levels.value = await getLevels()
+})
 </script>
 
 <style scoped>

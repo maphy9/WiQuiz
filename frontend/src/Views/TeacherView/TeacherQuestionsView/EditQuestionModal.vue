@@ -15,12 +15,21 @@
       </div>
 
       <div class="modal-body">
+        <label class="modal-label">Question title:</label>
+
+        <textarea
+          v-model="localQuestion.QuestionTitle"
+          class="modal-input"
+          :class="{'input-error': showErrors && !localQuestion.QuestionText.trim()}"
+          rows="1"
+        />
+
         <label class="modal-label">{{ $t('teacher-questions.question-content') }}:</label>
 
         <textarea
-          v-model="localQuestion.text"
+          v-model="localQuestion.QuestionText"
           class="modal-input"
-          :class="{'input-error': showErrors && !localQuestion.text.trim()}"
+          :class="{'input-error': showErrors && !localQuestion.QuestionText.trim()}"
           rows="4"
         />
 
@@ -37,19 +46,19 @@
             class="answer-row"
           >
             <input
-              v-model="localQuestion.answers[idx]"
+              v-model="ans.AnswerText"
               type="text"
               class="answer-input"
-              :class="{'input-error': showErrors && !localQuestion.answers[idx].trim()}"
+              :class="{'input-error': showErrors}"
               :placeholder="`${String.fromCharCode(65 + idx)})`"
             >
 
             <input
               type="radio"
-              :checked="localQuestion.correctIndex === idx"
+              :checked="ans.IsCorrect"
               name="correct"
               class="answer-radio"
-              @change="localQuestion.correctIndex = idx"
+              @change="handleChange(idx)"
             >
           </div>
         </div>
@@ -67,20 +76,40 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from 'vue'
+import type Question from '@/types/Question'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{ modelValue: any }>()
+
 const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
   (e: 'save' | 'close'): void
 }>()
 
-const localQuestion = ref({
-  text: '',
-  answers: ['', '', '', ''],
-  correctIndex: 0,
+const localQuestion: Ref<Question> = ref({
+  QuestionId: 0,
+  QuestionTitle: '',
+  QuestionText: '',
+  LevelId: 0,
+  OrderNumber: 0,
+  answers: [
+    { AnswerId: 1, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 2, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 3, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 4, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+  ],
 })
+
+function handleChange(index: number) {
+  for (const answer of localQuestion.value.answers) {
+    answer.IsCorrect = false
+  }
+  localQuestion.value.answers[index].IsCorrect = true
+}
+
 const showErrors = ref(false)
+
 watch(
   () => props.modelValue,
   (val) => {
@@ -91,15 +120,10 @@ watch(
 
 function save() {
   showErrors.value = true
-  if (
-    !localQuestion.value.text.trim()
-    || localQuestion.value.answers.some(ans => !ans.trim())
-  ) {
-    return
-  }
   emit('update:modelValue', { ...localQuestion.value })
   emit('save')
 }
+
 function handleEsc(e: KeyboardEvent) {
   if (e.key === 'Escape')
     emit('close')
@@ -108,6 +132,7 @@ function handleEsc(e: KeyboardEvent) {
 onMounted(() => {
   window.addEventListener('keydown', handleEsc)
 })
+
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEsc)
 })

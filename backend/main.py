@@ -2,28 +2,12 @@
 
 import sqlite3
 import random
-from typing import Dict, List, Any
+from typing import Dict, Any
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from database_utils import (
-    get_all_Levels,
-    get_Level,
-    add_Level,
-    update_Level,
-    delete_Level,
-    get_all_Questions,
-    get_Question,
-    add_Question,
-    update_Question,
-    delete_Question,
-    get_Question_Answers,
-    get_Answer,
-    add_Answer,
-    update_Answer,
-    delete_Answer,
-)
+from database_utils.database_utils import *
 
 app = FastAPI()
 
@@ -37,8 +21,10 @@ app.add_middleware(
 
 rooms: Dict[str, Dict[str, Any]] = {}
 
+
 def generate_team_code() -> str:
     return ''.join(str(random.randint(0, 9)) for _ in range(6))
+
 
 async def connect_player_to_room(room_code: str, player: Dict[str, Any], websocket: WebSocket):
     if room_code not in rooms:
@@ -53,6 +39,7 @@ async def connect_player_to_room(room_code: str, player: Dict[str, Any], websock
         room["players"].append(player)
         room["websockets"].append(websocket)
 
+
 async def disconnect_player_from_room(room_code: str, websocket: WebSocket):
     room = rooms.get(room_code)
     if not room:
@@ -66,10 +53,11 @@ async def disconnect_player_from_room(room_code: str, websocket: WebSocket):
     if not room["players"]:
         del rooms[room_code]
 
+
 @app.websocket("/ws/{room_code}/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: str):
     await websocket.accept()
-    player = { "id": player_id }
+    player = {"id": player_id}
     await connect_player_to_room(room_code, player, websocket)
 
     try:
@@ -83,171 +71,232 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
                     room["levelId"] = data["levelId"]
 
             if data.get("type") == "use_bonus":
-                # data should contain "bonusId" and any other needed fields
+                # handle bonus (frontend must send { type:"use_bonus", bonusId: ..., ... })
                 pass
 
             if data.get("type") == "vote":
-                # data should contain "questionId", "selectedAnswer", etc.
+                # handle vote (frontend must send { type:"vote", questionId: ..., selectedAnswer: ..., ... })
                 pass
 
-            # broadcast to all players in the same room
             for ws in room["websockets"]:
                 await ws.send_json(data)
 
     except WebSocketDisconnect:
         await disconnect_player_from_room(room_code, websocket)
 
-# ----------------------------
-# REST Endpoints for CRUD
-# ----------------------------
 
+# Pydantic Models
 class LevelCreate(BaseModel):
     LevelTitle: str
     OrderNumber: int
-    CourseId: int
+    CourseId: int = 1  # Default to course 1
+
 
 class LevelUpdate(BaseModel):
     LevelTitle: str
     OrderNumber: int
-    CourseId: int
+    CourseId: int = 1
 
-class QuestionCreate(BaseModel):
-    QuestionText: str
-    OrderNumber: int
-    LevelId: int
-
-class QuestionUpdate(BaseModel):
-    QuestionText: str
-    OrderNumber: int
-    LevelId: int
 
 class AnswerCreate(BaseModel):
     AnswerText: str
     IsCorrect: bool
     QuestionId: int
 
+
+class QuestionCreate(BaseModel):
+    QuestionTitle: str
+    QuestionText: str
+    OrderNumber: int
+    LevelId: int
+    answers: list[AnswerCreate]
+
+
 class AnswerUpdate(BaseModel):
+    AnswerId: int
     AnswerText: str
     IsCorrect: bool
-    QuestionId: int
 
-@app.post("/levels/", status_code=201)
-def create_level(payload: LevelCreate):
-    conn = sqlite3.connect("your_database.db")
-    cursor = conn.cursor()
-    add_Level(cursor, payload.LevelTitle, payload.OrderNumber, payload.CourseId)
-    conn.commit()
-    conn.close()
-    return {"message": "Level created"}
+class QuestionUpdate(BaseModel):
+    QuestionTitle: str
+    QuestionText: str
+    OrderNumber: int
+    LevelId: int
+    answers: list[AnswerUpdate]
 
-@app.get("/levels/{course_id}")
-def read_levels(course_id: int):
-    conn = sqlite3.connect("your_database.db")
+
+# -----------------------
+# LEVEL CRUD
+# -----------------------
+
+@app.get("/levels")
+def read_levels():
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
+    course_id = 1
+
     levels = get_all_Levels(cursor, course_id)
     for level in levels:
-        questions = get_all_Questions(cursor, level["LevelId"])
-        for question in questions:
-            answers = get_Question_Answers(cursor, question["QuestionId"])
-            question["answers"] = answers
-        level["questions"] = questions
+        qs = get_all_Questions(cursor, level["LevelId"])
+        for q in qs:
+            answers = get_Question_Answers(cursor, q["QuestionId"])
+            q["answers"] = answers
+        level["questions"] = qs
+
     conn.close()
     return levels
 
+
 @app.get("/level/{level_id}")
 def read_level(level_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     level = get_Level(cursor, level_id)
     if not level:
         conn.close()
         raise HTTPException(status_code=404, detail="Level not found")
+    
+    # Get questions for this level
     questions = get_all_Questions(cursor, level_id)
-    for question in questions:
-        answers = get_Question_Answers(cursor, question["QuestionId"])
-        question["answers"] = answers
+    for q in questions:
+        answers = get_Question_Answers(cursor, q["QuestionId"])
+        q["answers"] = answers
     level["questions"] = questions
+    
     conn.close()
     return level
 
+
+@app.post("/levels/", status_code=201)
+def create_level(payload: LevelCreate):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+    add_Level(cursor, payload.LevelTitle, payload.OrderNumber, payload.CourseId)
+    new_id = cursor.lastrowid
+    conn.commit()
+    new_level = get_Level(cursor, new_id)
+    conn.close()
+    return new_level
+
+
 @app.put("/levels/{level_id}")
-def update_level_endpoint(level_id: int, payload: LevelUpdate):
-    conn = sqlite3.connect("your_database.db")
+def update_level(level_id: int, payload: LevelUpdate):
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     existing = get_Level(cursor, level_id)
     if not existing:
         conn.close()
         raise HTTPException(status_code=404, detail="Level not found")
+    
     update_Level(cursor, level_id, payload.LevelTitle, payload.OrderNumber, payload.CourseId)
     conn.commit()
     conn.close()
     return {"message": "Level updated"}
 
+
 @app.delete("/levels/{level_id}", status_code=204)
-def delete_level_endpoint(level_id: int):
-    conn = sqlite3.connect("your_database.db")
+def delete_level(level_id: int):
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     existing = get_Level(cursor, level_id)
     if not existing:
         conn.close()
         raise HTTPException(status_code=404, detail="Level not found")
+    
     delete_Level(cursor, level_id)
     conn.commit()
     conn.close()
     return
 
-# --- Question CRUD ---
+
+# -----------------------
+# QUESTION CRUD
+# -----------------------
 
 @app.post("/questions/", status_code=201)
 def create_question(payload: QuestionCreate):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
-    # Optionally verify that LevelId exists before inserting
-    add_Question(cursor, payload.QuestionText, payload.OrderNumber, payload.LevelId)
+
+    add_Question(cursor, payload.QuestionTitle, payload.QuestionText, payload.OrderNumber, payload.LevelId)
+    question_id = cursor.lastrowid
+
+    for ans in payload.answers:
+        add_Answer(cursor, ans.AnswerText, ans.IsCorrect, question_id)
+
     conn.commit()
+
+    new_question = get_Question(cursor, question_id)
+    new_question["answers"] = get_Question_Answers(cursor, new_question["QuestionId"])
+
     conn.close()
-    return {"message": "Question created"}
+    return new_question
+
 
 @app.get("/questions/{level_id}")
 def read_questions(level_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     questions = get_all_Questions(cursor, level_id)
-    for question in questions:
-        answers = get_Question_Answers(cursor, question["QuestionId"])
-        question["answers"] = answers
+    for q in questions:
+        answers = get_Question_Answers(cursor, q["QuestionId"])
+        q["answers"] = answers
     conn.close()
     return questions
 
+
 @app.get("/question/{question_id}")
 def read_question(question_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
-    question = get_Question(cursor, question_id)
-    if not question:
+    q = get_Question(cursor, question_id)
+    if not q:
         conn.close()
         raise HTTPException(status_code=404, detail="Question not found")
     answers = get_Question_Answers(cursor, question_id)
-    question["answers"] = answers
+    q["answers"] = answers
     conn.close()
-    return question
+    return q
+
 
 @app.put("/questions/{question_id}")
-def update_question_endpoint(question_id: int, payload: QuestionUpdate):
-    conn = sqlite3.connect("your_database.db")
+def update_question(question_id: int, payload: QuestionUpdate):
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
+
     existing = get_Question(cursor, question_id)
     if not existing:
         conn.close()
         raise HTTPException(status_code=404, detail="Question not found")
-    update_Question(cursor, question_id, payload.QuestionText, payload.OrderNumber, payload.LevelId)
+
+    update_Question(cursor, question_id, payload.QuestionTitle, payload.QuestionText, payload.OrderNumber, payload.LevelId)
+
+    existing_answers = get_Question_Answers(cursor, question_id)
+    existing_ids = {a["AnswerId"] for a in existing_answers}
+
+    seen_ids = set()
+
+    for answer in payload.answers:
+        if answer.AnswerId is not None:
+            if answer.AnswerId in existing_ids:
+                update_Answer(cursor, answer.AnswerId, answer.AnswerText, answer.IsCorrect)
+                seen_ids.add(answer.AnswerId)
+        else:
+            add_Answer(cursor, answer.AnswerText, answer.IsCorrect, question_id)
+
+    to_delete = existing_ids - seen_ids
+    for answer_id in to_delete:
+        delete_Answer(cursor, answer_id)
+
     conn.commit()
+    updated = get_Question(cursor, question_id)
     conn.close()
-    return {"message": "Question updated"}
+    return updated
+
 
 @app.delete("/questions/{question_id}", status_code=204)
 def delete_question_endpoint(question_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     existing = get_Question(cursor, question_id)
     if not existing:
@@ -258,40 +307,47 @@ def delete_question_endpoint(question_id: int):
     conn.close()
     return
 
-# --- Answer CRUD ---
+
+# -----------------------
+# ANSWER CRUD
+# -----------------------
 
 @app.post("/answers/", status_code=201)
 def create_answer(payload: AnswerCreate):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
-    # Optionally verify that QuestionId exists before inserting
     add_Answer(cursor, payload.AnswerText, payload.IsCorrect, payload.QuestionId)
+    new_id = cursor.lastrowid
     conn.commit()
+    new_answer = get_Answer(cursor, new_id)
     conn.close()
-    return {"message": "Answer created"}
+    return new_answer
+
 
 @app.get("/answers/{question_id}")
 def read_answers(question_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     answers = get_Question_Answers(cursor, question_id)
     conn.close()
     return answers
 
+
 @app.get("/answer/{answer_id}")
 def read_answer(answer_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
-    answer = get_Answer(cursor, answer_id)
-    if not answer:
+    a = get_Answer(cursor, answer_id)
+    if not a:
         conn.close()
         raise HTTPException(status_code=404, detail="Answer not found")
     conn.close()
-    return answer
+    return a
+
 
 @app.put("/answers/{answer_id}")
 def update_answer_endpoint(answer_id: int, payload: AnswerUpdate):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     existing = get_Answer(cursor, answer_id)
     if not existing:
@@ -302,9 +358,10 @@ def update_answer_endpoint(answer_id: int, payload: AnswerUpdate):
     conn.close()
     return {"message": "Answer updated"}
 
+
 @app.delete("/answers/{answer_id}", status_code=204)
 def delete_answer_endpoint(answer_id: int):
-    conn = sqlite3.connect("your_database.db")
+    conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
     existing = get_Answer(cursor, answer_id)
     if not existing:

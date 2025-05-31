@@ -9,32 +9,32 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">{{ subjectName }}</span>
+          <span class="title-text">Programowanie webowe</span>
         </div>
 
         <div class="container">
           <div class="topics">
-            <h3>{{ $t('teacher-questions.topic-name') }}: {{ topicName }}</h3>
+            <h3>{{ $t('teacher-questions.topic-name') }}: {{ currentLevel?.LevelTitle }}</h3>
 
             <ul class="topics-list">
               <li
-                v-for="(q, idx) in questions"
+                v-for="(q, idx) in currentLevel?.questions"
                 :key="idx"
                 class="topic-item"
               >
-                <span>{{ idx + 1 }}. {{ q.text }}</span>
+                <span>{{ idx + 1 }}. {{ q.QuestionText }}</span>
 
                 <div class="actions">
                   <img
                     class="default-icon"
                     src="@/images/edit_icon.png"
-                    @click="openEditModal(idx)"
+                    @click="openEditModal(q)"
                   >
 
                   <img
                     class="default-icon"
                     src="@/images/delete_icon.png"
-                    @click="openDeleteModal(idx)"
+                    @click="openDeleteModal(q)"
                   >
                 </div>
               </li>
@@ -74,92 +74,109 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import type { Ref } from 'vue'
+import type Question from '@/types/Question'
+import { storeToRefs } from 'pinia'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
+import { useGame } from '@/stores/gameStore'
+import { createQuestion, deleteQuestion, updateQuestion } from '@/utils/fetchUtils'
 import DeleteQuestionModal from './DeleteQuestionModal.vue'
 import EditQuestionModal from './EditQuestionModal.vue'
 
-const subjectName = ref('Analiza Matematyczna I')
+const router = useRouter()
 
-const topicName = ref('Granice funkcji')
-
-const questions = ref([
-  {
-    text: 'Oblicz granicę: lim(x → 2) (x² + 3x − 4)',
-    answers: ['2', '6', '1', 'nie istnieje'],
-    correctIndex: 1,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 0) (sin(x)/x)',
-    answers: ['1', '0', '∞', 'nie istnieje'],
-    correctIndex: 0,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → ∞) (1/x)',
-    answers: ['0', '∞', '1', 'nie istnieje'],
-    correctIndex: 0,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 1) (x³ − 1)/(x − 1)',
-    answers: ['3', '0', '1', 'nie istnieje'],
-    correctIndex: 3,
-  },
-  {
-    text: 'Oblicz granicę: lim(x → 0) (e^x − 1)/x',
-    answers: ['1', '0', '∞', 'nie istnieje'],
-    correctIndex: 0,
-  },
-
-])
-
+const { currentLevel } = storeToRefs(useGame())
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
-const editingIndex = ref<number | null>(null)
-const deletingIndex = ref<number | null>(null)
-const questionModel = ref({
-  text: '',
-  answers: ['', '', '', ''],
-  correctIndex: 0,
+const editedQuestion = ref<Question | null>(null)
+const deletedQuestion = ref<Question | null>(null)
+const questionModel: Ref<Question> = ref({
+  QuestionId: 0,
+  QuestionTitle: '',
+  QuestionText: '',
+  LevelId: 0,
+  OrderNumber: 0,
+  answers: [
+    { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+  ],
 })
 
-function openEditModal(index: number) {
-  editingIndex.value = index
-  questionModel.value = { ...questions.value[index] }
+function openEditModal(question: Question) {
+  editedQuestion.value = question
+  questionModel.value = { ...question }
   showEditModal.value = true
 }
+
 function openAddModal() {
-  editingIndex.value = null
-  questionModel.value = { text: '', answers: ['', '', '', ''], correctIndex: 0 }
+  editedQuestion.value = null
+  questionModel.value = {
+    QuestionId: 0,
+    QuestionTitle: '',
+    QuestionText: '',
+    LevelId: 0,
+    OrderNumber: 0,
+    answers: [
+      { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+      { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+      { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+      { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
+    ],
+  }
   showEditModal.value = true
 }
-function saveQuestion() {
-  if (editingIndex.value !== null) {
-    questions.value[editingIndex.value] = { ...questionModel.value }
+
+async function saveQuestion() {
+  if (editedQuestion.value !== null) {
+    await updateQuestion(
+      questionModel.value.QuestionId,
+      { ...questionModel.value },
+    )
+    console.error(questionModel.value)
+    if (editedQuestion.value !== questionModel.value) {
+      editedQuestion.value = { ...questionModel.value }
+    }
   }
-  else {
-    questions.value.push({ ...questionModel.value })
+  else if (currentLevel.value) {
+    questionModel.value.LevelId = currentLevel.value.LevelId
+    const newQuestion = await createQuestion({ ...questionModel.value })
+    currentLevel.value.questions.push(newQuestion)
   }
   showEditModal.value = false
 }
+
 function closeEditModal() {
   showEditModal.value = false
 }
-function openDeleteModal(index: number) {
-  deletingIndex.value = index
+
+function openDeleteModal(question: Question) {
+  deletedQuestion.value = question
   showDeleteModal.value = true
 }
+
 function confirmDelete() {
-  if (deletingIndex.value !== null) {
-    questions.value.splice(deletingIndex.value, 1)
+  if (deletedQuestion.value !== null && currentLevel.value) {
+    currentLevel.value.questions = currentLevel.value.questions.filter((question: Question) => question.QuestionId !== deletedQuestion.value?.QuestionId)
+    deleteQuestion(deletedQuestion.value.QuestionId)
   }
-  showDeleteModal.value = false
-  deletingIndex.value = null
+  closeDeleteModal()
 }
+
 function closeDeleteModal() {
   showDeleteModal.value = false
-  deletingIndex.value = null
+  deletedQuestion.value = null
 }
+
+onMounted(() => {
+  if (!currentLevel.value) {
+    router.push({ name: 'teacher-topics' })
+  }
+})
 </script>
 
 <style scoped>

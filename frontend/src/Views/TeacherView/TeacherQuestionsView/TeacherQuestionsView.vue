@@ -22,7 +22,7 @@
                 :key="idx"
                 class="topic-item"
               >
-                <span>{{ idx + 1 }}. {{ q.QuestionText }}</span>
+                <span>{{ idx + 1 }}. {{ q.QuestionTitle }}</span>
 
                 <div class="actions">
                   <img
@@ -137,9 +137,9 @@ async function saveQuestion() {
       questionModel.value.QuestionId,
       { ...questionModel.value },
     )
-    console.error(questionModel.value)
-    if (editedQuestion.value !== questionModel.value) {
-      editedQuestion.value = { ...questionModel.value }
+    if (currentLevel.value && editedQuestion.value !== questionModel.value) {
+      const _editedQuestion = currentLevel.value?.questions.findIndex(_q => _q.QuestionId === questionModel.value.QuestionId)
+      currentLevel.value.questions[_editedQuestion] = { ...questionModel.value }
     }
   }
   else if (currentLevel.value) {

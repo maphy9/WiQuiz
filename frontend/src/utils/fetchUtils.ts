@@ -1,6 +1,7 @@
 import type Answer from '@/types/Answer'
 import type Level from '@/types/Level'
 import type Question from '@/types/Question'
+import type User from '@/types/User'
 
 const API_BASE = 'http://localhost:8000'
 
@@ -213,4 +214,53 @@ export async function deleteAnswer(answerId: number): Promise<void> {
   if (res.status !== 204) {
     throw new Error(`Failed to delete answer ${answerId}: ${res.status}`)
   }
+}
+
+export interface LoginPayload {
+  name: string
+  password: string
+}
+
+export async function login(payload: LoginPayload): Promise<User> {
+  const res = await fetch(`${API_BASE}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  if (!res.ok) {
+    throw new Error(`Login failed: ${res.status}`)
+  }
+
+  const data = await res.json()
+
+  return {
+    id: data.UserId,
+    name: data.Name,
+    avatar: '',
+    maxLevelId: data.MaxLevelId,
+  }
+}
+
+const USER_KEY = 'loggedInUser'
+
+export function saveUser(user: User | null): void {
+  if (!user) {
+    localStorage.removeItem(USER_KEY)
+  }
+  else {
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+  }
+}
+
+export function loadUser(): User | null {
+  const stored = localStorage.getItem(USER_KEY)
+
+  return stored
+    ? JSON.parse(stored) as User
+    : null
+}
+
+export function clearUser(): void {
+  localStorage.removeItem(USER_KEY)
 }

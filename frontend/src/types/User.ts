@@ -1,5 +1,6 @@
 export default interface User {
-  id: string
+  id: number
   name: string
   avatar: string
+  maxLevelId: number
 }

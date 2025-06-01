@@ -21,7 +21,7 @@
 
         <input
           id="username"
-          v-model="username"
+          v-model="name"
           type="text"
           :placeholder="t('login-view.enter-your-username')"
         >
@@ -72,16 +72,23 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useUser } from '@/stores/userStore'
+import { login } from '@/utils/fetchUtils'
 
 const { t } = useI18n()
+const { user } = storeToRefs(useUser())
+const router = useRouter()
 
-const username = ref('')
+const name = ref('')
 const password = ref('')
 
-function handleLogin() {
-  window.location.reload()
+async function handleLogin() {
+  user.value = await login({ name: name.value, password: password.value })
+  router.push({ name: 'main' })
 }
 </script>
 

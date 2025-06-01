@@ -2,18 +2,12 @@ import type { Ref } from 'vue'
 import type Answer from '@/types/Answer'
 import type Level from '@/types/Level'
 import type Teammate from '@/types/Teammate'
-import type User from '@/types/User'
-import { nanoid } from 'nanoid'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { useUser } from './userStore'
 
 export const useGame = defineStore('gameStore', () => {
-  // User
-  const user: Ref<User> = ref({
-    id: nanoid(),
-    name: 'Robert',
-    avatar: '/images/emptyPfp.png',
-  })
+  const { user } = storeToRefs(useUser())
 
   // Stats
   const correctAnswers = ref(0)
@@ -23,9 +17,7 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   // Team
-  const team: Ref<Teammate[]> = ref([
-    { user: user.value, isAlive: true, selectedAnswer: null, score: 0 },
-  ])
+  const team: Ref<Teammate[]> = ref([])
 
   function selectAnswer(answer: Answer) {
     for (const teammate of team.value) {

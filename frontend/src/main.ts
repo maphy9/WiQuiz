@@ -25,6 +25,7 @@ const router = createRouter({
       children: [
         { name: 'teacher-topics', path: '/', component: TeacherTopicsView },
         { name: 'teacher-questions', path: '/questions', component: TeacherQuestionsView },
+        { name: 'login', path: 'login', component: LoginView },
       ],
     },
     {
@@ -35,7 +36,6 @@ const router = createRouter({
         { name: 'about', path: 'about', component: AboutView },
         { name: 'join', path: 'join', component: JoinView },
         { name: 'level-selection', path: 'level-selection', component: LevelSelectionView },
-        { name: 'login', path: 'login', component: LoginView },
         { name: 'level-results', path: 'level-results', component: LevelResultsView },
         {
           name: 'level',

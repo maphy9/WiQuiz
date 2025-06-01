@@ -25,6 +25,17 @@ rooms: Dict[str, Dict[str, Any]] = {}
 def generate_team_code() -> str:
     return ''.join(str(random.randint(0, 9)) for _ in range(6))
 
+async def broadcast_players_update(room_code: str):
+    room = rooms.get(room_code)
+    if not room:
+        return
+    data = {
+        "type": "players_update",
+        "players": room["players"],
+    }
+    for ws in room["websockets"]:
+        await ws.send_json(data)
+
 
 async def connect_player_to_room(room_code: str, player: Dict[str, Any], websocket: WebSocket):
     if room_code not in rooms:
@@ -32,12 +43,13 @@ async def connect_player_to_room(room_code: str, player: Dict[str, Any], websock
             "players": [],
             "stage": "main-menu",
             "levelId": None,
-            "websockets": []
+            "websockets": [],
         }
     room = rooms[room_code]
     if len(room["players"]) < 3:
         room["players"].append(player)
         room["websockets"].append(websocket)
+        await broadcast_players_update(room_code)
 
 
 async def disconnect_player_from_room(room_code: str, websocket: WebSocket):
@@ -52,12 +64,51 @@ async def disconnect_player_from_room(room_code: str, websocket: WebSocket):
     room["players"].pop(idx)
     if not room["players"]:
         del rooms[room_code]
+    else:
+        await broadcast_players_update(room_code)
 
 
 @app.websocket("/ws/{room_code}/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: str):
     await websocket.accept()
-    player = {"id": player_id}
+
+    # ─── 1) Look up the full "User" record from your SQLite DB ─────────────────────────
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    # Assume your User table has columns: UserId (PK), Name, Avatar
+    cursor.execute(
+        "SELECT UserId, Name, Avatar FROM [User] WHERE UserId = ?",
+        (player_id,),
+    )
+    row = cursor.fetchone()
+    if not row:
+        # If the user does not exist, disconnect immediately
+        await websocket.close(code=1008)
+        conn.close()
+        return
+
+    user_id, name, avatar = row
+
+    # Now fetch this user's maxLevelId from UserCourseData:
+    cursor.execute(
+        "SELECT MaxLevelId FROM UserCourseData WHERE UserId = ?",
+        (user_id,),
+    )
+    ucd_row = cursor.fetchone()
+    max_level_id = ucd_row[0] if ucd_row else None
+
+    conn.close()
+
+    # Construct exactly the shape your frontend expects:
+    # { id: number, name: string, avatar: string, maxLevelId: number }
+    player = {
+        "id": user_id,
+        "name": name,
+        "avatar": avatar or "",
+        "maxLevelId": max_level_id or 0,
+    }
+
     await connect_player_to_room(room_code, player, websocket)
 
     try:
@@ -78,6 +129,7 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
                 # handle vote (frontend must send { type:"vote", questionId: ..., selectedAnswer: ..., ... })
                 pass
 
+            # Broadcast whatever the client sent to everyone else in this room:
             for ws in room["websockets"]:
                 await ws.send_json(data)
 
@@ -175,6 +227,7 @@ def create_level(payload: LevelCreate):
     new_id = cursor.lastrowid
     conn.commit()
     new_level = get_Level(cursor, new_id)
+    new_level["questions"] = []
     conn.close()
     return new_level
 
@@ -371,3 +424,54 @@ def delete_answer_endpoint(answer_id: int):
     conn.commit()
     conn.close()
     return
+
+
+class LoginRequest(BaseModel):
+    name: str
+    password: str
+
+@app.post("/login")
+def login_user(payload: LoginRequest):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    user = get_User_by_name(cursor, payload.name)
+    course_id = 1
+
+    if user:
+        if user["Password"] != payload.password:
+            conn.close()
+            raise HTTPException(status_code=401, detail="Invalid password")
+    else:
+        cursor.execute("INSERT INTO User (Name, Password) VALUES (?, ?)", (payload.name, payload.password))
+        user_id = cursor.lastrowid
+
+        level = get_first_Level_of_course(cursor, course_id)
+        if not level:
+            conn.close()
+            raise HTTPException(status_code=500, detail="No levels found in the course")
+
+        cursor.execute("""
+            INSERT INTO UserCourseData (UserId, MaxLevelId)
+            VALUES (?, ?)
+        """, (user_id, level["LevelId"]))
+        conn.commit()
+
+        user = {
+            "UserId": user_id,
+            "Name": payload.name,
+            "Password": payload.password
+        }
+
+    user_course_data = get_UserCourseData_and_Level(cursor, user["UserId"], course_id)
+    if not user_course_data:
+        conn.close()
+        raise HTTPException(status_code=500, detail="UserCourseData not found")
+
+    conn.close()
+
+    return {
+        "UserId": user["UserId"],
+        "Name": user["Name"],
+        "MaxLevelId": user_course_data["MaxLevelId"]
+    }

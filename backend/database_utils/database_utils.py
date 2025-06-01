@@ -24,10 +24,10 @@ def get_Course(cursor: Cursor, courseId: int):
 # USER METHODS
 # -----------------------
 
-def add_User(cursor: Cursor, userId: int, name: str, surname: str, password: str):
+def add_User(cursor: Cursor, userId: int, name: str, password: str):
     cursor.execute(
-        "INSERT INTO User VALUES (?, ?, ?, ?)",
-        (userId, name, surname, password)
+        "INSERT INTO User VALUES (?, ?, ?)",
+        (userId, name, password)
     )
 
 def get_User(cursor: Cursor, userId: int):
@@ -41,7 +41,6 @@ def get_User(cursor: Cursor, userId: int):
     return {
         'UserId': row[0],
         'Name': row[1],
-        'Surname': row[2],
         'Password': row[3],
     }
 
@@ -262,3 +261,54 @@ def delete_Answer(cursor: Cursor, answerId: int):
         "DELETE FROM Answer WHERE AnswerId = ?",
         (answerId,)
     )
+
+def get_User_by_name(cursor: Cursor, name: str):
+    cursor.execute("SELECT * FROM User WHERE Name = ?", (name,))
+    output = cursor.fetchone()
+    if not output:
+        return None
+    return {
+        'UserId': output[0],
+        'Name': output[1],
+        'Password': output[2],
+    }
+
+def get_first_Level_of_course(cursor: Cursor, courseId: int):
+    cursor.execute("""
+    SELECT * FROM Level
+    WHERE CourseId = ?
+    ORDER BY OrderNumber ASC
+    LIMIT 1
+    """, (courseId,))
+    row = cursor.fetchone()
+    if not row:
+        return None
+    return {
+        'LevelId': row[0],
+        'LevelTitle': row[1],
+        'OrderNumber': row[2],
+        'CourseId': row[3],
+    }
+
+def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
+    cursor.execute("""
+    SELECT 
+      UserCourseData.UserCourseDataId,
+      UserCourseData.MaxLevelId,
+      Level.LevelTitle,
+      Level.OrderNumber,
+      Level.CourseId
+    FROM UserCourseData
+    JOIN Level ON Level.LevelId = UserCourseData.MaxLevelId
+    WHERE UserId = ? AND CourseId = ?
+    """, (userId, courseId))
+    row = cursor.fetchone()
+    if not row:
+        return None
+    return {
+        'UserCourseDataId': row[0],
+        'MaxLevelId': row[1],
+        'LevelTitle': row[2],
+        'OrderNumber': row[3],
+        'CourseId': row[4]
+    }

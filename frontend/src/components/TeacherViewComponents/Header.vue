@@ -63,8 +63,11 @@
         >
       </div>
 
-      <div class="header-user">
-        <span class="header-user-name">Bolesław R.</span>
+      <div
+        v-if="user"
+        class="header-user"
+      >
+        <span class="header-user-name">{{ user.name }}</span>
 
         <img
           class="header-user-img"
@@ -76,16 +79,30 @@
           src="@/images/arrowDown_icon.png"
         >
       </div>
+
+      <div
+        v-else
+        class="header-user"
+        :style="{'textDecoration': 'underline'}"
+        @click="router.push({'name': 'login'})"
+      >
+        Login
+      </div>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useUser } from '@/stores/userStore'
 
 const language = ref('')
 const { locale } = useI18n()
+const { user } = storeToRefs(useUser())
+const router = useRouter()
 
 onMounted(() => {
   if (locale.value === 'pl') {

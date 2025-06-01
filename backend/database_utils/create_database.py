@@ -5,7 +5,6 @@ def create_database(cursor: Cursor):
   CREATE TABLE IF NOT EXISTS User (
     UserId INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL,
-    Surname TEXT NOT NULL,
     Password TEXT
   )
   """)

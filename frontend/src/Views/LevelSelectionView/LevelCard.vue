@@ -1,35 +1,30 @@
 <script setup lang="ts">
-import type Level from '@/types/Level'
 import { computed, toRefs } from 'vue'
 import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
-  level: Level
+  level: any
 }>()
 
 const { playButtonSound } = useSoundStore()
 const { level } = toRefs(props)
 
 const bgColour = computed(() => {
-  // switch (level.value.state) {
-  //   case 'passed': return '#80C997'
-  //   case 'locked': return '#8B231D'
-  //   case 'repeat': return '#FFD966'
-  //   default: return '#ccc'
-  // }
-
-  return '#80C997'
+  switch (level.value.state) {
+    case 'passed': return '#80C997'
+    case 'locked': return '#8B231D'
+    case 'repeat': return '#FFD966'
+    default: return '#ccc'
+  }
 })
 
 const imageSrc = computed(() => {
-  // switch (level.value.state) {
-  //   case 'passed': return new URL('@/images/arrow.png', import.meta.url).href
-  //   case 'locked': return new URL('@/images/lock.png', import.meta.url).href
-  //   case 'repeat': return new URL('@/images/circleArrow.png', import.meta.url).href
-  //   default: return ''
-  // }
-
-  return new URL('@/images/arrow.png', import.meta.url).href
+  switch (level.value.state) {
+    case 'passed': return new URL('@/images/arrow.png', import.meta.url).href
+    case 'locked': return new URL('@/images/lock.png', import.meta.url).href
+    case 'repeat': return new URL('@/images/circleArrow.png', import.meta.url).href
+    default: return ''
+  }
 })
 
 const dynamicFontSize = computed(() => {

@@ -2,5 +2,5 @@ export default interface User {
   id: number
   name: string
   avatar: string
-  maxLevelId: number
+  maxOrderNumber: number
 }

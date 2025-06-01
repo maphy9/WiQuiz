@@ -143,7 +143,6 @@ async function saveQuestion() {
     }
   }
   else if (currentLevel.value) {
-    console.error(currentLevel)
     questionModel.value.LevelId = currentLevel.value.LevelId
     const newQuestion = await createQuestion({ ...questionModel.value })
     currentLevel.value.questions.push(newQuestion)

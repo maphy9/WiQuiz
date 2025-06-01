@@ -35,14 +35,18 @@ const chosenAnswer: Ref<Answer | null> = ref(null)
 const isChosen = ref(false)
 
 // Team
-const { removeSelectedAnswers, killRandom, selectAnswer, getChosenAnswer } = gameStore
-const { team, user } = storeToRefs(gameStore)
+const { removeSelectedAnswers, killRandom, getChosenAnswer, submitVote } = gameStore
+const { team, user, wasChosen } = storeToRefs(gameStore)
 const me = computed(() => {
-  return team.value.find((teammate: Teammate) => teammate.user === user.value)
+  return team.value.find((teammate: Teammate) => teammate.user.id === user.value?.id)
+})
+
+watch(me, () => {
+  console.error(me)
 })
 
 // Timer
-const initialTime = 9999
+const initialTime = 2
 const maxTime = ref(initialTime)
 const timeLeft = ref(initialTime)
 const timeLeftFormatted = computed(() => {
@@ -142,10 +146,12 @@ function showMessage(text: string, color: string) {
 function handleChooseAnswer() {
   const answer = getChosenAnswer()
 
+  console.error(answer)
+
   if (!answer) {
     showMessage(t('level-view.no-answer'), 'WHITE')
   }
-  else if (answer.isCorrect) {
+  else if (answer.IsCorrect) {
     showMessage(t('level-view.correct-answer'), 'GREEN')
   }
   else {
@@ -185,19 +191,13 @@ function handleChooseAnswer() {
 }
 
 function handleSelect(answer: any) {
-  selectAnswer(answer)
   for (let i = 0; i < question.value.answers.length; i++) {
     if (answers.value[i] !== answer) {
       answers.value[i].isActive = false
     }
   }
 
-  for (const teammate of team.value) {
-    if (teammate.isAlive && teammate.selectedAnswer === null) {
-      return
-    }
-  }
-  handleChooseAnswer()
+  submitVote(question.value.answers.find(a => a.AnswerId === answer.AnswerId) as Answer)
 }
 
 function initQuestion() {
@@ -222,18 +222,25 @@ function initQuestion() {
     answers.value.push({ ...question.value.answers[i], ...answerProps[i] })
   }
 
+  wasChosen.value = false
   removeSelectedAnswers()
 
   timeLeftInterval.value = setInterval(() => {
     if (timeLeft.value === 0 && timeLeftInterval.value) {
+      wasChosen.value = true
       clearInterval(timeLeftInterval.value)
-      handleChooseAnswer()
     }
     else {
       timeLeft.value--
     }
   }, 1000)
 }
+
+watch(wasChosen, () => {
+  if (wasChosen.value) {
+    handleChooseAnswer()
+  }
+})
 
 watch(question, () => {
   initQuestion()

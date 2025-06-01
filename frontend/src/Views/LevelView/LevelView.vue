@@ -62,7 +62,7 @@ watch(currentQuestionIndex, () => {
   }
   if (currentQuestionIndex.value === currentLevel.value.questions.length) {
     canGoToLevelResults.value = true
-    router.push('/level-results')
+    router.push({ name: 'level-results' })
   }
   else {
     currentQuestion.value = currentLevel.value.questions[currentQuestionIndex.value]

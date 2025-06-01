@@ -10,7 +10,6 @@ export function useWebSocket() {
     isConnected,
     roomCode,
     gameStage,
-    currentLevelId,
   } = storeToRefs(gameStore)
 
   const canConnect = computed(() => !!user.value?.id)
@@ -39,7 +38,7 @@ export function useWebSocket() {
       throw new Error('Room code must be 6 digits')
     }
 
-    return await gameStore.joinRoom(code)
+    return await gameStore.connectToRoom(code)
   }
 
   function leaveRoom() {
@@ -65,13 +64,6 @@ export function useWebSocket() {
       throw new Error('Not connected to a room')
     }
     gameStore.returnToMainMenu()
-  }
-
-  function submitVote(questionId: number, answer: any) {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.submitVote(questionId, answer)
   }
 
   function useBonus(bonusId: string, data?: any) {
@@ -108,7 +100,6 @@ export function useWebSocket() {
     isConnected,
     roomCode,
     gameStage,
-    currentLevelId,
     canConnect,
     connectionStatus,
     createRoom,
@@ -118,7 +109,6 @@ export function useWebSocket() {
     startLevel,
     changeGameStage,
     returnToMenu,
-    submitVote,
     useBonus,
     sendMessage,
   }

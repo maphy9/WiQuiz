@@ -13,7 +13,7 @@ const router = useRouter()
 const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `${t('result-view.topic')}${currentLevel.value?.OrderNumber} - ${currentLevel.value?.LevelTitle}`
+  return `${t('result-view.topic')} ${currentLevel.value?.OrderNumber as number + 1} - ${currentLevel.value?.LevelTitle}`
 })
 
 const score = computed(() => {
@@ -63,8 +63,7 @@ onUnmounted(() => {
           <StudentCard
             v-for="teammate in team"
             :key="teammate.user.name"
-            :name="teammate.user.name"
-            :score="teammate.score"
+            :teammate="teammate"
           />
         </div>
 

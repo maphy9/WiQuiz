@@ -129,7 +129,6 @@ async function saveTopic() {
   else {
     const newLevel = await createLevel({ LevelTitle: levelTitle.value, OrderNumber: levels.value.length })
     levels.value.push(newLevel)
-    console.error(levels.value)
   }
   closeModal()
 }
@@ -154,8 +153,6 @@ function confirmDelete() {
 
 function gotoQuestions(level: Level) {
   currentLevel.value = level
-  console.error(levels.value)
-  console.error(currentLevel.value)
   router.push({ name: 'teacher-questions' })
 }
 

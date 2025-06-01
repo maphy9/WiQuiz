@@ -3,7 +3,9 @@ import type Answer from '@/types/Answer'
 import type Level from '@/types/Level'
 import type Teammate from '@/types/Teammate'
 import { defineStore, storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
 
 export const useGame = defineStore('gameStore', () => {
@@ -14,7 +16,21 @@ export const useGame = defineStore('gameStore', () => {
   const roomCode: Ref<string | null> = ref(null)
   const isConnected = ref(false)
   const gameStage = ref('main-menu')
-  const currentLevelId: Ref<number | null> = ref(null)
+  const currentLevelIndex = ref(0)
+  const router = useRouter()
+
+  watch(gameStage, () => {
+    switch (gameStage.value) {
+      case 'main-menu':
+        router.push({ name: 'main' })
+        break
+      case 'level-selection':
+        router.push({ name: 'level-selection' })
+        break
+      case 'level':
+        router.push({ name: 'level', params: { levelIndex: currentLevelIndex.value } })
+    }
+  })
 
   // Stats
   const correctAnswers = ref(0)
@@ -25,65 +41,96 @@ export const useGame = defineStore('gameStore', () => {
 
   // Team
   const team: Ref<Teammate[]> = ref([])
+  const wasChosen = ref(false)
+
+  // Level
+  const levels: Ref<Level[]> = ref([])
+  const processedLevels = computed(() => {
+    let maxOrderNumber = Infinity
+    for (const teammate of team.value) {
+      if (maxOrderNumber > teammate.user.maxOrderNumber) {
+        maxOrderNumber = teammate.user.maxOrderNumber
+      }
+    }
+
+    return levels.value.map((level: Level) => ({
+      ...level,
+      state:
+      level.OrderNumber < maxOrderNumber
+        ? 'passed'
+        : (level.OrderNumber === maxOrderNumber
+            ? 'repeat'
+            : 'locked'),
+    }))
+  })
+  const currentLevel: Ref<Level | null> = ref(null)
+
+  async function initLevels() {
+    levels.value = await getLevels()
+    currentLevel.value = null
+  }
 
   // WebSocket Methods
   function connectToRoom(code: string) {
     if (!user.value) {
       console.error('Not logged in')
 
-      return new Promise(reject => reject)
+      return new Promise(resolve => resolve('Not logged in'))
     }
 
     return new Promise<void>((resolve, reject) => {
-      if (websocket.value) {
+      const setupWebSocket = () => {
+        roomCode.value = code
+        const wsUrl = `ws://localhost:8000/ws/${code}/${user.value?.id}`
+        websocket.value = new WebSocket(wsUrl)
+
+        websocket.value.onopen = () => {
+          console.error('Connected to room:', code)
+          isConnected.value = true
+          resolve()
+        }
+
+        websocket.value.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data)
+            handleWebSocketMessage(data)
+          }
+          catch (error) {
+            console.error('Error parsing WebSocket message:', error)
+          }
+        }
+
+        websocket.value.onclose = () => {
+          console.error('Disconnected from room')
+          isConnected.value = false
+          websocket.value = null
+        }
+
+        websocket.value.onerror = (error) => {
+          console.error('WebSocket error:', error)
+          isConnected.value = false
+          reject(error)
+        }
+      }
+
+      if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
+        websocket.value.onclose = () => {
+          setupWebSocket()
+        }
         websocket.value.close()
       }
-
-      roomCode.value = code
-      const wsUrl = `ws://localhost:8000/ws/${code}/${user.value?.id}`
-
-      websocket.value = new WebSocket(wsUrl)
-
-      websocket.value.onopen = () => {
-        console.error('Connected to room:', code)
-        isConnected.value = true
-        resolve()
-      }
-
-      websocket.value.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data)
-          handleWebSocketMessage(data)
-        }
-        catch (error) {
-          console.error('Error parsing WebSocket message:', error)
-        }
-      }
-
-      websocket.value.onclose = () => {
-        console.error('Disconnected from room')
-        isConnected.value = false
-        websocket.value = null
-      }
-
-      websocket.value.onerror = (error) => {
-        console.error('WebSocket error:', error)
-        isConnected.value = false
-        reject(error)
+      else {
+        setupWebSocket()
       }
     })
   }
 
-  function createRoom(): Promise<string> {
+  function createRoom() {
     const code = Math.floor(100000 + Math.random() * 900000).toString()
 
     return connectToRoom(code).then(() => {
       return code
     })
-  }
-
-  function joinRoom(code: string) {
-    return connectToRoom(code)
   }
 
   function disconnectFromRoom() {
@@ -110,8 +157,8 @@ export const useGame = defineStore('gameStore', () => {
     switch (data.type) {
       case 'change_stage':
         gameStage.value = data.stage
-        if (data.levelId) {
-          currentLevelId.value = data.levelId
+        if (data.levelIndex) {
+          currentLevelIndex.value = data.levelIndex
         }
         break
 
@@ -128,13 +175,15 @@ export const useGame = defineStore('gameStore', () => {
         break
 
       case 'players_update':
-        team.value = data.players.map((player: any) => ({
-          user: player,
+        team.value = data.players.map((player: any, index: number) => ({
+          user: {
+            ...player,
+            avatar: `/images/avatar${index + 1}.jpeg`,
+          },
           isAlive: true,
           selectedAnswer: null,
           score: 0,
         }))
-        console.error(team.value)
         break
 
       default:
@@ -144,7 +193,24 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   function handlePlayerVote(data: any) {
-    console.error('Player voted:', data)
+    const { selectedAnswer, playerId } = data
+    for (const teammate of team.value) {
+      if (teammate.user.id === playerId) {
+        teammate.selectedAnswer = selectedAnswer
+        if (selectedAnswer.IsCorrect) {
+          teammate.score += 5
+        }
+        break
+      }
+    }
+
+    for (const teammate of team.value) {
+      if (teammate.isAlive && teammate.selectedAnswer === null) {
+        return
+      }
+    }
+
+    wasChosen.value = true
   }
 
   function handleBonusUsage(data: any) {
@@ -172,16 +238,14 @@ export const useGame = defineStore('gameStore', () => {
     changeStage('main-menu')
   }
 
-  function submitVote(questionId: number, selectedAnswer: Answer) {
+  function submitVote(selectedAnswer: Answer) {
     const message = {
       type: 'vote',
-      questionId,
       selectedAnswer,
       playerId: user.value?.id,
     }
 
     sendWebSocketMessage(message)
-    selectAnswer(selectedAnswer)
   }
 
   function useBonus(bonusId: string, additionalData?: any) {
@@ -193,18 +257,6 @@ export const useGame = defineStore('gameStore', () => {
     }
 
     sendWebSocketMessage(message)
-  }
-
-  function selectAnswer(answer: Answer) {
-    for (const teammate of team.value) {
-      if (teammate.user === user.value) {
-        teammate.selectedAnswer = answer
-        if (answer.IsCorrect) {
-          teammate.score += 5
-        }
-        break
-      }
-    }
   }
 
   function getChosenAnswer() {
@@ -285,10 +337,6 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
-  // Level
-  const levels: Ref<Level[]> = ref([])
-  const currentLevel: Ref<Level | null> = ref(null)
-
   function cleanup() {
     disconnectFromRoom()
   }
@@ -296,22 +344,22 @@ export const useGame = defineStore('gameStore', () => {
   return {
     user,
     team,
-    selectAnswer,
+    initLevels,
     getChosenAnswer,
     removeSelectedAnswers,
     killRandom,
+    connectToRoom,
     initTeam,
     currentLevel,
     levels,
+    processedLevels,
     initStats,
     correctAnswers,
     websocket,
     roomCode,
     isConnected,
     gameStage,
-    currentLevelId,
     createRoom,
-    joinRoom,
     disconnectFromRoom,
     sendWebSocketMessage,
     changeStage,
@@ -320,5 +368,6 @@ export const useGame = defineStore('gameStore', () => {
     submitVote,
     useBonus,
     cleanup,
+    wasChosen
   }
 })

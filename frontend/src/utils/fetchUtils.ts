@@ -238,7 +238,7 @@ export async function login(payload: LoginPayload): Promise<User> {
     id: data.UserId,
     name: data.Name,
     avatar: '',
-    maxLevelId: data.MaxLevelId,
+    maxOrderNumber: data.MaxOrderNumber,
   }
 }
 

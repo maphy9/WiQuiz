@@ -5,7 +5,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { useWebSocketRouting } from '@/composables/useWebSocketRouting'
 import { useGame } from '@/stores/gameStore'
 import { useUser } from '@/stores/userStore'
 
@@ -43,6 +44,21 @@ function exposeGlobalHelpers() {
     gameStore,
   }
 }
+
+const { gotoLevelSelection, gotoMainMenu, gotoLevel } = useWebSocketRouting()
+
+onBeforeRouteUpdate((to) => {
+  if (to.name === 'main') {
+    gotoMainMenu()
+  }
+  else if (to.name === 'level-selection') {
+    gotoLevelSelection()
+  }
+  else if (to.name === 'level') {
+    const levelIndex = Number.parseInt(to.params.levelIndex as string)
+    gotoLevel(levelIndex)
+  }
+})
 
 onMounted(async () => {
   if (!user.value) {

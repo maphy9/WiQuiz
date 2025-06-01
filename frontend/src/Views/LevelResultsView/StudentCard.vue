@@ -1,32 +1,31 @@
 <template>
   <div class="student-card">
     <img
-      src="@/images/emptyPfp.png"
+      :src="teammate.user.avatar"
       class="avatar"
     >
 
     <div class="text">
       <p class="text-name">
-        {{ name }}
+        {{ teammate.user.name }}
       </p>
 
       <p class="text-score">
-        {{ score }} {{ $t('result-view.points') }}
+        {{ teammate.score }} {{ $t('result-view.points') }}
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { toRef } from 'vue'
+import type Teammate from '@/types/Teammate'
+import { toRefs } from 'vue'
 
 const props = defineProps<{
-  name: string
-  score: number
+  teammate: Teammate
 }>()
 
-const name = toRef(props, 'name')
-const score = toRef(props, 'score')
+const { teammate } = toRefs(props)
 </script>
 
 <style scoped>

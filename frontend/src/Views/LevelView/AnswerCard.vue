@@ -73,7 +73,7 @@ watch(chosenAnswer, (newVal) => {
       :src="answer.image"
     >
 
-    <span class="answer-text">{{ answer.text }}</span>
+    <span class="answer-text">{{ answer.AnswerText }}</span>
   </div>
 </template>
 

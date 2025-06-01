@@ -38,14 +38,20 @@ async def broadcast_players_update(room_code: str):
 
 
 async def connect_player_to_room(room_code: str, player: Dict[str, Any], websocket: WebSocket):
+    for code, room in list(rooms.items()):
+        if websocket in room["websockets"]:
+            await disconnect_player_from_room(code, websocket)
+
     if room_code not in rooms:
         rooms[room_code] = {
             "players": [],
             "stage": "main-menu",
             "levelId": None,
-            "websockets": [],
+            "websockets": []
         }
+
     room = rooms[room_code]
+
     if len(room["players"]) < 3:
         room["players"].append(player)
         room["websockets"].append(websocket)
@@ -72,41 +78,37 @@ async def disconnect_player_from_room(room_code: str, websocket: WebSocket):
 async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: str):
     await websocket.accept()
 
-    # ─── 1) Look up the full "User" record from your SQLite DB ─────────────────────────
     conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
 
     # Assume your User table has columns: UserId (PK), Name, Avatar
     cursor.execute(
-        "SELECT UserId, Name, Avatar FROM [User] WHERE UserId = ?",
+        "SELECT UserId, Name FROM User WHERE UserId = ?",
         (player_id,),
     )
     row = cursor.fetchone()
     if not row:
-        # If the user does not exist, disconnect immediately
         await websocket.close(code=1008)
         conn.close()
         return
 
-    user_id, name, avatar = row
+    user_id, name = row
 
-    # Now fetch this user's maxLevelId from UserCourseData:
     cursor.execute(
         "SELECT MaxLevelId FROM UserCourseData WHERE UserId = ?",
         (user_id,),
     )
     ucd_row = cursor.fetchone()
-    max_level_id = ucd_row[0] if ucd_row else None
+    max_level_id = ucd_row[0]
+
+    max_level = get_Level(cursor, max_level_id)
 
     conn.close()
 
-    # Construct exactly the shape your frontend expects:
-    # { id: number, name: string, avatar: string, maxLevelId: number }
     player = {
         "id": user_id,
         "name": name,
-        "avatar": avatar or "",
-        "maxLevelId": max_level_id or 0,
+        "maxOrderNumber": max_level["OrderNumber"]
     }
 
     await connect_player_to_room(room_code, player, websocket)
@@ -118,15 +120,14 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
 
             if data.get("type") == "change_stage":
                 room["stage"] = data["stage"]
-                if "levelId" in data:
-                    room["levelId"] = data["levelId"]
+                if "levelIndex" in data:
+                    room["levelIndex"] = data["levelIndex"]
 
             if data.get("type") == "use_bonus":
                 # handle bonus (frontend must send { type:"use_bonus", bonusId: ..., ... })
                 pass
 
             if data.get("type") == "vote":
-                # handle vote (frontend must send { type:"vote", questionId: ..., selectedAnswer: ..., ... })
                 pass
 
             # Broadcast whatever the client sent to everyone else in this room:
@@ -467,11 +468,12 @@ def login_user(payload: LoginRequest):
     if not user_course_data:
         conn.close()
         raise HTTPException(status_code=500, detail="UserCourseData not found")
+    max_level = get_Level(cursor, user_course_data["MaxLevelId"])
 
     conn.close()
 
     return {
         "UserId": user["UserId"],
         "Name": user["Name"],
-        "MaxLevelId": user_course_data["MaxLevelId"]
+        "MaxOrderNumber": max_level["OrderNumber"]
     }

@@ -41,7 +41,7 @@ export const useGame = defineStore('gameStore', () => {
 
   // Team
   const team: Ref<Teammate[]> = ref([])
-  const wasChosen = ref(false)
+  const chosenAnswer: Ref<Answer | null> = ref(null)
 
   // Level
   const levels: Ref<Level[]> = ref([])
@@ -210,7 +210,7 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    wasChosen.value = true
+    chosenAnswer.value = getChosenAnswer()
   }
 
   function handleBonusUsage(data: any) {
@@ -294,15 +294,15 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    const chosenAnswer: Answer = chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
+    const _chosenAnswer: Answer = chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
 
     for (const teammate of team.value) {
-      if (teammate.selectedAnswer === chosenAnswer) {
+      if (teammate.selectedAnswer === _chosenAnswer) {
         teammate.score += 3
       }
     }
 
-    if (chosenAnswer.IsCorrect) {
+    if (_chosenAnswer.IsCorrect) {
       correctAnswers.value += 1
     }
 
@@ -337,10 +337,6 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
-  function cleanup() {
-    disconnectFromRoom()
-  }
-
   return {
     user,
     team,
@@ -367,7 +363,6 @@ export const useGame = defineStore('gameStore', () => {
     returnToMainMenu,
     submitVote,
     useBonus,
-    cleanup,
-    wasChosen
+    chosenAnswer,
   }
 })

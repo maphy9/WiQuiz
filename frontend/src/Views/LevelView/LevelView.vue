@@ -23,7 +23,7 @@ const canGoToLevelSelection = ref(false)
 const canGoToLevelResults = ref(false)
 
 const gameStore = useGame()
-const { initTeam, initStats } = gameStore
+const { initTeam, initStats, disconnectFromRoom } = gameStore
 const { currentLevel, levels } = storeToRefs(gameStore)
 const currentQuestion: Ref<Question | null> = ref(null)
 
@@ -39,6 +39,8 @@ onBeforeRouteLeave((to) => {
   }
 
   if (to.name === 'level-selection') {
+    disconnectFromRoom()
+
     return true
   }
 

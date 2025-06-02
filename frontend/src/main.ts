@@ -13,6 +13,7 @@ import LevelSelectionView from './Views/LevelSelectionView/LevelSelectionView.vu
 import LevelView from './Views/LevelView/LevelView.vue'
 import LoginView from './Views/LoginView/LoginView.vue'
 import MainView from './Views/MainView/MainView.vue'
+import PageNotFoundView from './Views/PageNotFoundView/PageNotFoundView.vue'
 import TeacherQuestionsView from './Views/TeacherView/TeacherQuestionsView/TeacherQuestionsView.vue'
 import TeacherTopicsView from './Views/TeacherView/TeacherTopicsView/TeacherTopicsView.vue'
 
@@ -42,6 +43,7 @@ const router = createRouter({
           component: LevelView,
           props: true,
         },
+        { name: 'error-404', path: '/:pathMatch(.*)*', component: PageNotFoundView },
       ],
     },
   ],

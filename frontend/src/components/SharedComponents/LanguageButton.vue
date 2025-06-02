@@ -39,9 +39,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
-const { playButtonSound } = useSound()
+const { playButtonSound } = useSoundStore()
 const { locale } = useI18n()
 
 const language = ref({

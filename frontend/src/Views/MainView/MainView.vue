@@ -95,15 +95,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
-import { useSound } from '@/composables/useSound'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const player1_name = ref('Bolesław R.')
 const player2_name = ref('Adam K.')
 const logoClickCount = ref(0)
 const rotateLogo = ref(false)
-const { playButtonSound } = useSound()
+const { playButtonSound } = useSoundStore()
+const { onMountMainTheme } = useSoundStore()
+
+onMounted(() => {
+  onMountMainTheme()
+})
 
 function handleLogoClick() {
   logoClickCount.value++

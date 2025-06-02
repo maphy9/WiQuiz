@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Answer } from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
-import { computed, toRefs } from 'vue'
+import { computed, toRefs, watch } from 'vue'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
   answer: any
@@ -13,6 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   selectAnswer: [answer: any]
 }>()
+const { playCorrectSound, playInCorrectSound } = useSoundStore()
 
 const { answer, chosenAnswer, isChosen, me } = toRefs(props)
 const answerColor = computed(() => {
@@ -30,6 +32,19 @@ const answerColor = computed(() => {
 
 const isSelectable = computed(() => {
   return !isChosen.value && answer.value.isActive && me.value?.isAlive
+})
+
+watch(chosenAnswer, (newVal) => {
+  if (!newVal)
+    return
+  if (newVal === answer.value) {
+    if (newVal.isCorrect) {
+      playCorrectSound()
+    }
+    else {
+      playInCorrectSound()
+    }
+  }
 })
 </script>
 

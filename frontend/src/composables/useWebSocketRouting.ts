@@ -1,12 +1,9 @@
 import { useGame } from '@/stores/gameStore'
-import { useSound } from './useSound'
 
 export function useWebSocketRouting() {
-  const { playButtonSound } = useSound()
   const { sendWebSocketMessage } = useGame()
 
   function gotoMainMenu() {
-    playButtonSound()
     sendWebSocketMessage({
       type: 'change_stage',
       stage: 'main-menu',
@@ -14,7 +11,6 @@ export function useWebSocketRouting() {
   }
 
   function gotoLevelSelection() {
-    playButtonSound()
     sendWebSocketMessage({
       type: 'change_stage',
       stage: 'level-selection',
@@ -22,7 +18,6 @@ export function useWebSocketRouting() {
   }
 
   function gotoLevel(levelIndex: number) {
-    playButtonSound()
     sendWebSocketMessage({
       type: 'change_stage',
       stage: 'level',
@@ -30,9 +25,17 @@ export function useWebSocketRouting() {
     })
   }
 
+  function gotoLevelResults() {
+    sendWebSocketMessage({
+      type: 'change_stage',
+      stage: 'level-results',
+    })
+  }
+
   return {
     gotoLevel,
     gotoMainMenu,
     gotoLevelSelection,
+    gotoLevelResults,
   }
 }

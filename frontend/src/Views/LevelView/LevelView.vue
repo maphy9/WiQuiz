@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
-import type Question from '@/types/Question'
 import { storeToRefs } from 'pinia'
 import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
-import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
+import { useSoundStore } from '@/stores/useSoundStore'
 import QuestionView from './QuestionView.vue'
 
 const props = defineProps<{
@@ -13,21 +11,28 @@ const props = defineProps<{
 }>()
 
 const { startMainTheme, stopLevelMusic, playButtonSound, playLevelMusic } = useSoundStore()
-
-const { levelIndex } = toRefs(props)
-
 const router = useRouter()
-const currentQuestionIndex = ref(0)
 const showExitMenu = ref(false)
 const canGoToLevelSelection = ref(false)
 const canGoToLevelResults = ref(false)
 
-const gameStore = useGame()
-const { initTeam, initStats, disconnectFromRoom } = gameStore
-const { currentLevel, levels } = storeToRefs(gameStore)
-const currentQuestion: Ref<Question | null> = ref(null)
+const { levelIndex } = toRefs(props)
 
-onBeforeRouteLeave((to) => {
+const gameStore = useGame()
+const {
+  createRoom,
+  initBonuses,
+  initTeam,
+  initStats,
+} = gameStore
+const {
+  levels,
+  currentLevel,
+  currentQuestionIndex,
+  currentQuestion,
+} = storeToRefs(gameStore)
+
+onBeforeRouteLeave(async (to) => {
   if (canGoToLevelResults.value && to.name === 'level-results') {
     return true
   }
@@ -39,7 +44,7 @@ onBeforeRouteLeave((to) => {
   }
 
   if (to.name === 'level-selection') {
-    disconnectFromRoom()
+    await createRoom()
 
     return true
   }
@@ -53,9 +58,11 @@ function exitToLevelSelection() {
 }
 
 watch(levelIndex, () => {
+  currentQuestionIndex.value = 0
   currentLevel.value = levels.value[Number.parseInt(levelIndex.value)]
   initTeam()
   initStats()
+  initBonuses()
 }, { immediate: true })
 
 watch(currentQuestionIndex, () => {

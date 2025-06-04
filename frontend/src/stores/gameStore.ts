@@ -1,15 +1,18 @@
 import type { Ref } from 'vue'
 import type Answer from '@/types/Answer'
 import type Level from '@/types/Level'
+import type Question from '@/types/Question'
 import type Teammate from '@/types/Teammate'
 import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
 
 export const useGame = defineStore('gameStore', () => {
   const { user } = storeToRefs(useUser())
+  const { t } = useI18n()
 
   // WebSocket connection
   const websocket: Ref<WebSocket | null> = ref(null)
@@ -17,7 +20,23 @@ export const useGame = defineStore('gameStore', () => {
   const isConnected = ref(false)
   const gameStage = ref('main-menu')
   const currentLevelIndex = ref(0)
+  const currentQuestionIndex = ref(0)
+  const currentQuestion: Ref<Question | null> = ref(null)
+
+  const canGoToLevel = ref(false)
+
   const router = useRouter()
+
+  // Messages
+  const messages: Ref<any[]> = ref([])
+
+  function showMessage(text: string, color: string) {
+    const message = { text, color }
+    messages.value.push(message)
+    setTimeout(() => {
+      messages.value = messages.value.filter((_message: any) => _message.text !== message.text)
+    }, 3000)
+  }
 
   watch(gameStage, () => {
     switch (gameStage.value) {
@@ -28,7 +47,9 @@ export const useGame = defineStore('gameStore', () => {
         router.push({ name: 'level-selection' })
         break
       case 'level':
+        canGoToLevel.value = true
         router.push({ name: 'level', params: { levelIndex: currentLevelIndex.value } })
+        break
     }
   })
 
@@ -42,6 +63,57 @@ export const useGame = defineStore('gameStore', () => {
   // Team
   const team: Ref<Teammate[]> = ref([])
   const chosenAnswer: Ref<Answer | null> = ref(null)
+
+  // Bebrik
+  const me = computed(() => {
+    return team.value.find((teammate: Teammate) => teammate.user.id === user.value?.id)
+  })
+
+  // Bonuses
+  const bonuses = ref({
+    mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
+    timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
+    reviveBonus: { image: '/images/reviveBonus.png', onClick: useReviveBonus, isAvailable: true },
+  })
+
+  function initBonuses() {
+    bonuses.value = {
+      mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
+      timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
+      reviveBonus: { image: '/images/reviveBonus.png', onClick: useReviveBonus, isAvailable: true },
+    }
+  }
+
+  // Bebra 52
+  const answers: Ref<any[]> = ref([])
+  const isChosen = ref(false)
+  const timeOut = ref(false)
+
+  // Timer
+  const initialTime = 60
+  const maxTime = ref(initialTime)
+  const timeLeft = ref(initialTime)
+  const timeLeftFormatted = computed(() => {
+    const minutes = Math.floor(timeLeft.value / 60)
+    const seconds = timeLeft.value % 60
+
+    return `${minutes}:${seconds < 10
+      ? '0'
+      : ''}${seconds}`
+  })
+  const timebarProgress = computed(() => timeLeft.value * 100 / maxTime.value)
+  const progressColor = computed(() => {
+    if (timebarProgress.value > 60) {
+      return '#80C997'
+    }
+
+    if (timebarProgress.value > 20) {
+      return '#F4D064'
+    }
+
+    return '#E4583B'
+  })
+  const timeLeftInterval: Ref<number | null> = ref(null)
 
   // Level
   const levels: Ref<Level[]> = ref([])
@@ -125,12 +197,32 @@ export const useGame = defineStore('gameStore', () => {
     })
   }
 
-  function createRoom() {
+  async function createRoom() {
     const code = Math.floor(100000 + Math.random() * 900000).toString()
 
-    return connectToRoom(code).then(() => {
-      return code
-    })
+    await connectToRoom(code)
+
+    return code
+  }
+
+  async function initializeWebSocketConnection() {
+    if (!user.value?.id) {
+      console.error('User not available, skipping WebSocket initialization')
+
+      return
+    }
+
+    if (isConnected.value) {
+      return
+    }
+
+    try {
+      const newRoomCode = await createRoom()
+      console.error('Created new room:', newRoomCode)
+    }
+    catch (error) {
+      console.error('Failed to create room:', error)
+    }
   }
 
   function disconnectFromRoom() {
@@ -159,6 +251,7 @@ export const useGame = defineStore('gameStore', () => {
         gameStage.value = data.stage
         if (data.levelIndex) {
           currentLevelIndex.value = data.levelIndex
+          console.error(currentLevelIndex.value)
         }
         break
 
@@ -166,8 +259,24 @@ export const useGame = defineStore('gameStore', () => {
         handlePlayerVote(data)
         break
 
-      case 'use_bonus':
-        handleBonusUsage(data)
+      case 'choose_answer':
+        handleChooseAnswer(data.answer)
+        break
+
+      case 'kill_player':
+        handleKillPlayer(data.player)
+        break
+
+      case 'use_time_bonus':
+        handleTimeBonus()
+        break
+
+      case 'use_mistake_bonus':
+        handleMistakeBonus(data.index)
+        break
+
+      case 'use_revive_bonus':
+        handleReviveBonus(data.index)
         break
 
       case 'teammates_list':
@@ -192,16 +301,68 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
+  function handleKillPlayer(player: Teammate) {
+    for (const teammate of team.value) {
+      if (teammate.user.id === player.user.id) {
+        teammate.isAlive = false
+      }
+    }
+
+    showMessage(`${t('level-view.incorrect-answer')} - ${player.user.name} ${t('level-view.killed')}`, 'RED')
+
+    let areAllDead = true
+    for (const teammate of team.value) {
+      if (teammate.isAlive) {
+        areAllDead = false
+        break
+      }
+    }
+
+    if (areAllDead) {
+      if (!bonuses.value.reviveBonus.isAvailable) {
+        setTimeout(() => {
+          if (!currentLevel.value) {
+            return
+          }
+          currentQuestionIndex.value = currentLevel.value.questions.length
+        }, 3000)
+      }
+      else {
+        useReviveBonus()
+      }
+    }
+  }
+
+  function handleChooseAnswer(answer: Answer) {
+    chosenAnswer.value = answer
+
+    if (chosenAnswer.value?.IsCorrect) {
+      for (const teammate of team.value) {
+        if (teammate.selectedAnswer?.AnswerId === chosenAnswer.value?.AnswerId) {
+          teammate.score += 3
+        }
+      }
+    }
+  }
+
   function handlePlayerVote(data: any) {
+    let isMe = false
     const { selectedAnswer, playerId } = data
     for (const teammate of team.value) {
       if (teammate.user.id === playerId) {
         teammate.selectedAnswer = selectedAnswer
+        if (user.value?.id === teammate.user.id) {
+          isMe = true
+        }
         if (selectedAnswer.IsCorrect) {
           teammate.score += 5
         }
         break
       }
+    }
+
+    if (!isMe) {
+      return
     }
 
     for (const teammate of team.value) {
@@ -210,32 +371,40 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    chosenAnswer.value = getChosenAnswer()
-  }
-
-  function handleBonusUsage(data: any) {
-    console.error('Bonus used:', data)
-  }
-
-  function changeStage(stage: string, levelId?: number) {
-    const message: any = {
-      type: 'change_stage',
-      stage,
+    const answer = getChosenAnswer()
+    if (answer) {
+      sendWebSocketMessage({ type: 'choose_answer', answer })
+      if (!answer.IsCorrect) {
+        const player = getRandomAlive()
+        sendWebSocketMessage({ type: 'kill_player', player })
+      }
     }
+  }
 
-    if (levelId) {
-      message.levelId = levelId
+  function handleTimeBonus() {
+    if (!bonuses.value.timeBonus.isAvailable) {
+      return
     }
-
-    sendWebSocketMessage(message)
+    timeLeft.value += 15
+    maxTime.value += 15
+    bonuses.value.timeBonus.isAvailable = false
   }
 
-  function startLevel(levelId: number) {
-    changeStage('playing', levelId)
+  function handleMistakeBonus(index: number) {
+    if (!currentQuestion.value || !bonuses.value.mistakeBonus.isAvailable) {
+      return
+    }
+    answers.value[index].isActive = false
+    bonuses.value.mistakeBonus.isAvailable = false
   }
 
-  function returnToMainMenu() {
-    changeStage('main-menu')
+  function handleReviveBonus(index: number) {
+    if (!bonuses.value.reviveBonus.isAvailable) {
+      return
+    }
+    showMessage(`${team.value[index].user.name} ${t('level-view.was-revived')}`, 'WHITE')
+    team.value[index].isAlive = true
+    bonuses.value.reviveBonus.isAvailable = false
   }
 
   function submitVote(selectedAnswer: Answer) {
@@ -248,12 +417,57 @@ export const useGame = defineStore('gameStore', () => {
     sendWebSocketMessage(message)
   }
 
-  function useBonus(bonusId: string, additionalData?: any) {
+  function useTimeBonus() {
+    if (!bonuses.value.timeBonus.isAvailable) {
+      return
+    }
+
     const message = {
-      type: 'use_bonus',
-      bonusId,
-      playerId: user.value?.id,
-      ...additionalData,
+      type: 'use_time_bonus',
+    }
+
+    sendWebSocketMessage(message)
+  }
+
+  function useReviveBonus() {
+    if (!bonuses.value.reviveBonus.isAvailable) {
+      return
+    }
+    let foundDead = false
+    for (const teammate of team.value) {
+      if (!teammate.isAlive) {
+        foundDead = true
+        break
+      }
+    }
+    if (!foundDead) {
+      return
+    }
+    let index = Math.floor(Math.random() * team.value.length)
+    while (team.value[index].isAlive) {
+      index = Math.floor(Math.random() * team.value.length)
+    }
+
+    const message = {
+      type: 'use_revive_bonus',
+      index,
+    }
+
+    sendWebSocketMessage(message)
+  }
+
+  function useMistakeBonus() {
+    if (!currentQuestion.value || !bonuses.value.mistakeBonus.isAvailable) {
+      return
+    }
+    let index = Math.floor(Math.random() * 4)
+    while (currentQuestion.value.answers[index].IsCorrect) {
+      index = Math.floor(Math.random() * 4)
+    }
+
+    const message = {
+      type: 'use_mistake_bonus',
+      index,
     }
 
     sendWebSocketMessage(message)
@@ -294,18 +508,6 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    const _chosenAnswer: Answer = chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
-
-    for (const teammate of team.value) {
-      if (teammate.selectedAnswer === _chosenAnswer) {
-        teammate.score += 3
-      }
-    }
-
-    if (_chosenAnswer.IsCorrect) {
-      correctAnswers.value += 1
-    }
-
     return chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
   }
 
@@ -313,20 +515,6 @@ export const useGame = defineStore('gameStore', () => {
     for (let i = 0; i < team.value.length; i++) {
       team.value[i].selectedAnswer = null
     }
-  }
-
-  function killRandom() {
-    const aliveTeammates = team.value.filter((teammate: Teammate) => teammate.isAlive)
-    const randomAliveTeammate = aliveTeammates[Math.floor(Math.random() * aliveTeammates.length)]
-
-    for (let i = 0; i < team.value.length; i++) {
-      if (team.value[i] === randomAliveTeammate) {
-        team.value[i].isAlive = false
-        break
-      }
-    }
-
-    return randomAliveTeammate
   }
 
   function initTeam() {
@@ -337,13 +525,68 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
+  function getRandomAlive() {
+    const aliveTeammates = team.value.filter((teammate: Teammate) => teammate.isAlive)
+    const randomAliveTeammate = aliveTeammates[Math.floor(Math.random() * aliveTeammates.length)]
+
+    return randomAliveTeammate
+  }
+
+  function initQuestion() {
+    if (!currentQuestion.value) {
+      return
+    }
+
+    if (timeLeftInterval.value) {
+      clearInterval(timeLeftInterval.value)
+    }
+
+    maxTime.value = initialTime
+    timeLeft.value = initialTime
+    answers.value = []
+    chosenAnswer.value = null
+    isChosen.value = false
+
+    const answerProps = [
+      { color: 'YELLOW', image: '/images/triangle.png', isActive: true, isChosen: false },
+      { color: 'BLUE', image: '/images/circle.png', isActive: true, isChosen: false },
+      { color: 'GREEN', image: '/images/rectangle.png', isActive: true, isChosen: false },
+      { color: 'RED', image: '/images/rhombus.png', isActive: true, isChosen: false },
+    ]
+
+    for (let i = 0; i < 4; i++) {
+      answers.value.push({ ...currentQuestion.value.answers[i], ...answerProps[i] })
+    }
+
+    timeOut.value = false
+    chosenAnswer.value = null
+    removeSelectedAnswers()
+
+    timeLeftInterval.value = setInterval(() => {
+      if (timeLeft.value === 0 && timeLeftInterval.value) {
+        clearInterval(timeLeftInterval.value)
+        timeOut.value = true
+      }
+      else {
+        timeLeft.value--
+      }
+    }, 1000)
+  }
+
+  watch(currentQuestion, () => {
+    if (currentQuestion.value) {
+      initQuestion()
+    }
+  }, { immediate: true })
+
   return {
+    showMessage,
+    messages,
     user,
     team,
     initLevels,
     getChosenAnswer,
     removeSelectedAnswers,
-    killRandom,
     connectToRoom,
     initTeam,
     currentLevel,
@@ -358,11 +601,26 @@ export const useGame = defineStore('gameStore', () => {
     createRoom,
     disconnectFromRoom,
     sendWebSocketMessage,
-    changeStage,
-    startLevel,
-    returnToMainMenu,
     submitVote,
-    useBonus,
+    useTimeBonus,
     chosenAnswer,
+    timeLeftFormatted,
+    timeLeftInterval,
+    progressColor,
+    timeLeft,
+    maxTime,
+    bonuses,
+    timebarProgress,
+    initQuestion,
+    timeOut,
+    isChosen,
+    answers,
+    currentQuestionIndex,
+    currentQuestion,
+    me,
+    currentLevelIndex,
+    initBonuses,
+    canGoToLevel,
+    initializeWebSocketConnection,
   }
 })

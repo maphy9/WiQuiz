@@ -16,7 +16,7 @@ const router = useRouter()
 
 const gameStore = useGame()
 const { initLevels } = gameStore
-const { processedLevels } = storeToRefs(gameStore)
+const { processedLevels, canGoToLevel } = storeToRefs(gameStore)
 
 const leftCards = computed(() => processedLevels.value.filter((_, i) => i % 2 === 0))
 const rightCards = computed(() => processedLevels.value.filter((_, i) => i % 2 !== 0))
@@ -41,6 +41,7 @@ const levelRoutes = computed(() => {
 })
 
 function handleClick(levelIndex: number) {
+  canGoToLevel.value = true
   router.push({ name: 'level', params: { levelIndex } })
 }
 
@@ -49,7 +50,9 @@ onBeforeRouteLeave((to) => {
     return true
   }
 
-  if (to.name === 'level') {
+  if (canGoToLevel.value && to.name === 'level') {
+    canGoToLevel.value = false
+
     return true
   }
 

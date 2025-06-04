@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
 import type Answer from '@/types/Answer'
 import type Question from '@/types/Question'
-import type Teammate from '@/types/Teammate'
 import { storeToRefs } from 'pinia'
-import { computed, ref, toRefs, watch } from 'vue'
+import { toRefs, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
@@ -23,162 +20,54 @@ const emit = defineEmits<{
   gameOver: []
 }>()
 
-const { playBonusSound } = useSoundStore()
 const { t } = useI18n()
 
 const gameStore = useGame()
 
 // Question
 const { question } = toRefs(props)
-const answers: Ref<any[]> = ref([])
-const isChosen = ref(false)
-const timeOut = ref(false)
 
 // Team
-const { removeSelectedAnswers, killRandom, submitVote } = gameStore
-const { team, user, chosenAnswer } = storeToRefs(gameStore)
-const me = computed(() => {
-  return team.value.find((teammate: Teammate) => teammate.user.id === user.value?.id)
-})
-
-// Timer
-const initialTime = 60
-const maxTime = ref(initialTime)
-const timeLeft = ref(initialTime)
-const timeLeftFormatted = computed(() => {
-  const minutes = Math.floor(timeLeft.value / 60)
-  const seconds = timeLeft.value % 60
-
-  return `${minutes}:${seconds < 10
-    ? '0'
-    : ''}${seconds}`
-})
-const timebarProgress = computed(() => timeLeft.value * 100 / maxTime.value)
-const progressColor = computed(() => {
-  if (timebarProgress.value > 60) {
-    return '#80C997'
-  }
-
-  if (timebarProgress.value > 20) {
-    return '#F4D064'
-  }
-
-  return '#E4583B'
-})
-const timeLeftInterval: Ref<number | null> = ref(null)
-
-// Bonuses
-const bonuses = ref({
-  mistakeBonus: { image: '/images/mistakeBonus.png', onClick: () => {
-    useMistakeBonus()
-    playBonusSound()
-  }, isAvailable: true },
-  timeBonus: { image: '/images/timeBonus.png', onClick: () => {
-    useTimeBonus()
-    playBonusSound()
-  }, playBonusSound, isAvailable: true },
-  reviveBonus: { image: '/images/reviveBonus.png', onClick: () => {
-    useReviveBonus()
-    playBonusSound()
-  }, isAvailable: true },
-})
-
-function useMistakeBonus() {
-  if (!bonuses.value.mistakeBonus.isAvailable) {
-    return
-  }
-  let index = Math.floor(Math.random() * 4)
-  while (question.value.answers[index].IsCorrect) {
-    index = Math.floor(Math.random() * 4)
-  }
-  answers.value[index].isActive = false
-  bonuses.value.mistakeBonus.isAvailable = false
-}
-
-function useTimeBonus() {
-  if (!bonuses.value.timeBonus.isAvailable) {
-    return
-  }
-  timeLeft.value += 15
-  maxTime.value += 15
-  bonuses.value.timeBonus.isAvailable = false
-}
-
-function useReviveBonus() {
-  if (!bonuses.value.reviveBonus.isAvailable) {
-    return
-  }
-  let foundDead = false
-  for (const teammate of team.value) {
-    if (!teammate.isAlive) {
-      foundDead = true
-      break
-    }
-  }
-  if (!foundDead) {
-    return
-  }
-  let index = Math.floor(Math.random() * team.value.length)
-  while (team.value[index].isAlive) {
-    index = Math.floor(Math.random() * team.value.length)
-  }
-  showMessage(`${team.value[index].user.name} ${t('level-view.was-revived')}`, 'WHITE')
-  team.value[index].isAlive = true
-  bonuses.value.reviveBonus.isAvailable = false
-}
-
-// Messages
-const messages: Ref<any[]> = ref([])
-
-function showMessage(text: string, color: string) {
-  const message = { text, color }
-  messages.value.push(message)
-  setTimeout(() => {
-    messages.value = messages.value.filter((_message: any) => _message.text !== message.text)
-  }, 3000)
-}
+const {
+  submitVote,
+  showMessage,
+} = gameStore
+const {
+  team,
+  timebarProgress,
+  timeLeftFormatted,
+  progressColor,
+  bonuses,
+  me,
+  chosenAnswer,
+  correctAnswers,
+  messages,
+  isChosen,
+  answers,
+  timeOut,
+  timeLeftInterval,
+} = storeToRefs(gameStore)
 
 // Handlers
-watch(chosenAnswer, () => {
+watch([chosenAnswer, timeOut], () => {
   const answer = chosenAnswer.value
 
+  if (!answer && !timeOut.value) {
+    return
+  }
   if (!answer) {
-    if (!timeOut.value) {
-      return
-    }
     showMessage(t('level-view.no-answer'), 'WHITE')
   }
   else if (answer.IsCorrect) {
     showMessage(t('level-view.correct-answer'), 'GREEN')
-  }
-  else {
-    const killedTeammate = killRandom()
-    showMessage(`${t('level-view.incorrect-answer')} - ${killedTeammate.user.name} ${t('level-view.killed')}`, 'RED')
   }
   if (timeLeftInterval.value) {
     clearInterval(timeLeftInterval.value)
   }
   isChosen.value = true
 
-  let areAllDead = true
-  for (const teammate of team.value) {
-    if (teammate.isAlive) {
-      areAllDead = false
-      break
-    }
-  }
-
-  if (areAllDead) {
-    if (bonuses.value.reviveBonus.isAvailable) {
-      useReviveBonus()
-    }
-    else {
-      setTimeout(() => {
-        emit('gameOver')
-      }, 3000)
-
-      return
-    }
+  if (answer?.IsCorrect) {
+    correctAnswers.value += 1
   }
 
   setTimeout(() => {
@@ -195,47 +84,6 @@ function handleSelect(answer: any) {
 
   submitVote(question.value.answers.find(a => a.AnswerId === answer.AnswerId) as Answer)
 }
-
-function initQuestion() {
-  if (timeLeftInterval.value) {
-    clearInterval(timeLeftInterval.value)
-  }
-
-  maxTime.value = initialTime
-  timeLeft.value = initialTime
-  answers.value = []
-  chosenAnswer.value = null
-  isChosen.value = false
-
-  const answerProps = [
-    { color: 'YELLOW', image: '/images/triangle.png', isActive: true, isChosen: false },
-    { color: 'BLUE', image: '/images/circle.png', isActive: true, isChosen: false },
-    { color: 'GREEN', image: '/images/rectangle.png', isActive: true, isChosen: false },
-    { color: 'RED', image: '/images/rhombus.png', isActive: true, isChosen: false },
-  ]
-
-  for (let i = 0; i < 4; i++) {
-    answers.value.push({ ...question.value.answers[i], ...answerProps[i] })
-  }
-
-  timeOut.value = false
-  chosenAnswer.value = null
-  removeSelectedAnswers()
-
-  timeLeftInterval.value = setInterval(() => {
-    if (timeLeft.value === 0 && timeLeftInterval.value) {
-      clearInterval(timeLeftInterval.value)
-      timeOut.value = true
-    }
-    else {
-      timeLeft.value--
-    }
-  }, 1000)
-}
-
-watch(question, () => {
-  initQuestion()
-}, { immediate: true })
 </script>
 
 <template>

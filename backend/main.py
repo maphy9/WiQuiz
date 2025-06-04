@@ -123,13 +123,6 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
                 if "levelIndex" in data:
                     room["levelIndex"] = data["levelIndex"]
 
-            if data.get("type") == "use_bonus":
-                # handle bonus (frontend must send { type:"use_bonus", bonusId: ..., ... })
-                pass
-
-            if data.get("type") == "vote":
-                pass
-
             # Broadcast whatever the client sent to everyone else in this room:
             for ws in room["websockets"]:
                 await ws.send_json(data)

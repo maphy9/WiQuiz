@@ -41,45 +41,6 @@ export function useWebSocket() {
     return await gameStore.connectToRoom(code)
   }
 
-  function leaveRoom() {
-    gameStore.disconnectFromRoom()
-  }
-
-  function startLevel(levelId: number) {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.startLevel(levelId)
-  }
-
-  function changeGameStage(stage: string, levelId?: number) {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.changeStage(stage, levelId)
-  }
-
-  function returnToMenu() {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.returnToMainMenu()
-  }
-
-  function useBonus(bonusId: string, data?: any) {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.useBonus(bonusId, data)
-  }
-
-  function sendMessage(message: any) {
-    if (!isConnected.value) {
-      throw new Error('Not connected to a room')
-    }
-    gameStore.sendWebSocketMessage(message)
-  }
-
   async function connectToRoom(code?: string) {
     try {
       if (code) {
@@ -105,11 +66,5 @@ export function useWebSocket() {
     createRoom,
     connectToRoom,
     joinRoom,
-    leaveRoom,
-    startLevel,
-    changeGameStage,
-    returnToMenu,
-    useBonus,
-    sendMessage,
   }
 }

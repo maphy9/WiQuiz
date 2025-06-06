@@ -88,7 +88,7 @@ const password = ref('')
 
 async function handleLogin() {
   user.value = await login({ name: name.value, password: password.value })
-  router.push({ name: 'main' })
+  router.push({ name: 'teacher-view' })
 }
 </script>
 

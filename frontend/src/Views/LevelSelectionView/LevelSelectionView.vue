@@ -63,6 +63,7 @@ const { onMountMainTheme } = useSoundStore()
 
 onMounted(() => {
   onMountMainTheme()
+  canGoToLevel.value = false
   initLevels()
 })
 </script>

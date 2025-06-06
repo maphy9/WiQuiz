@@ -300,7 +300,7 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
       Level.CourseId
     FROM UserCourseData
     JOIN Level ON Level.LevelId = UserCourseData.MaxLevelId
-    WHERE UserId = ? AND CourseId = ?
+    WHERE UserId = ? AND Level.CourseId = ?
     """, (userId, courseId))
     row = cursor.fetchone()
     if not row:
@@ -312,3 +312,17 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
         'OrderNumber': row[3],
         'CourseId': row[4]
     }
+
+
+def update_MaxLevelId(cursor: Cursor, user_id: int, course_id: int, new_max_level_id: int, db_path="db/kck.db"):
+    cursor.execute("""
+        SELECT 1 FROM UserCourseData
+        WHERE UserId = ? AND CourseId = ?
+    """, (user_id, course_id))
+    exists = cursor.fetchone()
+
+    cursor.execute("""
+        UPDATE UserCourseData
+        SET MaxLevelId = ?
+        WHERE UserId = ? AND CourseId = ?
+    """, (new_max_level_id, user_id, course_id))

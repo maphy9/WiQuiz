@@ -31,8 +31,10 @@ def create_database(cursor: Cursor):
     UserCourseDataId INTEGER PRIMARY KEY AUTOINCREMENT,
     UserId INTEGER,
     MaxLevelId INTEGER,
+    CourseId INTEGER,
     FOREIGN KEY (UserId) REFERENCES User (UserId),
-    FOREIGN KEY (MaxLevelId) REFERENCES Level (LevelId)
+    FOREIGN KEY (MaxLevelId) REFERENCES Level (LevelId),
+    FOREIGN KEY (CourseId) REFERENCES Course (CourseId)
   )
   """)
 

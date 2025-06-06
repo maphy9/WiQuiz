@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type Level from '@/types/Level'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
+import { getMaxOrderNumber } from '@/utils/fetchUtils'
 import LevelCard from './LevelCard.vue'
 
 import LevelRoute from './LevelRoute.vue'
@@ -16,10 +18,33 @@ const router = useRouter()
 
 const gameStore = useGame()
 const { initLevels } = gameStore
-const { processedLevels, canGoToLevel } = storeToRefs(gameStore)
+const { canGoToLevel, levels, team } = storeToRefs(gameStore)
 
-const leftCards = computed(() => processedLevels.value.filter((_, i) => i % 2 === 0))
-const rightCards = computed(() => processedLevels.value.filter((_, i) => i % 2 !== 0))
+const maxOrderNumbers = ref<number[]>([Infinity, Infinity, Infinity])
+const processedLevels = ref<any>([])
+
+watch([levels, maxOrderNumbers], () => {
+  console.error(levels.value)
+  let maxOrderNumber = Infinity
+  for (const _maxOrderNumber of maxOrderNumbers.value) {
+    if (maxOrderNumber > _maxOrderNumber) {
+      maxOrderNumber = _maxOrderNumber
+    }
+  }
+
+  processedLevels.value = levels.value.map((level: Level) => ({
+    ...level,
+    state:
+      level.OrderNumber < maxOrderNumber
+        ? 'passed'
+        : (level.OrderNumber === maxOrderNumber
+            ? 'repeat'
+            : 'locked'),
+  }))
+}, { deep: true, immediate: true })
+
+const leftCards = computed(() => processedLevels.value.filter((_: any, i: any) => i % 2 === 0))
+const rightCards = computed(() => processedLevels.value.filter((_: any, i: any) => i % 2 !== 0))
 
 const levelRoutes = computed(() => {
   const routes = []
@@ -60,9 +85,18 @@ onBeforeRouteLeave((to) => {
 })
 
 const { onMountMainTheme } = useSoundStore()
+async function fetchMaxOrderNumbers() {
+  const newMaxOrderNumbers = maxOrderNumbers.value
+  for (let i = 0; i < team.value.length; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    newMaxOrderNumbers[i] = await getMaxOrderNumber(team.value[i].user.id, 1)
+  }
+  maxOrderNumbers.value = newMaxOrderNumbers
+}
 
 onMounted(() => {
   onMountMainTheme()
+  fetchMaxOrderNumbers()
   canGoToLevel.value = false
   initLevels()
 })

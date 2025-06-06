@@ -11,6 +11,22 @@ const API_BASE = `http://${ip}:${port}`
 // LEVELS
 // -----------------------
 
+export async function getMaxOrderNumber(UserId: number, CourseId: number) {
+  const res = await fetch(`${API_BASE}/getMaxOrderNumberForBebrik`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      UserId,
+      CourseId,
+    }),
+  })
+  if (!res.ok) {
+    throw new Error(`Failed to max order numbers: ${res.status}`)
+  }
+
+  return (await res.json()).MaxOrderNumber
+}
+
 export async function getLevels(): Promise<Level[]> {
   const res = await fetch(`${API_BASE}/levels`)
   if (!res.ok) {
@@ -215,6 +231,25 @@ export async function deleteAnswer(answerId: number): Promise<void> {
   })
   if (res.status !== 204) {
     throw new Error(`Failed to delete answer ${answerId}: ${res.status}`)
+  }
+}
+
+export async function updateMaxLevelId(user: User, courseId: number, newMaxLevelId: number) {
+  const res = await fetch(`${API_BASE}/updateMaxLevelId`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      UserId: user.id,
+      CourseId: courseId,
+      NewMaxLevelId: newMaxLevelId,
+    }),
+  })
+
+  if (res.status !== 201) {
+    const errorText = await res.text()
+    throw new Error(`Failed to update max level: ${res.status} - ${errorText}`)
   }
 }
 

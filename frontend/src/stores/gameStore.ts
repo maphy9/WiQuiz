@@ -120,24 +120,6 @@ export const useGame = defineStore('gameStore', () => {
 
   // Level
   const levels: Ref<Level[]> = ref([])
-  const processedLevels = computed(() => {
-    let maxOrderNumber = Infinity
-    for (const teammate of team.value) {
-      if (maxOrderNumber > teammate.user.maxOrderNumber) {
-        maxOrderNumber = teammate.user.maxOrderNumber
-      }
-    }
-
-    return levels.value.map((level: Level) => ({
-      ...level,
-      state:
-      level.OrderNumber < maxOrderNumber
-        ? 'passed'
-        : (level.OrderNumber === maxOrderNumber
-            ? 'repeat'
-            : 'locked'),
-    }))
-  })
   const currentLevel: Ref<Level | null> = ref(null)
 
   async function initLevels() {
@@ -624,7 +606,6 @@ export const useGame = defineStore('gameStore', () => {
     initTeam,
     currentLevel,
     levels,
-    processedLevels,
     initStats,
     correctAnswers,
     websocket,

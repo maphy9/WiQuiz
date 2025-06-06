@@ -14,7 +14,7 @@ export const useUser = defineStore('userStore', () => {
     if (!user.value) {
       router.push({ name: 'login' })
     }
-  })
+  }, { deep: true })
 
   return {
     user,

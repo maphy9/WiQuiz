@@ -170,6 +170,40 @@ class QuestionUpdate(BaseModel):
     LevelId: int
     answers: list[AnswerUpdate]
 
+class UserUpdate(BaseModel):
+    UserId: int
+    CourseId: int
+    NewMaxLevelId: int
+
+class GetMaxOrderNumberForBebrik(BaseModel):
+    UserId: int
+    CourseId: int
+
+@app.post("/getMaxOrderNumberForBebrik", status_code=201)
+def getMaxOrderNumberForBebrik(payload: GetMaxOrderNumberForBebrik):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    maxLevel = get_UserCourseData_and_Level(cursor, payload.UserId, payload.CourseId)
+    conn.close()
+    return {
+        "MaxOrderNumber": maxLevel["OrderNumber"]
+    }
+
+@app.post("/updateMaxLevelId", status_code=201)
+def updateMaxLevelId(payload: UserUpdate):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+    update_MaxLevelId(
+        cursor,
+        payload.UserId,
+        payload.CourseId,
+        payload.NewMaxLevelId
+    )
+
+    conn.commit()
+    conn.close()
+    return {"message": "MaxLevelId updated successfully"}
 
 # -----------------------
 # LEVEL CRUD
@@ -446,9 +480,9 @@ def login_user(payload: LoginRequest):
             raise HTTPException(status_code=500, detail="No levels found in the course")
 
         cursor.execute("""
-            INSERT INTO UserCourseData (UserId, MaxLevelId)
-            VALUES (?, ?)
-        """, (user_id, level["LevelId"]))
+            INSERT INTO UserCourseData (UserId, MaxLevelId, CourseId)
+            VALUES (?, ?, ?)
+        """, (user_id, level["LevelId"], 1))
         conn.commit()
 
         user = {

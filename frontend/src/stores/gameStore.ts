@@ -10,6 +10,9 @@ import { useRouter } from 'vue-router'
 import { getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
 
+const ip = import.meta.env.VITE_IP
+const port = import.meta.env.VITE_PORT
+
 export const useGame = defineStore('gameStore', () => {
   const { user } = storeToRefs(useUser())
   const { t } = useI18n()
@@ -153,7 +156,7 @@ export const useGame = defineStore('gameStore', () => {
     return new Promise<void>((resolve, reject) => {
       const setupWebSocket = () => {
         roomCode.value = code
-        const wsUrl = `ws://localhost:8000/ws/${code}/${user.value?.id}`
+        const wsUrl = `ws://${ip}:${port}/ws/${code}/${user.value?.id}`
         websocket.value = new WebSocket(wsUrl)
 
         websocket.value.onopen = () => {

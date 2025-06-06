@@ -3,7 +3,9 @@ import type Level from '@/types/Level'
 import type Question from '@/types/Question'
 import type User from '@/types/User'
 
-const API_BASE = 'http://localhost:8000'
+const ip = import.meta.env.VITE_IP
+const port = import.meta.env.VITE_PORT
+const API_BASE = `http://${ip}:${port}`
 
 // -----------------------
 // LEVELS

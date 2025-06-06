@@ -7,7 +7,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { getLevels } from '@/utils/fetchUtils'
+import { addAnswerForBebrik, getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
 
 const ip = import.meta.env.VITE_IP
@@ -422,12 +422,18 @@ export const useGame = defineStore('gameStore', () => {
     bonuses.value.reviveBonus.isAvailable = false
   }
 
-  function submitVote(selectedAnswer: Answer) {
+  async function submitVote(selectedAnswer: Answer) {
+    if (!user.value) {
+      return
+    }
+
     const message = {
       type: 'vote',
       selectedAnswer,
-      playerId: user.value?.id,
+      playerId: user.value.id,
     }
+
+    await addAnswerForBebrik(user.value.id, 1, selectedAnswer.IsCorrect)
 
     sendWebSocketMessage(message)
   }

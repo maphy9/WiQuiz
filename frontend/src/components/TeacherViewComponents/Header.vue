@@ -1,6 +1,9 @@
 <template>
   <div class="header">
-    <div class="header-logo">
+    <div
+      class="header-logo"
+      @click="router.push({'name': 'teacher-view'})"
+    >
       <img src="@/images/logoPL.png">
 
       <h1>WIKAMP WEEIA</h1>

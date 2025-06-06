@@ -179,6 +179,33 @@ class GetMaxOrderNumberForBebrik(BaseModel):
     UserId: int
     CourseId: int
 
+class AddAnswerForBebrik(BaseModel):
+    UserId: int
+    CourseId: int
+    IsCorrect: bool
+
+class GetStats(BaseModel):
+    CourseId: int
+
+@app.post("/getStats", status_code=201)
+def getStats(payload: GetStats):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    res = get_Stats(cursor, payload.CourseId)
+    conn.close()
+    return res
+
+@app.post("/addAnswerForBebrik", status_code=201)
+def addAnswerForBebrik(payload: AddAnswerForBebrik):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    add_AnswerStats(cursor, payload.UserId, payload.CourseId, payload.IsCorrect)
+    conn.commit()
+    conn.close()
+    return {"message": "Recursion is working correctly - bebra/<52>/"}
+
 @app.post("/getMaxOrderNumberForBebrik", status_code=201)
 def getMaxOrderNumberForBebrik(payload: GetMaxOrderNumberForBebrik):
     conn = sqlite3.connect("db/kck.db")
@@ -480,9 +507,9 @@ def login_user(payload: LoginRequest):
             raise HTTPException(status_code=500, detail="No levels found in the course")
 
         cursor.execute("""
-            INSERT INTO UserCourseData (UserId, MaxLevelId, CourseId)
-            VALUES (?, ?, ?)
-        """, (user_id, level["LevelId"], 1))
+            INSERT INTO UserCourseData (UserId, MaxLevelId, CourseId, CorrectAnswers, TotalAnswers)
+            VALUES (?, ?, ?, ?, ?)
+        """, (user_id, level["LevelId"], 1, 0, 0))
         conn.commit()
 
         user = {

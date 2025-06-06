@@ -44,6 +44,20 @@ def get_User(cursor: Cursor, userId: int):
         'Password': row[3],
     }
 
+def get_All_Users(cursor: Cursor):
+    cursor.execute("SELECT * FROM User")
+    rows = cursor.fetchall()
+    result = []
+    for row in rows:
+        print(row)
+        user = {
+            'UserId': row[0],
+            'Name': row[1],
+            'Password': row[2],
+        }
+        result.append(user)
+    return result
+
 # -----------------------
 # LEVEL METHODS
 # -----------------------
@@ -297,7 +311,9 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
       UserCourseData.MaxLevelId,
       Level.LevelTitle,
       Level.OrderNumber,
-      Level.CourseId
+      Level.CourseId,
+      UserCourseData.CorrectAnswers,
+      UserCourseData.TotalAnswers
     FROM UserCourseData
     JOIN Level ON Level.LevelId = UserCourseData.MaxLevelId
     WHERE UserId = ? AND Level.CourseId = ?
@@ -310,7 +326,9 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
         'MaxLevelId': row[1],
         'LevelTitle': row[2],
         'OrderNumber': row[3],
-        'CourseId': row[4]
+        'CourseId': row[4],
+        'CorrectAnswers': row[5],
+        'TotalAnswers': row[6],
     }
 
 
@@ -326,3 +344,41 @@ def update_MaxLevelId(cursor: Cursor, user_id: int, course_id: int, new_max_leve
         SET MaxLevelId = ?
         WHERE UserId = ? AND CourseId = ?
     """, (new_max_level_id, user_id, course_id))
+
+
+def add_AnswerStats(cursor: Cursor, userId: int, courseId: int, isCorrect: bool):
+    userCourseData = get_UserCourseData_and_Level(cursor, userId, courseId)
+    totalAnswers = userCourseData['TotalAnswers']
+    correctAnswers = userCourseData['CorrectAnswers']
+    cursor.execute("""
+        UPDATE UserCourseData
+        SET TotalAnswers = ?
+        WHERE UserId = ? AND CourseId = ?
+    """, (totalAnswers + 1, userId, courseId))
+
+    if isCorrect:
+        cursor.execute("""
+            UPDATE UserCourseData
+            SET CorrectAnswers = ?
+            WHERE UserId = ? AND CourseId = ?
+        """, (correctAnswers + 1, userId, courseId))
+
+
+def get_Stats(cursor: Cursor, courseId: int):
+    users = get_All_Users(cursor)
+    res = []
+    for user in users:
+        userCourseData = get_UserCourseData_and_Level(cursor, user["UserId"], courseId)
+        totalAnswers = userCourseData["TotalAnswers"]
+        correctAnswers = userCourseData["CorrectAnswers"]
+        numberOfLevels = len(get_all_Levels(cursor, courseId))
+        correctPercentage = 0 if totalAnswers == 0 else round(correctAnswers / totalAnswers * 100, 2)
+        isComplete = numberOfLevels == userCourseData["OrderNumber"]
+        stats = {
+            "Name": user["Name"],
+            "MaxLevelReached": userCourseData["OrderNumber"],
+            "CorrectPercentage": correctPercentage,
+            "IsComplete": isComplete
+        }
+        res.append(stats)
+    return res

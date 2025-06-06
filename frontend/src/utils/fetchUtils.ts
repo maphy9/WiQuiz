@@ -11,6 +11,36 @@ const API_BASE = `http://${ip}:${port}`
 // LEVELS
 // -----------------------
 
+export async function addAnswerForBebrik(UserId: number, CourseId: number, IsCorrect: boolean) {
+  const res = await fetch(`${API_BASE}/addAnswerForBebrik`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      UserId,
+      CourseId,
+      IsCorrect,
+    }),
+  })
+  if (!res.ok) {
+    throw new Error(`Failed to max order numbers: ${res.status}`)
+  }
+}
+
+export async function getStats(CourseId: number) {
+  const res = await fetch(`${API_BASE}/getStats`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      CourseId,
+    }),
+  })
+  if (!res.ok) {
+    throw new Error(`Failed to max order numbers: ${res.status}`)
+  }
+
+  return (await res.json()) as any[]
+}
+
 export async function getMaxOrderNumber(UserId: number, CourseId: number) {
   const res = await fetch(`${API_BASE}/getMaxOrderNumberForBebrik`, {
     method: 'POST',

@@ -127,7 +127,7 @@ async function saveTopic() {
     }
   }
   else {
-    const newLevel = await createLevel({ LevelTitle: levelTitle.value, OrderNumber: levels.value.length })
+    const newLevel = await createLevel({ LevelTitle: levelTitle.value, OrderNumber: levels.value.length + 1 })
     levels.value.push(newLevel)
   }
   closeModal()

@@ -98,7 +98,7 @@ const questionModel: Ref<Question> = ref({
   QuestionTitle: '',
   QuestionText: '',
   LevelId: 0,
-  OrderNumber: 0,
+  OrderNumber: (currentLevel.value?.questions.length as number) + 1,
   answers: [
     { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
     { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
@@ -120,7 +120,7 @@ function openAddModal() {
     QuestionTitle: '',
     QuestionText: '',
     LevelId: 0,
-    OrderNumber: 0,
+    OrderNumber: (currentLevel.value?.questions.length as number) + 1,
     answers: [
       { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },
       { AnswerId: 0, AnswerText: '', IsCorrect: false, QuestionId: 0 },

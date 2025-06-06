@@ -287,15 +287,7 @@ export const useGame = defineStore('gameStore', () => {
         break
 
       case 'players_update':
-        team.value = data.players.map((player: any, index: number) => ({
-          user: {
-            ...player,
-            avatar: `/images/avatar${index + 1}.jpeg`,
-          },
-          isAlive: true,
-          selectedAnswer: null,
-          score: 0,
-        }))
+        handlePlayersUpdate(data.players)
         break
 
       default:
@@ -304,15 +296,37 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
-  function handleKillPlayer(player: Teammate) {
-    for (const teammate of team.value) {
-      if (teammate.user.id === player.user.id) {
-        teammate.isAlive = false
+  function handlePlayersUpdate(players: any) {
+    const newPlayers = players.map((player: any, index: number) => ({
+      user: {
+        ...player,
+        avatar: `/images/avatar${index + 1}.jpeg`,
+      },
+      isAlive: true,
+      selectedAnswer: null,
+      score: 0,
+    }))
+    for (let i = 0; i < newPlayers.length; i++) {
+      const newPlayer = newPlayers[i]
+      const oldPlayer = team.value.find((teammate: Teammate) => teammate.user.id === newPlayer.user.id)
+      if (oldPlayer) {
+        newPlayer.isAlive = oldPlayer.isAlive
+        newPlayer.score = oldPlayer.score
+        newPlayer.selectedAnswer = oldPlayer.selectedAnswer
       }
     }
+    team.value = newPlayers
 
-    showMessage(`${t('level-view.incorrect-answer')} - ${player.user.name} ${t('level-view.killed')}`, 'RED')
+    const answer = getChosenAnswer()
+    if (answer) {
+      chooseAnswer()
+    }
+    else {
+      handleGameOver()
+    }
+  }
 
+  function handleGameOver() {
     let areAllDead = true
     for (const teammate of team.value) {
       if (teammate.isAlive) {
@@ -336,6 +350,18 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
+  function handleKillPlayer(player: Teammate) {
+    for (const teammate of team.value) {
+      if (teammate.user.id === player.user.id) {
+        teammate.isAlive = false
+      }
+    }
+
+    showMessage(`${t('level-view.incorrect-answer')} - ${player.user.name} ${t('level-view.killed')}`, 'RED')
+
+    handleGameOver()
+  }
+
   function handleChooseAnswer(answer: Answer) {
     chosenAnswer.value = answer
 
@@ -344,6 +370,17 @@ export const useGame = defineStore('gameStore', () => {
         if (teammate.selectedAnswer?.AnswerId === chosenAnswer.value?.AnswerId) {
           teammate.score += 3
         }
+      }
+    }
+  }
+
+  function chooseAnswer() {
+    const answer = getChosenAnswer()
+    if (answer) {
+      sendWebSocketMessage({ type: 'choose_answer', answer })
+      if (!answer.IsCorrect) {
+        const player = getRandomAlive()
+        sendWebSocketMessage({ type: 'kill_player', player })
       }
     }
   }
@@ -374,14 +411,7 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    const answer = getChosenAnswer()
-    if (answer) {
-      sendWebSocketMessage({ type: 'choose_answer', answer })
-      if (!answer.IsCorrect) {
-        const player = getRandomAlive()
-        sendWebSocketMessage({ type: 'kill_player', player })
-      }
-    }
+    chooseAnswer()
   }
 
   function handleTimeBonus() {

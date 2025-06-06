@@ -236,7 +236,6 @@ export const useGame = defineStore('gameStore', () => {
         gameStage.value = data.stage
         if (data.levelIndex) {
           currentLevelIndex.value = data.levelIndex
-          console.error(currentLevelIndex.value)
         }
         break
 

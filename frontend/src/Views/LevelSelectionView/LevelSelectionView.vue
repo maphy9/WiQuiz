@@ -8,14 +8,12 @@ import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
 import { getMaxOrderNumber } from '@/utils/fetchUtils'
 import LevelCard from './LevelCard.vue'
-
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Analiza Matematyczna')
 
 const router = useRouter()
-
 const gameStore = useGame()
 const { initLevels } = gameStore
 const { canGoToLevel, levels, team } = storeToRefs(gameStore)
@@ -24,7 +22,6 @@ const maxOrderNumbers = ref<number[]>([Infinity, Infinity, Infinity])
 const processedLevels = ref<any>([])
 
 watch([levels, maxOrderNumbers], () => {
-  console.error(levels.value)
   let maxOrderNumber = Infinity
   for (const _maxOrderNumber of maxOrderNumbers.value) {
     if (maxOrderNumber > _maxOrderNumber) {
@@ -94,9 +91,12 @@ async function fetchMaxOrderNumbers() {
   maxOrderNumbers.value = newMaxOrderNumbers
 }
 
+watch(team, () => {
+  fetchMaxOrderNumbers()
+}, { immediate: true, deep: true })
+
 onMounted(() => {
   onMountMainTheme()
-  fetchMaxOrderNumbers()
   canGoToLevel.value = false
   initLevels()
 })

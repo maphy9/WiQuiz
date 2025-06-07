@@ -1,4 +1,6 @@
 export default interface Answer {
-  text: string
-  isCorrect: boolean
+  AnswerId: number
+  AnswerText: string
+  IsCorrect: boolean
+  QuestionId: number
 }

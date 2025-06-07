@@ -1,6 +1,9 @@
 <template>
   <div class="header">
-    <div class="header-logo">
+    <div
+      class="header-logo"
+      @click="router.push({'name': 'teacher-view'})"
+    >
       <img src="@/images/logoPL.png">
 
       <h1>WIKAMP WEEIA</h1>
@@ -63,8 +66,13 @@
         >
       </div>
 
-      <div class="header-user">
-        <span class="header-user-name">Bolesław R.</span>
+      <div
+        v-if="user"
+        class="header-user"
+        @mouseenter="showDropdown = true"
+        @mouseleave="showDropdown = false"
+      >
+        <span class="header-user-name">{{ user.name }}</span>
 
         <img
           class="header-user-img"
@@ -75,17 +83,49 @@
           class="header-arrow"
           src="@/images/arrowDown_icon.png"
         >
+
+        <div
+          v-if="showDropdown"
+          class="dropdown-menu"
+        >
+          <button
+            type="button"
+            @click="signOut"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-else
+        class="header-user"
+        :style="{'textDecoration': 'underline'}"
+        @click="router.push({'name': 'login'})"
+      >
+        Login
       </div>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useUser } from '@/stores/userStore'
 
 const language = ref('')
 const { locale } = useI18n()
+const { user } = storeToRefs(useUser())
+const router = useRouter()
+
+const showDropdown = ref(false)
+
+function signOut() {
+  user.value = null
+}
 
 onMounted(() => {
   if (locale.value === 'pl') {
@@ -144,7 +184,9 @@ function toggleLanguage() {
   }
   .header-user{
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
   }
   .header-user-img{
@@ -189,4 +231,37 @@ function toggleLanguage() {
   .nav-button i {
     font-size: 20px;
   }
+
+.header-user {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu button:hover {
+  opacity: 0.7;
+}
 </style>

@@ -5,7 +5,6 @@ def create_database(cursor: Cursor):
   CREATE TABLE IF NOT EXISTS User (
     UserId INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL,
-    Surname TEXT NOT NULL,
     Password TEXT
   )
   """)
@@ -32,14 +31,19 @@ def create_database(cursor: Cursor):
     UserCourseDataId INTEGER PRIMARY KEY AUTOINCREMENT,
     UserId INTEGER,
     MaxLevelId INTEGER,
+    CorrectAnswers INTEGER,
+    TotalAnswers INTEGER,
+    CourseId INTEGER,
     FOREIGN KEY (UserId) REFERENCES User (UserId),
-    FOREIGN KEY (MaxLevelId) REFERENCES Level (LevelId)
+    FOREIGN KEY (MaxLevelId) REFERENCES Level (LevelId),
+    FOREIGN KEY (CourseId) REFERENCES Course (CourseId)
   )
   """)
 
   cursor.execute("""
   CREATE TABLE IF NOT EXISTS Question (
     QuestionId INTEGER PRIMARY KEY AUTOINCREMENT,
+    QuestionTitle TEXT,
     QuestionText TEXT,
     OrderNumber INTEGER,
     LevelId INTEGER,

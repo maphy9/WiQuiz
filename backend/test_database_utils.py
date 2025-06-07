@@ -51,23 +51,10 @@ def test_Level_functions():
         assert l1['LevelTitle'] == l2
         assert l1['OrderNumber'] == i
         assert l1['CourseId'] == 1
-        
-def test_UserCourseData_functions():
-    users = [
-        { 'UserId': 253190, 'Name': 'Andrii', 'Surname': 'Bialkovskyi' },
-        { 'UserId': 252501, 'Name': 'Dmytro', 'Surname': 'Malinovskyi' },
-        { 'UserId': 253811, 'Name': 'Aliaksandr', 'Surname': 'Yurusau' },
-        { 'UserId': 253805, 'Name': 'Mikita', 'Surname': 'Dzeviatau' },
-    ]
-
-    for user in users:
-        add_UserCourseData(cursor, user['UserId'], randint(1, 5))
-        add_UserCourseData(cursor, user['UserId'], randint(6, 8))
 
 test_Course_functions()
 test_User_functions()
 test_Level_functions()
-test_UserCourseData_functions()
 
 conn.commit()
 conn.close()

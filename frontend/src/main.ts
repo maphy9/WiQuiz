@@ -14,7 +14,9 @@ import LevelView from './Views/LevelView/LevelView.vue'
 import LoginView from './Views/LoginView/LoginView.vue'
 import MainView from './Views/MainView/MainView.vue'
 import PageNotFoundView from './Views/PageNotFoundView/PageNotFoundView.vue'
+import TeacherMainView from './Views/TeacherView/TeacherMainView.vue'
 import TeacherQuestionsView from './Views/TeacherView/TeacherQuestionsView/TeacherQuestionsView.vue'
+import TeacherStatsView from './Views/TeacherView/TeacherStatsView.vue'
 import TeacherTopicsView from './Views/TeacherView/TeacherTopicsView/TeacherTopicsView.vue'
 
 const router = createRouter({
@@ -23,8 +25,11 @@ const router = createRouter({
     {
       path: '/',
       children: [
-        { name: 'teacher-topics', path: '/', component: TeacherTopicsView },
-        { name: 'teacher-questions', path: '/questions', component: TeacherQuestionsView },
+        { name: 'teacher-view', path: '', component: TeacherMainView },
+        { name: 'teacher-stats', path: 'stats', component: TeacherStatsView },
+        { name: 'teacher-topics', path: 'topics', component: TeacherTopicsView },
+        { name: 'teacher-questions', path: 'questions', component: TeacherQuestionsView },
+        { name: 'login', path: 'login', component: LoginView },
       ],
     },
     {
@@ -35,7 +40,6 @@ const router = createRouter({
         { name: 'about', path: 'about', component: AboutView },
         { name: 'join', path: 'join', component: JoinView },
         { name: 'level-selection', path: 'level-selection', component: LevelSelectionView },
-        { name: 'login', path: 'login', component: LoginView },
         { name: 'level-results', path: 'level-results', component: LevelResultsView },
         {
           name: 'level',

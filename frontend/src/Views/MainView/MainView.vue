@@ -7,32 +7,27 @@
         <h3>{{ $t('main-view.your-team') }}</h3>
       </div>
 
-      <div class="team-members">
+      <div
+        v-if="isConnected"
+        class="team-members"
+      >
         <div
+          v-for="(teammate, index) in team"
+          :key="index"
           class="member-slot"
           @click="playButtonSound"
         >
           <img
             class="avatar"
-            src="@/images/emptyPfp.png"
+            :src="teammate.user.avatar || '/images/emptyPfp.png'"
           >
 
-          <div>{{ player1_name }}</div>
-        </div>
-
-        <div
-          class="member-slot"
-          @click="playButtonSound"
-        >
-          <img
-            class="avatar"
-            src="@/images/emptyPfp.png"
-          >
-
-          <div>{{ player2_name }}</div>
+          <div>{{ teammate.user.name }}</div>
         </div>
 
         <router-link
+          v-for="i in (3 - team.length)"
+          :key="i"
           :to="{'name': 'join'}"
           class="member-slot"
           @click="playButtonSound"
@@ -95,12 +90,15 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
+import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
 
-const player1_name = ref('Bolesław R.')
-const player2_name = ref('Adam K.')
+const gameStore = useGame()
+const { team, isConnected } = storeToRefs(gameStore)
+
 const logoClickCount = ref(0)
 const rotateLogo = ref(false)
 const { playButtonSound } = useSoundStore()

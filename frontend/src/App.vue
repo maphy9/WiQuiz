@@ -13,15 +13,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useUser } from './stores/userStore'
+import { loadUser } from './utils/fetchUtils'
 
 const route = useRoute()
+const { user } = storeToRefs(useUser())
 
 const currentTransition = computed(() => {
   return route.name === 'main'
     ? 'swipe-down'
     : 'swipe-up'
+})
+
+onMounted(() => {
+  const savedUser = loadUser()
+  user.value = savedUser
 })
 </script>
 

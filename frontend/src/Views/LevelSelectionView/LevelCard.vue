@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type Level from '@/types/Level'
 import { computed, toRefs } from 'vue'
 import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
-  level: Level
+  level: any
 }>()
 
 const { playButtonSound } = useSoundStore()
@@ -29,7 +28,7 @@ const imageSrc = computed(() => {
 })
 
 const dynamicFontSize = computed(() => {
-  return level.value.title.length > 12
+  return level.value.LevelTitle.length > 12
     ? '25px'
     : '32px'
 })
@@ -55,7 +54,7 @@ const dynamicFontSize = computed(() => {
       class="card-text"
       :style="{'fontSize': dynamicFontSize}"
     >
-      {{ level.title }}
+      {{ level.LevelTitle }}
     </span>
   </div>
 </template>

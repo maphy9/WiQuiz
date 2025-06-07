@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Answer } from '@/types/Answer'
+import type Answer from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
 import { computed, toRefs, watch } from 'vue'
 import { useSoundStore } from '@/stores/useSoundStore'
@@ -55,7 +55,7 @@ watch(chosenAnswer, (newVal) => {
         ? 'active'
         : 'inactive'
       : ''} ${chosenAnswer === answer
-      ? chosenAnswer?.isCorrect
+      ? chosenAnswer?.IsCorrect
         ? 'correct active'
         : 'incorrect active'
       : isChosen
@@ -73,7 +73,7 @@ watch(chosenAnswer, (newVal) => {
       :src="answer.image"
     >
 
-    <span class="answer-text">{{ answer.text }}</span>
+    <span class="answer-text">{{ answer.AnswerText }}</span>
   </div>
 </template>
 

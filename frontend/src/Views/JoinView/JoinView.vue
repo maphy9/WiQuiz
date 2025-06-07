@@ -1,16 +1,30 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
+import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
 
 const { playButtonSound } = useSoundStore()
 
-const codeInput = ref('6  2  3  1  6  2')
+const codeInput = ref('')
+const gameStore = useGame()
+const { connectToRoom } = gameStore
+const { roomCode } = storeToRefs(gameStore)
+
+function joinRoom() {
+  playButtonSound()
+  if (codeInput.value.length !== 6) {
+    return
+  }
+
+  connectToRoom(codeInput.value)
+}
 
 function copyCode() {
-  if (codeInput.value) {
-    navigator.clipboard.writeText(codeInput.value.toString())
+  if (roomCode.value) {
+    navigator.clipboard.writeText(roomCode.value.toString())
   }
 }
 
@@ -35,7 +49,7 @@ onMounted(() => {
           <div class="code-input">
             <input
               type="text"
-              :value="codeInput"
+              :value="roomCode?.split('').join('  ')"
               readonly
             >
 
@@ -62,14 +76,15 @@ onMounted(() => {
 
           <div class="code-input">
             <input
+              v-model="codeInput"
               type="text"
               maxlength="6"
-              value="1  2  4  5  3  6"
+              placeholder="0  0  0  0  0  0"
             >
 
             <button
               type="button"
-              @mousedown="playButtonSound"
+              @mousedown="joinRoom"
             >
               <img
                 id="paste-button-icon"

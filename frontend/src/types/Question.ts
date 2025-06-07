@@ -1,7 +1,10 @@
 import type Answer from './Answer'
 
 export default interface Question {
-  title: string
-  text: string
+  QuestionId: number
+  QuestionTitle: string
+  QuestionText: string
+  OrderNumber: number
+  LevelId: number
   answers: Answer[]
 }

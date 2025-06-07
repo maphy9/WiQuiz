@@ -10,7 +10,7 @@ create_database(cursor)
 
 add_Course(cursor, 'Podstawy inżynierii oprogramowania')
 
-add_Level(cursor, "Wprowadzenie do inżynierii oprogramowania", 1, 1)
+add_Level(cursor, "Wprowadzenie", 1, 1)
 cursor.execute("SELECT last_insert_rowid()")
 level_id = cursor.fetchone()[0]
 
@@ -46,7 +46,7 @@ add_Answer(cursor, "Tworzenie oprogramowania wysokiej jakości, na czas, w budż
 add_Answer(cursor, "Tylko dokumentacja", False, q4)
 add_Answer(cursor, "Zmiana sprzętu", False, q4)
 
-add_Level(cursor, "Modele cyklu życia oprogramowania", 2, 1)
+add_Level(cursor, "Cykl życia", 2, 1)
 cursor.execute("SELECT last_insert_rowid()")
 level_id = cursor.fetchone()[0]
 
@@ -82,7 +82,7 @@ add_Answer(cursor, "Model spiralny", False, q4)
 add_Answer(cursor, "Model prototypowy", True, q4)
 add_Answer(cursor, "Model V", False, q4)
 
-add_Level(cursor, "Zarządzanie wymaganiami", 3, 1)
+add_Level(cursor, "Wymagania", 3, 1)
 cursor.execute("SELECT last_insert_rowid()")
 level_id = cursor.fetchone()[0]
 
@@ -118,7 +118,7 @@ add_Answer(cursor, "Docker", False, q4)
 add_Answer(cursor, "Git", False, q4)
 add_Answer(cursor, "Visual Studio Code", False, q4)
 
-add_Level(cursor, "Projektowanie systemów", 4, 1)
+add_Level(cursor, "Systemy", 4, 1)
 cursor.execute("SELECT last_insert_rowid()")
 level_id = cursor.fetchone()[0]
 
@@ -154,7 +154,7 @@ add_Answer(cursor, "Zestaw narzędzi do debugowania", False, q4)
 add_Answer(cursor, "Metoda testowania jednostkowego", False, q4)
 add_Answer(cursor, "System kontroli wersji", False, q4)
 
-add_Level(cursor, "Testowanie oprogramowania", 5, 1)
+add_Level(cursor, "Testowanie", 5, 1)
 cursor.execute("SELECT last_insert_rowid()")
 level_id = cursor.fetchone()[0]
 

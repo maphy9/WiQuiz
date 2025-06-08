@@ -1,28 +1,48 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
+import { useUser } from '@/stores/userStore'
+import { useSoundStore } from '@/stores/useSoundStore'
+import { updateMaxLevelId } from '@/utils/fetchUtils'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
 const { t } = useI18n()
 const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic } = useSoundStore()
 const router = useRouter()
-const { currentLevel, correctAnswers, team } = storeToRefs(useGame())
+const { user } = storeToRefs(useUser())
+const { currentLevel, currentLevelIndex, correctAnswers, levels, team, me } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `${t('result-view.topic')}${currentLevel.value?.orderNumber} - ${currentLevel.value?.title}`
+  return `${t('result-view.topic')} ${currentLevel.value?.OrderNumber as number + 1} - ${currentLevel.value?.LevelTitle}`
 })
 
-const score = computed(() => {
+const levelProgress = computed(() => {
   if (!currentLevel.value) {
     return 0
   }
 
   return (100 * correctAnswers.value) / currentLevel.value?.questions.length
 })
+
+const nextLevel = computed(() => {
+  if (currentLevelIndex.value < levels.value.length - 1) {
+    return levels.value[currentLevelIndex.value + 1]
+  }
+
+  return null
+})
+
+watch(levelProgress, async () => {
+  if (user.value && nextLevel.value && user.value?.maxOrderNumber < nextLevel.value?.OrderNumber && levelProgress.value >= 90 && nextLevel.value && me.value && currentLevel.value) {
+    await updateMaxLevelId(me.value.user, currentLevel.value?.CourseId, nextLevel.value.LevelId)
+    if (user.value) {
+      user.value.maxOrderNumber = nextLevel.value.LevelId
+    }
+  }
+}, { immediate: true })
 
 const textScore = computed(() => {
   return `${correctAnswers.value} ${t('result-view.correct-answers-from')} ${currentLevel.value?.questions.length}`
@@ -49,13 +69,13 @@ onUnmounted(() => {
 
       <div class="progress-bar-outer">
         <div
-          :class="score >= 90
+          :class="levelProgress >= 90
             ? 'progress-bar-inner-green'
             : 'progress-bar-inner-yellow'"
-          :style="{'width': `${score}%`}"
+          :style="{'width': `${levelProgress}%`}"
         />
 
-        <span class="progress-bar-label">{{ Math.round(score) }}%</span>
+        <span class="progress-bar-label">{{ Math.round(levelProgress) }}%</span>
       </div>
 
       <div class="cards-and-buttons-container">
@@ -63,17 +83,16 @@ onUnmounted(() => {
           <StudentCard
             v-for="teammate in team"
             :key="teammate.user.name"
-            :name="teammate.user.name"
-            :score="teammate.score"
+            :teammate="teammate"
           />
         </div>
 
         <div class="buttons-list">
           <div
-            v-if="score >= 90"
+            v-if="levelProgress >= 90"
             class="button next-level-button"
             @click="playButtonSound(); router.push({'name': 'level',
-                                                    'params': {'levelIndex': (currentLevel?.orderNumber as number) + 1}})"
+                                                    'params': {'levelIndex': currentLevelIndex + 1}})"
           >
             <p class="button-text">
               {{ $t('result-view.next-level') }}
@@ -90,13 +109,15 @@ onUnmounted(() => {
             v-else
             class="next-level-access-text"
           >
-            {{ $t('result-view.access-message') }}
+            {{ nextLevel
+              ? $t('result-view.access-message')
+              : $t('All levels completed') }}
           </p>
 
           <div
             class="button play-again-button"
             @click="playButtonSound(); playLevelMusic(); router.push({'name': 'level',
-                                                                      'params': {'levelIndex': (currentLevel?.orderNumber as number)}})"
+                                                                      'params': {'levelIndex': currentLevelIndex}})"
           >
             <p class="button-text">
               {{ $t('result-view.play-again') }}

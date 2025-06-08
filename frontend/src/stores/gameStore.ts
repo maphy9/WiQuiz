@@ -1,18 +1,59 @@
 import type { Ref } from 'vue'
 import type Answer from '@/types/Answer'
 import type Level from '@/types/Level'
+import type Question from '@/types/Question'
 import type Teammate from '@/types/Teammate'
-import type User from '@/types/User'
-import { nanoid } from 'nanoid'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { addAnswerForBebrik, getLevels } from '@/utils/fetchUtils'
+import { useUser } from './userStore'
+
+const ip = import.meta.env.VITE_IP
+const port = import.meta.env.VITE_PORT
 
 export const useGame = defineStore('gameStore', () => {
-  // User
-  const user: Ref<User> = ref({
-    id: nanoid(),
-    name: 'Robert',
-    avatar: '/images/emptyPfp.png',
+  const { user } = storeToRefs(useUser())
+  const { t } = useI18n()
+
+  // WebSocket connection
+  const websocket: Ref<WebSocket | null> = ref(null)
+  const roomCode: Ref<string | null> = ref(null)
+  const isConnected = ref(false)
+  const gameStage = ref('main-menu')
+  const currentLevelIndex = ref(0)
+  const currentQuestionIndex = ref(0)
+  const currentQuestion: Ref<Question | null> = ref(null)
+
+  const canGoToLevel = ref(false)
+
+  const router = useRouter()
+
+  // Messages
+  const messages: Ref<any[]> = ref([])
+
+  function showMessage(text: string, color: string) {
+    const message = { text, color }
+    messages.value.push(message)
+    setTimeout(() => {
+      messages.value = messages.value.filter((_message: any) => _message.text !== message.text)
+    }, 3000)
+  }
+
+  watch(gameStage, () => {
+    switch (gameStage.value) {
+      case 'main-menu':
+        router.push({ name: 'main' })
+        break
+      case 'level-selection':
+        router.push({ name: 'level-selection' })
+        break
+      case 'level':
+        canGoToLevel.value = true
+        router.push({ name: 'level', params: { levelIndex: currentLevelIndex.value } })
+        break
+    }
   })
 
   // Stats
@@ -23,20 +64,433 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   // Team
-  const team: Ref<Teammate[]> = ref([
-    { user: user.value, isAlive: true, selectedAnswer: null, score: 0 },
-  ])
+  const team: Ref<Teammate[]> = ref([])
+  const chosenAnswer: Ref<Answer | null> = ref(null)
 
-  function selectAnswer(answer: Answer) {
+  // Bebrik
+  const me = computed(() => {
+    return team.value.find((teammate: Teammate) => teammate.user.id === user.value?.id)
+  })
+
+  // Bonuses
+  const bonuses = ref({
+    mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
+    timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
+    reviveBonus: { image: '/images/reviveBonus.png', onClick: useReviveBonus, isAvailable: true },
+  })
+
+  function initBonuses() {
+    bonuses.value = {
+      mistakeBonus: { image: '/images/mistakeBonus.png', onClick: useMistakeBonus, isAvailable: true },
+      timeBonus: { image: '/images/timeBonus.png', onClick: useTimeBonus, isAvailable: true },
+      reviveBonus: { image: '/images/reviveBonus.png', onClick: useReviveBonus, isAvailable: true },
+    }
+  }
+
+  // Bebra 52
+  const answers: Ref<any[]> = ref([])
+  const isChosen = ref(false)
+  const timeOut = ref(false)
+
+  // Timer
+  const initialTime = 60
+  const maxTime = ref(initialTime)
+  const timeLeft = ref(initialTime)
+  const timeLeftFormatted = computed(() => {
+    const minutes = Math.floor(timeLeft.value / 60)
+    const seconds = timeLeft.value % 60
+
+    return `${minutes}:${seconds < 10
+      ? '0'
+      : ''}${seconds}`
+  })
+  const timebarProgress = computed(() => timeLeft.value * 100 / maxTime.value)
+  const progressColor = computed(() => {
+    if (timebarProgress.value > 60) {
+      return '#80C997'
+    }
+
+    if (timebarProgress.value > 20) {
+      return '#F4D064'
+    }
+
+    return '#E4583B'
+  })
+  const timeLeftInterval: Ref<number | null> = ref(null)
+
+  // Level
+  const levels: Ref<Level[]> = ref([])
+  const currentLevel: Ref<Level | null> = ref(null)
+
+  async function initLevels() {
+    levels.value = await getLevels()
+    currentLevel.value = null
+  }
+
+  // WebSocket Methods
+  function connectToRoom(code: string) {
+    if (!user.value) {
+      console.error('Not logged in')
+
+      return new Promise(resolve => resolve('Not logged in'))
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      const setupWebSocket = () => {
+        roomCode.value = code
+        const wsUrl = `ws://${ip}:${port}/ws/${code}/${user.value?.id}`
+        websocket.value = new WebSocket(wsUrl)
+
+        websocket.value.onopen = () => {
+          console.error('Connected to room:', code)
+          isConnected.value = true
+          resolve()
+        }
+
+        websocket.value.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data)
+            handleWebSocketMessage(data)
+          }
+          catch (error) {
+            console.error('Error parsing WebSocket message:', error)
+          }
+        }
+
+        websocket.value.onclose = () => {
+          console.error('Disconnected from room')
+          isConnected.value = false
+          websocket.value = null
+        }
+
+        websocket.value.onerror = (error) => {
+          console.error('WebSocket error:', error)
+          isConnected.value = false
+          reject(error)
+        }
+      }
+
+      if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
+        websocket.value.onclose = () => {
+          setupWebSocket()
+        }
+        websocket.value.close()
+      }
+      else {
+        setupWebSocket()
+      }
+    })
+  }
+
+  async function createRoom() {
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+
+    await connectToRoom(code)
+
+    return code
+  }
+
+  async function initializeWebSocketConnection() {
+    if (!user.value?.id) {
+      console.error('User not available, skipping WebSocket initialization')
+
+      return
+    }
+
+    if (isConnected.value) {
+      return
+    }
+
+    try {
+      const newRoomCode = await createRoom()
+      console.error('Created new room:', newRoomCode)
+    }
+    catch (error) {
+      console.error('Failed to create room:', error)
+    }
+  }
+
+  function disconnectFromRoom() {
+    if (websocket.value) {
+      websocket.value.close()
+      websocket.value = null
+    }
+    isConnected.value = false
+    roomCode.value = null
+  }
+
+  function sendWebSocketMessage(message: any) {
+    if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
+      websocket.value.send(JSON.stringify(message))
+    }
+    else {
+      console.error('WebSocket not connected')
+    }
+  }
+
+  function handleWebSocketMessage(data: any) {
+    console.error('Received message:', data)
+
+    switch (data.type) {
+      case 'change_stage':
+        gameStage.value = data.stage
+        if (data.levelIndex) {
+          currentLevelIndex.value = data.levelIndex
+        }
+        break
+
+      case 'vote':
+        handlePlayerVote(data)
+        break
+
+      case 'choose_answer':
+        handleChooseAnswer(data.answer)
+        break
+
+      case 'kill_player':
+        handleKillPlayer(data.player)
+        break
+
+      case 'use_time_bonus':
+        handleTimeBonus()
+        break
+
+      case 'use_mistake_bonus':
+        handleMistakeBonus(data.index)
+        break
+
+      case 'use_revive_bonus':
+        handleReviveBonus(data.index)
+        break
+
+      case 'teammates_list':
+        team.value = data.teammates
+        break
+
+      case 'players_update':
+        handlePlayersUpdate(data.players)
+        break
+
+      default:
+        console.warn('Unhandled message type:', data.type)
+        break
+    }
+  }
+
+  function handlePlayersUpdate(players: any) {
+    const newPlayers = players.map((player: any, index: number) => ({
+      user: {
+        ...player,
+        avatar: `/images/avatar${index + 1}.jpeg`,
+      },
+      isAlive: true,
+      selectedAnswer: null,
+      score: 0,
+    }))
+    for (let i = 0; i < newPlayers.length; i++) {
+      const newPlayer = newPlayers[i]
+      const oldPlayer = team.value.find((teammate: Teammate) => teammate.user.id === newPlayer.user.id)
+      if (oldPlayer) {
+        newPlayer.isAlive = oldPlayer.isAlive
+        newPlayer.score = oldPlayer.score
+        newPlayer.selectedAnswer = oldPlayer.selectedAnswer
+      }
+    }
+    team.value = newPlayers
+
+    const answer = getChosenAnswer()
+    if (answer) {
+      chooseAnswer()
+    }
+    else {
+      handleGameOver()
+    }
+  }
+
+  function handleGameOver() {
+    let areAllDead = true
     for (const teammate of team.value) {
-      if (teammate.user === user.value) {
-        teammate.selectedAnswer = answer
-        if (answer.isCorrect) {
+      if (teammate.isAlive) {
+        areAllDead = false
+        break
+      }
+    }
+
+    if (areAllDead) {
+      if (!bonuses.value.reviveBonus.isAvailable) {
+        setTimeout(() => {
+          if (!currentLevel.value) {
+            return
+          }
+          currentQuestionIndex.value = currentLevel.value.questions.length
+        }, 3000)
+      }
+      else {
+        useReviveBonus()
+      }
+    }
+  }
+
+  function handleKillPlayer(player: Teammate) {
+    for (const teammate of team.value) {
+      if (teammate.user.id === player.user.id) {
+        teammate.isAlive = false
+      }
+    }
+
+    showMessage(`${t('level-view.incorrect-answer')} - ${player.user.name} ${t('level-view.killed')}`, 'RED')
+
+    handleGameOver()
+  }
+
+  function handleChooseAnswer(answer: Answer) {
+    chosenAnswer.value = answer
+
+    if (chosenAnswer.value?.IsCorrect) {
+      for (const teammate of team.value) {
+        if (teammate.selectedAnswer?.AnswerId === chosenAnswer.value?.AnswerId) {
+          teammate.score += 3
+        }
+      }
+    }
+  }
+
+  function chooseAnswer() {
+    const answer = getChosenAnswer()
+    if (answer) {
+      sendWebSocketMessage({ type: 'choose_answer', answer })
+      if (!answer.IsCorrect) {
+        const player = getRandomAlive()
+        sendWebSocketMessage({ type: 'kill_player', player })
+      }
+    }
+  }
+
+  function handlePlayerVote(data: any) {
+    let isMe = false
+    const { selectedAnswer, playerId } = data
+    for (const teammate of team.value) {
+      if (teammate.user.id === playerId) {
+        teammate.selectedAnswer = selectedAnswer
+        if (user.value?.id === teammate.user.id) {
+          isMe = true
+        }
+        if (selectedAnswer.IsCorrect) {
           teammate.score += 5
         }
         break
       }
     }
+
+    if (!isMe) {
+      return
+    }
+
+    for (const teammate of team.value) {
+      if (teammate.isAlive && teammate.selectedAnswer === null) {
+        return
+      }
+    }
+
+    chooseAnswer()
+  }
+
+  function handleTimeBonus() {
+    if (!bonuses.value.timeBonus.isAvailable) {
+      return
+    }
+    timeLeft.value += 15
+    maxTime.value += 15
+    bonuses.value.timeBonus.isAvailable = false
+  }
+
+  function handleMistakeBonus(index: number) {
+    if (!currentQuestion.value || !bonuses.value.mistakeBonus.isAvailable) {
+      return
+    }
+    answers.value[index].isActive = false
+    bonuses.value.mistakeBonus.isAvailable = false
+  }
+
+  function handleReviveBonus(index: number) {
+    if (!bonuses.value.reviveBonus.isAvailable) {
+      return
+    }
+    showMessage(`${team.value[index].user.name} ${t('level-view.was-revived')}`, 'WHITE')
+    team.value[index].isAlive = true
+    bonuses.value.reviveBonus.isAvailable = false
+  }
+
+  async function submitVote(selectedAnswer: Answer) {
+    if (!user.value) {
+      return
+    }
+
+    const message = {
+      type: 'vote',
+      selectedAnswer,
+      playerId: user.value.id,
+    }
+
+    await addAnswerForBebrik(user.value.id, 1, selectedAnswer.IsCorrect)
+
+    sendWebSocketMessage(message)
+  }
+
+  function useTimeBonus() {
+    if (!bonuses.value.timeBonus.isAvailable) {
+      return
+    }
+
+    const message = {
+      type: 'use_time_bonus',
+    }
+
+    sendWebSocketMessage(message)
+  }
+
+  function useReviveBonus() {
+    if (!bonuses.value.reviveBonus.isAvailable) {
+      return
+    }
+    let foundDead = false
+    for (const teammate of team.value) {
+      if (!teammate.isAlive) {
+        foundDead = true
+        break
+      }
+    }
+    if (!foundDead) {
+      return
+    }
+    let index = Math.floor(Math.random() * team.value.length)
+    while (team.value[index].isAlive) {
+      index = Math.floor(Math.random() * team.value.length)
+    }
+
+    const message = {
+      type: 'use_revive_bonus',
+      index,
+    }
+
+    sendWebSocketMessage(message)
+  }
+
+  function useMistakeBonus() {
+    if (!currentQuestion.value || !bonuses.value.mistakeBonus.isAvailable) {
+      return
+    }
+    let index = Math.floor(Math.random() * 4)
+    while (currentQuestion.value.answers[index].IsCorrect) {
+      index = Math.floor(Math.random() * 4)
+    }
+
+    const message = {
+      type: 'use_mistake_bonus',
+      index,
+    }
+
+    sendWebSocketMessage(message)
   }
 
   function getChosenAnswer() {
@@ -45,11 +499,11 @@ export const useGame = defineStore('gameStore', () => {
       if (teammate.selectedAnswer === null) {
         continue
       }
-      if (teammate.selectedAnswer.text in selectedAnswers) {
-        selectedAnswers[teammate.selectedAnswer.text].votes += 1
+      if (teammate.selectedAnswer.AnswerText in selectedAnswers) {
+        selectedAnswers[teammate.selectedAnswer.AnswerText].votes += 1
       }
       else {
-        selectedAnswers[teammate.selectedAnswer.text] = {
+        selectedAnswers[teammate.selectedAnswer.AnswerText] = {
           answer: teammate.selectedAnswer,
           votes: 1,
         }
@@ -74,18 +528,6 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    const chosenAnswer: Answer = chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
-
-    for (const teammate of team.value) {
-      if (teammate.selectedAnswer === chosenAnswer) {
-        teammate.score += 3
-      }
-    }
-
-    if (chosenAnswer.isCorrect) {
-      correctAnswers.value += 1
-    }
-
     return chosenAnswers[Math.floor(Math.random() * chosenAnswers.length)]
   }
 
@@ -93,20 +535,6 @@ export const useGame = defineStore('gameStore', () => {
     for (let i = 0; i < team.value.length; i++) {
       team.value[i].selectedAnswer = null
     }
-  }
-
-  function killRandom() {
-    const aliveTeammates = team.value.filter((teammate: Teammate) => teammate.isAlive)
-    const randomAliveTeammate = aliveTeammates[Math.floor(Math.random() * aliveTeammates.length)]
-
-    for (let i = 0; i < team.value.length; i++) {
-      if (team.value[i] === randomAliveTeammate) {
-        team.value[i].isAlive = false
-        break
-      }
-    }
-
-    return randomAliveTeammate
   }
 
   function initTeam() {
@@ -117,307 +545,101 @@ export const useGame = defineStore('gameStore', () => {
     }
   }
 
-  // Level
-  const levels: Ref<Level[]> = ref([
-    {
-      title: 'Variables and Data Types',
-      orderNumber: 1,
-      questions: [
-        {
-          title: 'Constants in Code',
-          text: 'Which keyword is used to declare a constant in JavaScript?',
-          answers: [
-            { text: 'let', isCorrect: false },
-            { text: 'const', isCorrect: true },
-            { text: 'var', isCorrect: false },
-            { text: 'static', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Primitive Pick',
-          text: 'Which of the following is a primitive data type in JavaScript?',
-          answers: [
-            { text: 'Object', isCorrect: false },
-            { text: 'Array', isCorrect: false },
-            { text: 'String', isCorrect: true },
-            { text: 'Function', isCorrect: false },
-          ],
-        },
-        {
-          title: 'The null Mystery',
-          text: 'What is the result of typeof null in JavaScript?',
-          answers: [
-            { text: '"null"', isCorrect: false },
-            { text: '"undefined"', isCorrect: false },
-            { text: '"object"', isCorrect: true },
-            { text: '"boolean"', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Single Line Secrets',
-          text: 'Which symbol is used for single-line comments in JavaScript?',
-          answers: [
-            { text: '#', isCorrect: false },
-            { text: '//', isCorrect: true },
-            { text: '/*', isCorrect: false },
-            { text: '<!--', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Reassign Me!',
-          text: 'Which type of variable can be reassigned in JavaScript?',
-          answers: [
-            { text: 'const', isCorrect: false },
-            { text: 'define', isCorrect: false },
-            { text: 'let', isCorrect: true },
-            { text: 'var static', isCorrect: false },
-          ],
-        },
-      ],
-      state: 'passed',
-    },
-    {
-      title: 'Functions',
-      orderNumber: 2,
-      questions: [
-        {
-          title: 'Declare It Right',
-          text: 'Which keyword defines a function in JavaScript?',
-          answers: [
-            { text: 'func', isCorrect: false },
-            { text: 'function', isCorrect: true },
-            { text: 'define', isCorrect: false },
-            { text: 'def', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Simple Return',
-          text: 'What will this return? function test() { return 5 + 3; }',
-          answers: [
-            { text: 'undefined', isCorrect: false },
-            { text: '8', isCorrect: true },
-            { text: '"5 + 3"', isCorrect: false },
-            { text: 'NaN', isCorrect: false },
-          ],
-        },
-        {
-          title: 'ES6 Upgrade',
-          text: 'Arrow functions were introduced in which version of JavaScript?',
-          answers: [
-            { text: 'ES5', isCorrect: false },
-            { text: 'ES6', isCorrect: true },
-            { text: 'ES3', isCorrect: false },
-            { text: 'ES2019', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Arrow Syntax',
-          text: 'Which syntax correctly defines an arrow function?',
-          answers: [
-            { text: 'function => () {}', isCorrect: false },
-            { text: '() -> {}', isCorrect: false },
-            { text: '() => {}', isCorrect: true },
-            { text: '{} => ()', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Higher-Order Power',
-          text: 'What is a higher-order function?',
-          answers: [
-            { text: 'A function that returns a string', isCorrect: false },
-            { text: 'A function that returns or accepts another function', isCorrect: true },
-            { text: 'A function inside a class', isCorrect: false },
-            { text: 'A function used in HTML', isCorrect: false },
-          ],
-        },
-      ],
-      state: 'passed',
-    },
-    {
-      title: 'Control Flow',
-      orderNumber: 3,
-      questions: [
-        {
-          title: 'Branching Basics',
-          text: 'Which keyword is used for conditional branching in JavaScript?',
-          answers: [
-            { text: 'loop', isCorrect: false },
-            { text: 'if', isCorrect: true },
-            { text: 'switch', isCorrect: false },
-            { text: 'branch', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Endless Loops?',
-          text: 'Which loop continues as long as its condition is true?',
-          answers: [
-            { text: 'for', isCorrect: false },
-            { text: 'while', isCorrect: true },
-            { text: 'do...until', isCorrect: false },
-            { text: 'loop', isCorrect: false },
-          ],
-        },
-        {
-          title: 'First Output',
-          text: 'What does this output? for (let i = 0; i < 2; i++) { console.log(i); }',
-          answers: [
-            { text: '1 2', isCorrect: false },
-            { text: '0 1', isCorrect: true },
-            { text: '0 1 2', isCorrect: false },
-            { text: 'undefined', isCorrect: false },
-          ],
-        },
-        {
-          title: 'One-Time Guarantee',
-          text: 'Which loop always runs its block at least once?',
-          answers: [
-            { text: 'for', isCorrect: false },
-            { text: 'while', isCorrect: false },
-            { text: 'do...while', isCorrect: true },
-            { text: 'each', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Breaking Free',
-          text: 'What does the "break" keyword do in a loop?',
-          answers: [
-            { text: 'Skips current iteration', isCorrect: false },
-            { text: 'Ends loop entirely', isCorrect: true },
-            { text: 'Restarts loop', isCorrect: false },
-            { text: 'Delays loop', isCorrect: false },
-          ],
-        },
-      ],
-      state: 'locked',
-    },
-    {
-      title: 'Object-Oriented Programming',
-      orderNumber: 4,
-      questions: [
-        {
-          title: 'OOP Decoded',
-          text: 'What does OOP stand for?',
-          answers: [
-            { text: 'Object-On-Program', isCorrect: false },
-            { text: 'Object-Oriented Programming', isCorrect: true },
-            { text: 'Operational Output Process', isCorrect: false },
-            { text: 'Object-Only Paradigm', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Pillars of OOP',
-          text: 'Which of the following is a core concept of OOP?',
-          answers: [
-            { text: 'Encapsulation', isCorrect: true },
-            { text: 'Event Bubbling', isCorrect: false },
-            { text: 'Hoisting', isCorrect: false },
-            { text: 'Closure', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Classy Definition',
-          text: 'What is a class in JavaScript?',
-          answers: [
-            { text: 'A loop wrapper', isCorrect: false },
-            { text: 'A blueprint for objects', isCorrect: true },
-            { text: 'A built-in module', isCorrect: false },
-            { text: 'A type of array', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Creating Objects',
-          text: 'How do you create an instance of a class?',
-          answers: [
-            { text: 'class.create()', isCorrect: false },
-            { text: 'new ClassName()', isCorrect: true },
-            { text: 'ClassName()', isCorrect: false },
-            { text: 'instantiate ClassName', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Inheritance Time',
-          text: 'Which keyword is used for inheritance in JavaScript classes?',
-          answers: [
-            { text: 'extends', isCorrect: true },
-            { text: 'inherits', isCorrect: false },
-            { text: 'superclass', isCorrect: false },
-            { text: 'prototype', isCorrect: false },
-          ],
-        },
-      ],
-      state: 'locked',
-    },
-    {
-      title: 'Asynchronous JavaScript',
-      orderNumber: 5,
-      questions: [
-        {
-          title: 'Set It Later',
-          text: 'Which function is used to delay execution in JavaScript?',
-          answers: [
-            { text: 'delay()', isCorrect: false },
-            { text: 'setTimeout()', isCorrect: true },
-            { text: 'sleep()', isCorrect: false },
-            { text: 'wait()', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Promise Land',
-          text: 'What does a Promise represent in JavaScript?',
-          answers: [
-            { text: 'A synchronous block of code', isCorrect: false },
-            { text: 'An eventual value from an async operation', isCorrect: true },
-            { text: 'A browser event', isCorrect: false },
-            { text: 'A failed function call', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Async Keyword',
-          text: 'What does the "async" keyword do before a function?',
-          answers: [
-            { text: 'Makes it synchronous', isCorrect: false },
-            { text: 'Wraps it in a Promise', isCorrect: true },
-            { text: 'Delays execution', isCorrect: false },
-            { text: 'Declares it global', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Await Me',
-          text: 'What is the purpose of the "await" keyword?',
-          answers: [
-            { text: 'Waits for a condition to be true', isCorrect: false },
-            { text: 'Blocks execution forever', isCorrect: false },
-            { text: 'Pauses execution until a Promise resolves', isCorrect: true },
-            { text: 'Throws an error', isCorrect: false },
-          ],
-        },
-        {
-          title: 'Error Handling',
-          text: 'Which block is used with async/await to catch errors?',
-          answers: [
-            { text: 'catchError', isCorrect: false },
-            { text: 'try/catch', isCorrect: true },
-            { text: 'then/error', isCorrect: false },
-            { text: 'resolve/reject', isCorrect: false },
-          ],
-        },
-      ],
-      state: 'locked',
-    },
-  ])
-  const currentLevel: Ref<Level | null> = ref(null)
+  function getRandomAlive() {
+    const aliveTeammates = team.value.filter((teammate: Teammate) => teammate.isAlive)
+    const randomAliveTeammate = aliveTeammates[Math.floor(Math.random() * aliveTeammates.length)]
+
+    return randomAliveTeammate
+  }
+
+  function initQuestion() {
+    if (!currentQuestion.value) {
+      return
+    }
+
+    if (timeLeftInterval.value) {
+      clearInterval(timeLeftInterval.value)
+    }
+
+    maxTime.value = initialTime
+    timeLeft.value = initialTime
+    answers.value = []
+    chosenAnswer.value = null
+    isChosen.value = false
+
+    const answerProps = [
+      { color: 'YELLOW', image: '/images/triangle.png', isActive: true, isChosen: false },
+      { color: 'BLUE', image: '/images/circle.png', isActive: true, isChosen: false },
+      { color: 'GREEN', image: '/images/rectangle.png', isActive: true, isChosen: false },
+      { color: 'RED', image: '/images/rhombus.png', isActive: true, isChosen: false },
+    ]
+
+    for (let i = 0; i < 4; i++) {
+      answers.value.push({ ...currentQuestion.value.answers[i], ...answerProps[i] })
+    }
+
+    timeOut.value = false
+    chosenAnswer.value = null
+    removeSelectedAnswers()
+
+    timeLeftInterval.value = setInterval(() => {
+      if (timeLeft.value === 0 && timeLeftInterval.value) {
+        clearInterval(timeLeftInterval.value)
+        timeOut.value = true
+      }
+      else {
+        timeLeft.value--
+      }
+    }, 1000)
+  }
+
+  watch(currentQuestion, () => {
+    if (currentQuestion.value) {
+      initQuestion()
+    }
+  }, { immediate: true })
 
   return {
+    showMessage,
+    messages,
     user,
     team,
-    selectAnswer,
+    initLevels,
     getChosenAnswer,
     removeSelectedAnswers,
-    killRandom,
+    connectToRoom,
     initTeam,
     currentLevel,
     levels,
     initStats,
     correctAnswers,
+    websocket,
+    roomCode,
+    isConnected,
+    gameStage,
+    createRoom,
+    disconnectFromRoom,
+    sendWebSocketMessage,
+    submitVote,
+    useTimeBonus,
+    chosenAnswer,
+    timeLeftFormatted,
+    timeLeftInterval,
+    progressColor,
+    timeLeft,
+    maxTime,
+    bonuses,
+    timebarProgress,
+    initQuestion,
+    timeOut,
+    isChosen,
+    answers,
+    currentQuestionIndex,
+    currentQuestion,
+    me,
+    currentLevelIndex,
+    initBonuses,
+    canGoToLevel,
+    initializeWebSocketConnection,
   }
 })

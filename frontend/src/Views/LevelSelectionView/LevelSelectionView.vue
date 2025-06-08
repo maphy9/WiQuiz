@@ -1,28 +1,52 @@
 <script setup lang="ts">
+import type Level from '@/types/Level'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
-import { useSoundStore } from '@/stores/useSoundStore'
 import { useGame } from '@/stores/gameStore'
+import { useSoundStore } from '@/stores/useSoundStore'
+import { getMaxOrderNumber } from '@/utils/fetchUtils'
 import LevelCard from './LevelCard.vue'
-
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Analiza Matematyczna')
 
 const router = useRouter()
+const gameStore = useGame()
+const { initLevels } = gameStore
+const { canGoToLevel, levels, team } = storeToRefs(gameStore)
 
-const { levels } = storeToRefs(useGame())
+const maxOrderNumbers = ref<number[]>([Infinity, Infinity, Infinity])
+const processedLevels = ref<any>([])
 
-const leftCards = computed(() => levels.value.filter((_, i) => i % 2 === 0))
-const rightCards = computed(() => levels.value.filter((_, i) => i % 2 !== 0))
+watch([levels, maxOrderNumbers], () => {
+  let maxOrderNumber = Infinity
+  for (const _maxOrderNumber of maxOrderNumbers.value) {
+    if (maxOrderNumber > _maxOrderNumber) {
+      maxOrderNumber = _maxOrderNumber
+    }
+  }
+
+  processedLevels.value = levels.value.map((level: Level) => ({
+    ...level,
+    state:
+      level.OrderNumber < maxOrderNumber
+        ? 'passed'
+        : (level.OrderNumber === maxOrderNumber
+            ? 'repeat'
+            : 'locked'),
+  }))
+}, { deep: true, immediate: true })
+
+const leftCards = computed(() => processedLevels.value.filter((_: any, i: any) => i % 2 === 0))
+const rightCards = computed(() => processedLevels.value.filter((_: any, i: any) => i % 2 !== 0))
 
 const levelRoutes = computed(() => {
   const routes = []
 
-  for (let i = 0; i < levels.value.length - 1; i++) {
+  for (let i = 0; i < processedLevels.value.length - 1; i++) {
     const offset = 65 - i * 15
     const rotation = (i % 2 === 0)
       ? 15
@@ -38,8 +62,6 @@ const levelRoutes = computed(() => {
   return routes
 })
 
-const canGoToLevel = ref(false)
-
 function handleClick(levelIndex: number) {
   canGoToLevel.value = true
   router.push({ name: 'level', params: { levelIndex } })
@@ -51,6 +73,8 @@ onBeforeRouteLeave((to) => {
   }
 
   if (canGoToLevel.value && to.name === 'level') {
+    canGoToLevel.value = false
+
     return true
   }
 
@@ -58,16 +82,28 @@ onBeforeRouteLeave((to) => {
 })
 
 const { onMountMainTheme } = useSoundStore()
+async function fetchMaxOrderNumbers() {
+  const newMaxOrderNumbers = maxOrderNumbers.value
+  for (let i = 0; i < team.value.length; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    newMaxOrderNumbers[i] = await getMaxOrderNumber(team.value[i].user.id, 1)
+  }
+  maxOrderNumbers.value = newMaxOrderNumbers
+}
+
+watch(team, () => {
+  fetchMaxOrderNumbers()
+}, { immediate: true, deep: true })
 
 onMounted(() => {
   onMountMainTheme()
+  canGoToLevel.value = false
+  initLevels()
 })
 </script>
 
 <template>
-  <div
-    class="main"
-  >
+  <div class="main">
     <div class="progress-bar-outer">
       <div
         :style="{'width': `${progress}%`}"
@@ -91,7 +127,9 @@ onMounted(() => {
           v-for="(level, index) in leftCards"
           :key="index"
           :level="level"
-          @click="handleClick(index * 2)"
+          @click="level.state !== 'locked'
+            ? handleClick(index * 2)
+            : () => {}"
         />
       </div>
 
@@ -111,7 +149,9 @@ onMounted(() => {
           v-for="(level, index) in rightCards"
           :key="index"
           :level="level"
-          @click="handleClick(index * 2 + 1)"
+          @click="level.state !== 'locked'
+            ? handleClick(index * 2 + 1)
+            : () => {}"
         />
       </div>
     </div>

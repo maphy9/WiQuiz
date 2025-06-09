@@ -5,7 +5,7 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">Programowanie webowe</span>
+          <span class="title-text">{{ courseTitle }}</span>
         </div>
 
         <div class="container">
@@ -62,12 +62,15 @@
 import { onMounted, ref } from 'vue'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
-import { getStats } from '@/utils/fetchUtils'
+import { getCourseName, getStats } from '@/utils/fetchUtils'
 
 const stats = ref<any>([])
 
+const courseTitle = ref('')
+
 onMounted(async () => {
   stats.value = await getStats(1)
+  courseTitle.value = await getCourseName()
 })
 </script>
 

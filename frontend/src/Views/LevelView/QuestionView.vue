@@ -8,6 +8,7 @@ import { useGame } from '@/stores/gameStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
 import MessageCard from './MessageCard.vue'
+import { useSoundStore } from '@/stores/useSoundStore'
 
 import TeammateCard from './TeammateCard.vue'
 
@@ -23,6 +24,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const gameStore = useGame()
+const { playCorrectSound, playInCorrectSound } = useSoundStore()
 
 // Question
 const { question } = toRefs(props)
@@ -56,9 +58,11 @@ watch([chosenAnswer, timeOut], () => {
     return
   }
   if (!answer) {
+    playInCorrectSound();
     showMessage(t('level-view.no-answer'), 'WHITE')
   }
   else if (answer.IsCorrect) {
+    playCorrectSound();
     showMessage(t('level-view.correct-answer'), 'GREEN')
   }
   if (timeLeftInterval.value) {

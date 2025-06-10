@@ -11,7 +11,7 @@ import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
-const CourseName = ref('Analiza Matematyczna')
+const CourseName = ref('Podstawy inżynerii oprogramowania')
 
 const router = useRouter()
 const gameStore = useGame()
@@ -63,6 +63,7 @@ const levelRoutes = computed(() => {
 })
 
 function handleClick(levelIndex: number) {
+  stopMainTheme()
   canGoToLevel.value = true
   router.push({ name: 'level', params: { levelIndex } })
 }
@@ -81,7 +82,7 @@ onBeforeRouteLeave((to) => {
   return { name: 'main' }
 })
 
-const { onMountMainTheme } = useSoundStore()
+const { onMountMainTheme, stopMainTheme } = useSoundStore()
 async function fetchMaxOrderNumbers() {
   const newMaxOrderNumbers = maxOrderNumbers.value
   for (let i = 0; i < team.value.length; i++) {
@@ -100,6 +101,7 @@ onMounted(() => {
   canGoToLevel.value = false
   initLevels()
 })
+
 </script>
 
 <template>
@@ -245,7 +247,7 @@ onMounted(() => {
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 3.5vw;
+  font-size: 2.5vw;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 

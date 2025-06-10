@@ -10,7 +10,7 @@ import { updateMaxLevelId } from '@/utils/fetchUtils'
 import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
 
 const { t } = useI18n()
-const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic } = useSoundStore()
+const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic, startMainTheme } = useSoundStore()
 const router = useRouter()
 const { user } = storeToRefs(useUser())
 const { currentLevel, currentLevelIndex, correctAnswers, levels, team, me } = storeToRefs(useGame())
@@ -131,7 +131,7 @@ onUnmounted(() => {
 
           <div
             class="button choose-level-button"
-            @click="playButtonSound(); router.push({'name': 'level-selection'})"
+            @click="playButtonSound(); stopResultsMusic(); startMainTheme(); router.push({'name': 'level-selection'})"
           >
             <p class="button-text">
               {{ $t('result-view.choose-level') }}

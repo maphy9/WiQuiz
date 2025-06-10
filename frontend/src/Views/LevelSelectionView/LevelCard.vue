@@ -28,7 +28,7 @@ const imageSrc = computed(() => {
 })
 
 const dynamicFontSize = computed(() => {
-  return level.value.LevelTitle.length > 12
+  return level.value.LevelTitle.length > 10
     ? '25px'
     : '32px'
 })

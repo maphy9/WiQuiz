@@ -12,6 +12,7 @@ import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
 const CourseName = ref('Podstawy inżynerii oprogramowania')
+const isTransitioning = ref(false)
 
 const router = useRouter()
 const gameStore = useGame()
@@ -63,9 +64,16 @@ const levelRoutes = computed(() => {
 })
 
 function handleClick(levelIndex: number) {
+  const level = processedLevels.value[levelIndex]
+  if (level.state === 'locked') return
+  
   stopMainTheme()
-  canGoToLevel.value = true
-  router.push({ name: 'level', params: { levelIndex } })
+  isTransitioning.value = true
+
+  setTimeout(() => {
+    canGoToLevel.value = true
+    router.push({ name: 'level', params: { levelIndex } })
+  }, 800)
 }
 
 onBeforeRouteLeave((to) => {
@@ -129,9 +137,7 @@ onMounted(() => {
           v-for="(level, index) in leftCards"
           :key="index"
           :level="level"
-          @click="level.state !== 'locked'
-            ? handleClick(index * 2)
-            : () => {}"
+          @level-clicked="handleClick"
         />
       </div>
 
@@ -151,14 +157,17 @@ onMounted(() => {
           v-for="(level, index) in rightCards"
           :key="index"
           :level="level"
-          @click="level.state !== 'locked'
-            ? handleClick(index * 2 + 1)
-            : () => {}"
+          @level-clicked="handleClick"
         />
       </div>
     </div>
 
     <ReturnButton />
+    
+    <div v-if="isTransitioning" class="transition-overlay">
+      <div class="loading-spinner"></div>
+      <div class="transition-text">Loading Level...</div>
+    </div>
   </div>
 </template>
 
@@ -354,6 +363,73 @@ onMounted(() => {
     gap: 90px;
 
     z-index: 1;
+  }
+}
+
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, 
+    rgba(0, 0, 0, 0.3) 0%, 
+    rgba(0, 0, 0, 0.7) 50%, 
+    rgba(0, 0, 0, 0.95) 100%);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: overlayFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes overlayFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #80C997;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.transition-text {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "Titillium Web", sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  -webkit-text-stroke: 1px black;
+  -webkit-text-stroke-width: 0.5px;
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
   }
 }
 </style>

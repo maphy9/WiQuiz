@@ -105,13 +105,12 @@ function handleClick() {
   overflow: hidden;
 }
 
-/* Эффект наклона при наведении */
 .card-container:hover {
-  transform: rotateY(15deg) rotateX(10deg) translateY(-10px);
   background-color: rgba(158, 180, 202, 0.9);
+  transform: rotateY(8deg) rotateX(5deg) translateY(-5px);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(255, 255, 255, 0.1) inset;
+    0 15px 30px rgba(0, 0, 0, 0.25),
+    0 0 15px rgba(255, 255, 255, 0.1) inset;
 }
 
 .card-container:active,
@@ -122,12 +121,12 @@ function handleClick() {
 }
 
 .card-container.passed {
-  border-color: #80C997;
+  border-color: #000000;
   box-shadow: 0 0 15px rgba(128, 201, 151, 0.3);
 }
 
 .card-container.repeat {
-  border-color: #FFD966;
+  border-color: #000000;
   box-shadow: 0 0 15px rgba(255, 217, 102, 0.3);
   animation: pulse-repeat 2s infinite;
 }
@@ -164,7 +163,6 @@ function handleClick() {
     rgba(255, 255, 255, 0.1),
     transparent,
     rgba(255, 255, 255, 0.1));
-  border-radius: 8px;
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -182,16 +180,9 @@ function handleClick() {
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.8) 100%);
-  border-radius: 8px;
   animation: fadeOverlay 0.6s ease-out forwards;
   z-index: 10;
   pointer-events: none;
-}
-
-@keyframes fadeOverlay {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 .card-circle {
@@ -207,8 +198,7 @@ function handleClick() {
 }
 
 .card-container:hover .card-circle {
-  transform: scaleX(-1) scale(1.1);
-  filter: brightness(1.2);
+  transform: scaleX(-1) scale(1.05);
 }
 
 .card-img {
@@ -275,7 +265,7 @@ function handleClick() {
   }
 
   .card-container:hover {
-    transform: rotateY(10deg) rotateX(5deg) translateY(-5px);
+    transform: rotateY(5deg) rotateX(3deg) translateY(-3px);
   }
 }
 

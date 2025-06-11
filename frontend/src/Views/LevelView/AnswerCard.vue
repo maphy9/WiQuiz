@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type Answer from '@/types/Answer'
 import type Teammate from '@/types/Teammate'
-import { computed, toRefs, watch } from 'vue'
-import { useSoundStore } from '@/stores/useSoundStore'
+import { computed, toRefs } from 'vue'
 
 const props = defineProps<{
   answer: any
@@ -14,7 +13,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   selectAnswer: [answer: any]
 }>()
-const { playCorrectSound, playInCorrectSound } = useSoundStore()
 
 const { answer, chosenAnswer, isChosen, me } = toRefs(props)
 const answerColor = computed(() => {
@@ -111,7 +109,7 @@ const isSelectable = computed(() => {
 .active {
   opacity: 1;
   cursor: pointer;
-  transition: all 0.3s ease; 
+  transition: all 0.3s ease;
 }
 
 .active:hover {
@@ -121,8 +119,8 @@ const isSelectable = computed(() => {
 }
 
 .active:active {
-  filter: brightness(80%); 
-  transform: translateY(1px) scale(0.99); 
+  filter: brightness(80%);
+  transform: translateY(1px) scale(0.99);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 

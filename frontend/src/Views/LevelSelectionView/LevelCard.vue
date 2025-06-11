@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from 'vue'
+import { computed, ref, toRefs } from 'vue'
 import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
@@ -39,11 +39,12 @@ const dynamicFontSize = computed(() => {
 })
 
 function handleClick() {
-  if (level.value.state === 'locked') return
-  
+  if (level.value.state === 'locked')
+    return
+
   playButtonSound()
   isClicked.value = true
-  
+
   setTimeout(() => {
     emit('levelClicked', level.value.OrderNumber - 1)
   }, 300)
@@ -52,13 +53,21 @@ function handleClick() {
 
 <template>
   <div
-    :class="`card-container ${level.state} ${isClicked ? 'clicked' : ''}`"
+    :class="`card-container ${level.state} ${isClicked
+      ? 'clicked'
+      : ''}`"
     @click="handleClick"
   >
-    <div v-if="level.state !== 'locked'" class="glow-effect"></div>
-    
-    <div v-if="isClicked" class="overlay-effect"></div>
-    
+    <div
+      v-if="level.state !== 'locked'"
+      class="glow-effect"
+    />
+
+    <div
+      v-if="isClicked"
+      class="overlay-effect"
+    />
+
     <div
       class="card-circle"
       :style="{'backgroundColor': bgColour}"
@@ -76,12 +85,20 @@ function handleClick() {
     >
       {{ level.LevelTitle }}
     </span>
-    
-    <div v-if="isClicked" class="particles-explosion">
-      <div v-for="i in 8" :key="i" class="particle" :style="{
-        '--delay': i * 0.05 + 's',
-        '--angle': i * 45 + 'deg'
-      }"></div>
+
+    <div
+      v-if="isClicked"
+      class="particles-explosion"
+    >
+      <div
+        v-for="i in 8"
+        :key="i"
+        class="particle"
+        :style="{
+          '--delay': `${i * 0.05}s`,
+          '--angle': `${i * 45}deg`,
+        }"
+      />
     </div>
   </div>
 </template>

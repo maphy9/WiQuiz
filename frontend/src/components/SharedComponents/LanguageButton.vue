@@ -119,7 +119,7 @@ function toggleLanguage() {
 .block:hover {
   background-color: rgba(61, 79, 105, 0.9);
   transform: rotateY(-6deg) rotateX(3deg) translateY(-3px);
-  box-shadow: 
+  box-shadow:
     0 10px 25px rgba(61, 79, 105, 0.4),
     0 0 15px rgba(255, 255, 255, 0.1) inset;
   border-color: rgba(255, 255, 255, 0.6);

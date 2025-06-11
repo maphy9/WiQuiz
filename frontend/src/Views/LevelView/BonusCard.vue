@@ -12,7 +12,8 @@ const effectText = ref('')
 const effectColor = ref('')
 
 function handleClick() {
-  if (!bonus.value.isAvailable) return
+  if (!bonus.value.isAvailable)
+    return
 
   isAnimating.value = true
   showEffect.value = true
@@ -20,10 +21,12 @@ function handleClick() {
   if (bonus.value.image.includes('timeBonus')) {
     effectText.value = '+15s'
     effectColor.value = '#4CAF50'
-  } else if (bonus.value.image.includes('mistakeBonus')) {
+  }
+  else if (bonus.value.image.includes('mistakeBonus')) {
     effectText.value = 'Wrong Answer Removed!'
     effectColor.value = '#FF6B6B'
-  } else if (bonus.value.image.includes('reviveBonus')) {
+  }
+  else if (bonus.value.image.includes('reviveBonus')) {
     effectText.value = 'Player Revived!'
     effectColor.value = '#FFD700'
   }
@@ -42,23 +45,40 @@ function handleClick() {
     <img
       :class="`bonus-icon ${bonus.isAvailable
         ? 'available'
-        : 'unavailable'} ${isAnimating ? 'animating' : ''}`"
+        : 'unavailable'} ${isAnimating
+        ? 'animating'
+        : ''}`"
       :src="bonus.image"
       @click="handleClick"
     >
 
-    <div v-if="showEffect" class="particles-container">
-      <div v-for="i in 12" :key="i" class="particle" :style="{
-        '--delay': i * 0.1 + 's',
-        '--angle': i * 30 + 'deg'
-      }"></div>
+    <div
+      v-if="showEffect"
+      class="particles-container"
+    >
+      <div
+        v-for="i in 12"
+        :key="i"
+        class="particle"
+        :style="{
+          '--delay': `${i * 0.1}s`,
+          '--angle': `${i * 30}deg`,
+        }"
+      />
     </div>
 
-    <div v-if="showEffect" class="effect-text" :style="{ color: effectColor }">
+    <div
+      v-if="showEffect"
+      class="effect-text"
+      :style="{'color': effectColor}"
+    >
       {{ effectText }}
     </div>
 
-    <div v-if="showEffect" class="ring-effect"></div>
+    <div
+      v-if="showEffect"
+      class="ring-effect"
+    />
   </div>
 </template>
 

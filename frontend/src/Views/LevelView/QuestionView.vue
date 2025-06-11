@@ -5,10 +5,10 @@ import { storeToRefs } from 'pinia'
 import { toRefs, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useGame } from '@/stores/gameStore'
+import { useSoundStore } from '@/stores/useSoundStore'
 import AnswerCard from './AnswerCard.vue'
 import BonusCard from './BonusCard.vue'
 import MessageCard from './MessageCard.vue'
-import { useSoundStore } from '@/stores/useSoundStore'
 
 import TeammateCard from './TeammateCard.vue'
 
@@ -58,11 +58,11 @@ watch([chosenAnswer, timeOut], () => {
     return
   }
   if (!answer) {
-    playInCorrectSound();
+    playInCorrectSound()
     showMessage(t('level-view.no-answer'), 'WHITE')
   }
   else if (answer.IsCorrect) {
-    playCorrectSound();
+    playCorrectSound()
     showMessage(t('level-view.correct-answer'), 'GREEN')
   }
   if (timeLeftInterval.value) {

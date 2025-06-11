@@ -41,7 +41,7 @@ const { playButtonSound } = useSoundStore()
 .return-button:hover {
   background-color: #7b1c17;
   transform: rotateY(-8deg) rotateX(5deg) translateY(-8px);
-  box-shadow: 
+  box-shadow:
     0 15px 35px rgba(139, 35, 29, 0.4),
     0 0 20px rgba(255, 255, 255, 0.1) inset;
   border-color: #ffffff;

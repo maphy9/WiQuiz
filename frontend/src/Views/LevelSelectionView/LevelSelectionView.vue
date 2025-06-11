@@ -18,6 +18,7 @@ const router = useRouter()
 const gameStore = useGame()
 const { initLevels } = gameStore
 const { canGoToLevel, levels, team } = storeToRefs(gameStore)
+const { onMountMainTheme, stopMainTheme } = useSoundStore()
 
 const maxOrderNumbers = ref<number[]>([Infinity, Infinity, Infinity])
 const processedLevels = ref<any>([])
@@ -65,9 +66,11 @@ const levelRoutes = computed(() => {
 
 function handleClick(levelIndex: number) {
   const level = processedLevels.value[levelIndex]
-  if (level.state === 'locked') return
-  
+  if (level.state === 'locked')
+    return
+
   stopMainTheme()
+
   isTransitioning.value = true
 
   setTimeout(() => {
@@ -90,7 +93,6 @@ onBeforeRouteLeave((to) => {
   return { name: 'main' }
 })
 
-const { onMountMainTheme, stopMainTheme } = useSoundStore()
 async function fetchMaxOrderNumbers() {
   const newMaxOrderNumbers = maxOrderNumbers.value
   for (let i = 0; i < team.value.length; i++) {
@@ -109,7 +111,6 @@ onMounted(() => {
   canGoToLevel.value = false
   initLevels()
 })
-
 </script>
 
 <template>
@@ -163,10 +164,16 @@ onMounted(() => {
     </div>
 
     <ReturnButton />
-    
-    <div v-if="isTransitioning" class="transition-overlay">
-      <div class="loading-spinner"></div>
-      <div class="transition-text">Loading Level...</div>
+
+    <div
+      v-if="isTransitioning"
+      class="transition-overlay"
+    >
+      <div class="loading-spinner" />
+
+      <div class="transition-text">
+        Loading Level...
+      </div>
     </div>
   </div>
 </template>
@@ -372,9 +379,9 @@ onMounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(circle at center, 
-    rgba(0, 0, 0, 0.3) 0%, 
-    rgba(0, 0, 0, 0.7) 50%, 
+  background: radial-gradient(circle at center,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.7) 50%,
     rgba(0, 0, 0, 0.95) 100%);
   backdrop-filter: blur(8px);
   display: flex;

@@ -7,15 +7,15 @@ import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { addAnswerForBebrik, getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
-import { useSoundStore } from '@/stores/useSoundStore'
 
 const ip = import.meta.env.VITE_IP
 const port = import.meta.env.VITE_PORT
 
 export const useGame = defineStore('gameStore', () => {
-  const { playInCorrectSound, playBonusSound, playTimeBonusSound, playMistakeBonusSound, playReviveBonusSound } = useSoundStore()
+  const { playInCorrectSound, playBonusSound } = useSoundStore()
   const { user } = storeToRefs(useUser())
   const { t } = useI18n()
 

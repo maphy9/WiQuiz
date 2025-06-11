@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
 import { onMounted } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
@@ -13,6 +14,8 @@ onMounted(() => {
 
 <template>
   <div class="main">
+    <LeafesAnimation />
+
     <LanguageButton />
 
     <div class="container">

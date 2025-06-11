@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
@@ -37,6 +38,8 @@ onMounted(() => {
 
 <template>
   <div class="main">
+    <LeafesAnimation />
+
     <LanguageButton />
 
     <div class="container">

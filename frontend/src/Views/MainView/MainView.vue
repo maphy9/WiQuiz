@@ -17,7 +17,7 @@
         '--rotation': (Math.random() * 360) + 'deg',
         '--wind-intensity': (0.4 + Math.random() * 0.4)
       }">🌿</div>
-      
+
       <div v-for="i in 4" :key="`leaf-right-${i}`" class="leaf green-leaf" :style="{
         '--delay': (i * 2.2) + 's',
         '--duration': (12 + Math.random() * 6) + 's',
@@ -35,7 +35,7 @@
         '--wind-intensity': (0.4 + Math.random() * 0.4)
       }">🌿</div>
     </div>
-    
+
     <LanguageButton />
 
     <div class="team-card">
@@ -219,7 +219,6 @@ function handleLogoClick() {
   }
 }
 
-/* Эффект падающих листьев */
 .falling-leaves {
   position: fixed;
   top: 0;

@@ -111,80 +111,53 @@ const isSelectable = computed(() => {
 .active {
   opacity: 1;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease; 
+}
+
+.active:hover {
+  filter: brightness(110%);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.active:active {
+  filter: brightness(80%); 
+  transform: translateY(1px) scale(0.99); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .inactive {
   opacity: 0.5;
   cursor: not-allowed;
-  transition: all 0.3s;
+  transition: all 0.3s ease; /* Added ease */
 }
 
-@keyframes incorrect-animation {
-  0% {
-    transform: translateX(-8px);
-  }
-  10% {
-    transform: translateX(8px);
-  }
-  20% {
-    transform: translateX(-8px);
-  }
-  30% {
-    transform: translateX(8px);
-  }
-  40% {
-    transform: translateX(-8px);
-  }
-  50% {
-    transform: translateX(8px);
-  }
-  60% {
-    transform: translateX(-8px);
-  }
-  70% {
-    transform: translateX(8px);
-  }
-  80% {
-    transform: translateX(-8px);
-  }
-  90% {
-    transform: translateX(8px);
-  }
-  100% {
-    transform: translateX(-8px);
-  }
+@keyframes incorrect-shake-animation {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  15% { transform: translateX(-7px) rotate(-2.5deg); }
+  30% { transform: translateX(7px) rotate(2.5deg); }
+  45% { transform: translateX(-7px) rotate(-2.5deg); }
+  60% { transform: translateX(7px) rotate(2.5deg); }
+  75% { transform: translateX(-4px) rotate(-1deg); }
+  90% { transform: translateX(4px) rotate(1deg); }
 }
 
 .incorrect {
   scale: 1.05;
-  animation: incorrect-animation 2s;
+  animation: incorrect-shake-animation 0.5s cubic-bezier(.36,.07,.19,.97);
 }
 
-@keyframes correct-animation {
-  0% {
-    transform: translateY(16px);
-  }
-  20% {
-    transform: translateY(-16px);
-  }
-  40% {
-    transform: translateY(16px);
-  }
-  60% {
-    transform: translateY(-16px);
-  }
-  80% {
-    transform: translateY(16px);
-  }
-  100% {
-    transform: translateY(-16px);
-  }
+@keyframes correct-bounce-animation {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-15px); }
+  40% { transform: translateY(0); }
+  60% { transform: translateY(-10px); }
+  80% { transform: translateY(0); }
 }
 
 .correct {
   scale: 1.05;
-  animation: correct-animation 2s;
+  animation: correct-bounce-animation 0.7s ease-out;
 }
 
 @media only screen and (max-width: 800px) {

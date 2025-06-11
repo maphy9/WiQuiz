@@ -241,7 +241,6 @@ onUnmounted(() => {
 
 .next-level-button:hover {
   background-color: rgb(112, 182, 134);
-  /* filter will be applied from .button:hover */
 }
 
 .play-again-button {
@@ -250,7 +249,6 @@ onUnmounted(() => {
 
 .play-again-button:hover {
   background-color: rgb(230, 202, 91);
-  /* filter will be applied from .button:hover */
 }
 
 .choose-level-button {
@@ -259,7 +257,6 @@ onUnmounted(() => {
 
 .choose-level-button:hover {
  background-color: #7f1e19;
- /* filter will be applied from .button:hover */
 }
 
 .cards-and-buttons-container {
@@ -299,12 +296,12 @@ onUnmounted(() => {
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-  transition: all 0.3s ease; /* Added ease */
+  transition: all 0.3s ease;
   min-width: 200px;
   min-height: 50px;
   -webkit-tap-highlight-color: transparent;
-  position: relative; /* For pseudo-elements */
-  overflow: hidden;   /* To contain shine */
+  position: relative;
+  overflow: hidden;
   animation: buttonPulse 2.0s infinite ease-in-out alternate;
 }
 
@@ -312,7 +309,7 @@ onUnmounted(() => {
   content: '';
   position: absolute;
   top: 0;
-  left: -120%; /* Start off-screen, adjusted for skew */
+  left: -120%;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -359,12 +356,11 @@ onUnmounted(() => {
 }
 
 .button:hover .button-icon {
-  /* Default hover for icons, will be overridden if more specific rule like .icon-rotated-arrow exists */
   transform: scale(1.12);
 }
 
 .button:hover .icon-rotated-arrow {
-  transform: rotate(180deg) scale(1.12); /* Combined transform for the rotated arrow */
+  transform: rotate(180deg) scale(1.12);
 }
 
 .next-level-access-text {

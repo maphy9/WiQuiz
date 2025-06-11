@@ -1,8 +1,6 @@
 <template>
   <div class="background">
-    <!-- Эффект падающих зеленых листьев с ветром - равномерное распределение -->
     <div class="falling-leaves">
-      <!-- Левая часть экрана -->
       <div v-for="i in 4" :key="`leaf-left-${i}`" class="leaf green-leaf" :style="{
         '--delay': (i * 2) + 's',
         '--duration': (12 + Math.random() * 6) + 's',
@@ -20,7 +18,6 @@
         '--wind-intensity': (0.4 + Math.random() * 0.4)
       }">🌿</div>
       
-      <!-- Правая часть экрана -->
       <div v-for="i in 4" :key="`leaf-right-${i}`" class="leaf green-leaf" :style="{
         '--delay': (i * 2.2) + 's',
         '--duration': (12 + Math.random() * 6) + 's',
@@ -184,6 +181,44 @@ function handleLogoClick() {
   }
 }
 
+@keyframes aboutButtonWave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0.6);
+  }
+  25% {
+    transform: rotate(-2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0 0 20px 10px rgba(26, 74, 143, 0.1);
+  }
+  75% {
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0);
+  }
+}
+
+@keyframes aboutIconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(5deg);
+  }
+}
+
 /* Эффект падающих листьев */
 .falling-leaves {
   position: fixed;
@@ -306,7 +341,7 @@ function handleLogoClick() {
 
 .member-slot {
   width: 15vh;
-  height: 6vh;
+  height: 12vh;
   text-align: center;
   font-size: 2vh;
   font-family: "Titillium Web";
@@ -314,6 +349,7 @@ function handleLogoClick() {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .avatar {
@@ -419,14 +455,43 @@ function handleLogoClick() {
 }
 
 .about-button {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background-color: rgba(26, 74, 143, 0.9);
+  position: relative;
+  overflow: hidden;
+  animation: aboutButtonWave 4s ease-in-out infinite;
+}
+
+.about-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.8s;
+}
+
+.about-button:hover::before {
+  left: 100%;
+}
+
+.about-button .button-img {
+  animation: aboutIconFloat 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.about-button:hover .button-img {
+  transform: scale(1.1) rotate(5deg);
+  filter: brightness(1.2);
 }
 
 .about-button:active {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(26, 74, 143, 0.6), 0 0 50px rgba(26, 74, 143, 0.4);
+  transform: scale(0.98) translateY(2px);
   background-color: rgba(30, 80, 152, 0.9) !important;
+  animation: none;
 }
 
 @media (hover: hover) {
@@ -447,6 +512,9 @@ function handleLogoClick() {
 
   .about-button:hover {
     background-color: rgba(20, 67, 132, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(26, 74, 143, 0.4);
+    animation: none;
   }
 
   .button:hover {

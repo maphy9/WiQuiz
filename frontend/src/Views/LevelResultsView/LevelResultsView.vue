@@ -100,8 +100,7 @@ onUnmounted(() => {
 
             <img
               src="@/images/arrow.png"
-              class="button-icon"
-              :style="{'transform': 'rotate(180deg)'}"
+              class="button-icon icon-rotated-arrow"
             >
           </div>
 
@@ -241,7 +240,8 @@ onUnmounted(() => {
 }
 
 .next-level-button:hover {
-  background-color: rgb(112, 182, 134)
+  background-color: rgb(112, 182, 134);
+  /* filter will be applied from .button:hover */
 }
 
 .play-again-button {
@@ -250,6 +250,7 @@ onUnmounted(() => {
 
 .play-again-button:hover {
   background-color: rgb(230, 202, 91);
+  /* filter will be applied from .button:hover */
 }
 
 .choose-level-button {
@@ -258,6 +259,7 @@ onUnmounted(() => {
 
 .choose-level-button:hover {
  background-color: #7f1e19;
+ /* filter will be applied from .button:hover */
 }
 
 .cards-and-buttons-container {
@@ -297,10 +299,40 @@ onUnmounted(() => {
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease; /* Added ease */
   min-width: 200px;
   min-height: 50px;
   -webkit-tap-highlight-color: transparent;
+  position: relative; /* For pseudo-elements */
+  overflow: hidden;   /* To contain shine */
+  animation: buttonPulse 2.0s infinite ease-in-out alternate;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%; /* Start off-screen, adjusted for skew */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.15) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.button:hover {
+  filter: brightness(1.15);
+}
+
+.button:hover::before {
+  animation: buttonShine 0.8s ease-in-out forwards;
 }
 
 .button-text {
@@ -313,11 +345,26 @@ onUnmounted(() => {
 
 .button:active {
   transform: scale(1.04);
+  filter: brightness(0.9);
 }
 
 .button-icon {
   height: 64px;
   width: 64px;
+  transition: transform 0.3s ease;
+}
+
+.icon-rotated-arrow {
+  transform: rotate(180deg);
+}
+
+.button:hover .button-icon {
+  /* Default hover for icons, will be overridden if more specific rule like .icon-rotated-arrow exists */
+  transform: scale(1.12);
+}
+
+.button:hover .icon-rotated-arrow {
+  transform: rotate(180deg) scale(1.12); /* Combined transform for the rotated arrow */
 }
 
 .next-level-access-text {
@@ -424,6 +471,28 @@ onUnmounted(() => {
 @media (max-width: 400px) {
     .button-text {
     font-size: 24px !important;
+  }
+}
+
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.1);
+    transform: scale(1.0);
+  }
+  100% {
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+    transform: scale(1.015);
+  }
+}
+
+@keyframes buttonShine {
+  0% {
+    left: -120%;
+    opacity: 0.7;
+  }
+  100% {
+    left: 120%;
+    opacity: 0;
   }
 }
 </style>

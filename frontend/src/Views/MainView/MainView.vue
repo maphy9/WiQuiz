@@ -281,7 +281,7 @@ function handleLogoClick() {
   min-height: 40px;
   font-family: "Segoe UI";
   font-weight: 600;
-  font-size: clamp(35px, 3vw, 40px);
+  font-size: 40px;
   color: #ffffff;
   -webkit-text-stroke: 1px black;
   display: flex;
@@ -290,13 +290,13 @@ function handleLogoClick() {
   justify-content: center;
   border-radius: 5px;
   border: 2px solid #ffffff;
-  gap: 3vw;
+  gap: 10px;
 }
 
 .button-img {
-  height: 10vh;
-  width: 10vh;
-  margin-left: 2vw;
+  height: 90px;
+  width: 90px;
+  margin-left: 60px;
 }
 
 .play-button {
@@ -367,7 +367,7 @@ a {
     bottom: 5vh;
     background-color: #525a64;
     width: 100vw;
-    height: 20vh;
+    height: 18vh;
   }
 
   .team-card-top {
@@ -375,7 +375,7 @@ a {
     width: 100vw;
     height: 5vh;
     font-family: "Titillium Web";
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 600;
     color: #ffffff;
     display: flex;
@@ -387,7 +387,7 @@ a {
   .team-members {
     display: flex;
     gap: 5px;
-    margin-top: 7vh;
+    margin-top: 5vh;
     align-items: center;
     justify-content: space-between;
   }
@@ -396,7 +396,7 @@ a {
     padding: 8px;
     width: 100px;
     text-align: center;
-    font-size: 15px;
+    font-size: 10px;
     font-family: "Titillium Web";
     color: #ffffff;
     display: flex;
@@ -434,8 +434,8 @@ a {
   }
 
   .button {
-    width: 312px;
-    height: 84px;
+    width: 200px;
+    height: 70px;
     font-family: "Segoe UI";
     font-weight: 600;
     font-size: 48px;
@@ -451,12 +451,18 @@ a {
   }
 
   .buttons-card {
-    top: 35vh;
+    top: 33vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5vh;
     margin-bottom: 50px;
   }
+
+  .button-img {
+  height: 90px;
+  width: 90px;
+  margin-left: 40px;
+}
 }
 </style>

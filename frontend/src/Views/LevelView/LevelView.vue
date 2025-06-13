@@ -15,6 +15,7 @@ const router = useRouter()
 const showExitMenu = ref(false)
 const canGoToLevelSelection = ref(false)
 const canGoToLevelResults = ref(false)
+const questionTransition = ref('swipe-left')
 
 const { levelIndex } = toRefs(props)
 
@@ -57,6 +58,11 @@ function exitToLevelSelection() {
   router.push({ name: 'level-selection' })
 }
 
+function handleNextQuestion() {
+  questionTransition.value = 'swipe-left'
+  currentQuestionIndex.value++
+}
+
 watch(levelIndex, () => {
   currentQuestionIndex.value = 0
   currentLevel.value = levels.value[Number.parseInt(levelIndex.value)]
@@ -93,12 +99,17 @@ onUnmounted(() => {
     v-if="currentLevel !== null && currentQuestion !== null"
     class="main"
   >
-    <QuestionView
-      v-if="currentQuestionIndex < currentLevel.questions.length"
-      :question="currentQuestion"
-      @next-question="currentQuestionIndex++"
-      @game-over="currentQuestionIndex = currentLevel.questions.length"
-    />
+    <transition
+      :name="questionTransition"
+    >
+      <QuestionView
+        v-if="currentQuestionIndex < currentLevel.questions.length"
+        :key="currentQuestionIndex"
+        :question="currentQuestion"
+        @next-question="handleNextQuestion"
+        @game-over="currentQuestionIndex = currentLevel.questions.length"
+      />
+    </transition>
 
     <div
       class="exit-button"
@@ -247,5 +258,41 @@ onUnmounted(() => {
   .exit-button {
     display: none;
   }
+}
+
+.swipe-left-enter-active,
+.swipe-left-leave-active,
+.swipe-left-enter-active,
+.swipe-left-leave-active{
+  transition: transform 0.5s ease;
+}
+
+.swipe-left-enter-from,
+.swipe-left-leave-from,
+.swipe-left-enter-to,
+.swipe-left-leave-to{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.swipe-left-enter-from {
+  transform: translateX(100%);
+  z-index: 2;
+}
+.swipe-left-enter-to {
+  transform: translateX(0);
+  z-index: 2;
+}
+
+.swipe-left-leave-from {
+  transform: translateX(0);
+  z-index: 1;
+}
+.swipe-left-leave-to {
+  transform: translateX(-100%);
+  z-index: 1;
 }
 </style>

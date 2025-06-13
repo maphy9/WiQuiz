@@ -38,7 +38,7 @@ watch(chosenAnswer, (newVal) => {
   if (!newVal)
     return
   if (newVal === answer.value) {
-    if (newVal.isCorrect) {
+    if (newVal.IsCorrect) {
       playCorrectSound()
     }
     else {

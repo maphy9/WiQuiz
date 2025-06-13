@@ -33,7 +33,7 @@ const currentTransition = computed(() => {
   else if (route.name === 'level' && previousRouteName.value === 'level-results') {
     return 'swipe-right'
   }
-  else if (route.name === 'level-results' || (route.name === 'level-results' && previousRouteName.value === 'level')) {
+  else if (route.name === 'level-results' && previousRouteName.value === 'level') {
     return 'swipe-left'
   }
   else {

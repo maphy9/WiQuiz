@@ -14,18 +14,34 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUser } from './stores/userStore'
 import { loadUser } from './utils/fetchUtils'
 
 const route = useRoute()
 const { user } = storeToRefs(useUser())
+const previousRouteName = ref('')
 
 const currentTransition = computed(() => {
-  return route.name === 'main'
-    ? 'swipe-down'
-    : 'swipe-up'
+  if (route.name === 'main') {
+    return 'swipe-down'
+  }
+  else if (route.name === 'level' && previousRouteName.value === 'level-results') {
+    return 'swipe-right'
+  }
+  else if (route.name === 'level-results') {
+    return 'swipe-left'
+  }
+  else {
+    return 'swipe-down'
+  }
+})
+
+watch(() => route.name, (newRoute, oldRoute) => {
+  if (oldRoute) {
+    previousRouteName.value = oldRoute
+  }
 })
 
 onMounted(() => {

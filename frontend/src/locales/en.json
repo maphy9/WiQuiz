@@ -41,7 +41,8 @@
     "confirm-delete": "Confirm delete",
     "really-delete": "Do you really want to delete this topic?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "nazwa-pytania": "Question name"
   },
   "teacher-questions": {
     "topic-name": "Topic name",

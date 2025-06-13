@@ -187,6 +187,22 @@ class AddAnswerForBebrik(BaseModel):
 class GetStats(BaseModel):
     CourseId: int
 
+@app.get("/getCourse")
+def getStats():
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    res = get_Course(cursor, 1)
+    conn.close()
+    return { "title": res["CourseTitle"] }
+def getStats(payload: GetStats):
+    conn = sqlite3.connect("db/kck.db")
+    cursor = conn.cursor()
+
+    res = get_Stats(cursor, payload.CourseId)
+    conn.close()
+    return res
+
 @app.post("/getStats", status_code=201)
 def getStats(payload: GetStats):
     conn = sqlite3.connect("db/kck.db")

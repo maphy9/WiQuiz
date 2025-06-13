@@ -5,7 +5,7 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">Programowanie webowe</span>
+          <span class="title-text">{{ courseTitle }}</span>
         </div>
 
         <div class="container">
@@ -53,11 +53,19 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
+import { getCourseName } from '@/utils/fetchUtils'
 
 const router = useRouter()
+
+const courseTitle = ref('')
+
+onMounted(async () => {
+  courseTitle.value = await getCourseName()
+})
 </script>
 
 <style scoped>

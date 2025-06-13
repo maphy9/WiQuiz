@@ -9,7 +9,7 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">Programowanie webowe</span>
+          <span class="title-text">{{ courseTitle }}</span>
         </div>
 
         <div class="container">
@@ -85,7 +85,7 @@ import { useRouter } from 'vue-router'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
 import { useGame } from '@/stores/gameStore'
-import { createLevel, deleteLevel, getLevels, updateLevel } from '@/utils/fetchUtils'
+import { createLevel, deleteLevel, getCourseName, getLevels, updateLevel } from '@/utils/fetchUtils'
 import DeleteTopicModal from '@/Views/TeacherView/TeacherTopicsView/DeleteTopicModal.vue'
 import EditTopicModal from '@/Views/TeacherView/TeacherTopicsView/EditTopicModal.vue'
 
@@ -156,8 +156,11 @@ function gotoQuestions(level: Level) {
   router.push({ name: 'teacher-questions' })
 }
 
+const courseTitle = ref('')
+
 onMounted(async () => {
   levels.value = await getLevels()
+  courseTitle.value = await getCourseName()
 })
 </script>
 

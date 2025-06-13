@@ -6,13 +6,13 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
-import { getMaxOrderNumber } from '@/utils/fetchUtils'
+import { getCourseName, getMaxOrderNumber } from '@/utils/fetchUtils'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
 const progress = ref(70)
-const CourseName = ref('Podstawy inżynerii oprogramowania')
 const isTransitioning = ref(false)
+const courseTitle = ref('')
 
 const router = useRouter()
 const gameStore = useGame()
@@ -106,10 +106,11 @@ watch(team, () => {
   fetchMaxOrderNumbers()
 }, { immediate: true, deep: true })
 
-onMounted(() => {
+onMounted(async () => {
   onMountMainTheme()
   canGoToLevel.value = false
   initLevels()
+  courseTitle.value = await getCourseName()
 })
 </script>
 
@@ -128,7 +129,7 @@ onMounted(() => {
 
     <div class="title-container">
       <h1 class="title-text">
-        {{ CourseName }}
+        {{ courseTitle }}
       </h1>
     </div>
 
@@ -225,7 +226,8 @@ onMounted(() => {
   transform: translateX(-50%);
 
   width: 40%;
-  height: 100px;
+  /* height: 100px; */
+  height: fit-content;
 
   display: flex;
   justify-content: center;
@@ -332,7 +334,8 @@ onMounted(() => {
 
   .title-container {
     width: calc(80% - 8px);
-    height: 50px;
+    text-align: center;
+    /* height: 50px; */
     top: 40px;
 
     z-index: 2;

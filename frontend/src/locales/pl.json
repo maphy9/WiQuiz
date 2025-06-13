@@ -41,7 +41,8 @@
     "confirm-delete": "Potwierdź usunięcie",
     "really-delete": "Czy naprawdę chcesz usunąć ten temat?",
     "yes": "Tak",
-    "no": "Nie"
+    "no": "Nie",
+    "nazwa-pytania": "Nazwa pytania"
   },
   "teacher-questions": {
     "topic-name": "Nazwa tematu",
@@ -76,6 +77,17 @@
     "correct-answer": "Poprawna odpowiedź!",
     "incorrect-answer": "Odpowiedź nieprawidłowa",
     "killed": "zabity"
+  },
+  "page-not-found": {
+    "page-not-found": "Nie znaleziono strony"
+  },
+  "stats": {
+    "student-stats": "Statystyki Studentów",
+    "student-name": "Student",
+    "max-level": "Maksymalny osiągnięty poziom",
+    "correct-answers": "Prawidłowe odpowiedzi, %",
+    "is-complete": "Ukończono",
+    "pio": "Podstawy inżynierii oprogramowania"
   },
   "All levels completed": "Wszystkie tematy są ukończone"
 }

@@ -41,7 +41,8 @@
     "confirm-delete": "Confirm delete",
     "really-delete": "Do you really want to delete this topic?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "nazwa-pytania": "Question name"
   },
   "teacher-questions": {
     "topic-name": "Topic name",
@@ -77,5 +78,16 @@
     "incorrect-answer": "Incorrect answer",
     "killed": "killed"
   },
-  "All levels completed": "All levels completed"
+  "page-not-found": {
+    "page-not-found": "Page Not Found"
+  },
+  "All levels completed": "All levels completed",
+  "stats": {
+    "correct-answers": "Correct answers, %",
+    "is-complete": "Completed",
+    "max-level": "Maximum level achieved",
+    "student-name": "Student",
+    "student-stats": "Student statistics",
+    "pio": "Basics of software engineering"
+  }
 }

@@ -1,4 +1,6 @@
 <template>
+  <LanguageButton />
+
   <div class="notfound-bg">
     <div class="notfound-main-content">
       <div class="notfound-404">
@@ -6,7 +8,7 @@
       </div>
 
       <div class="notfound-msg">
-        Page not found
+        {{ $t('page-not-found.page-not-found') }}
       </div>
     </div>
 
@@ -15,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 </script>
 

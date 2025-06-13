@@ -11,6 +11,15 @@ const API_BASE = `http://${ip}:${port}`
 // LEVELS
 // -----------------------
 
+export async function getCourseName() {
+  const res = await fetch(`${API_BASE}/getCourse`)
+  if (!res.ok) {
+    throw new Error(`Failed to max order numbers: ${res.status}`)
+  }
+
+  return (await res.json()).title
+}
+
 export async function addAnswerForBebrik(UserId: number, CourseId: number, IsCorrect: boolean) {
   const res = await fetch(`${API_BASE}/addAnswerForBebrik`, {
     method: 'POST',

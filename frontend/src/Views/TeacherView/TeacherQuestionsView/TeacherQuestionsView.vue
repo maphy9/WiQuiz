@@ -9,7 +9,7 @@
 
       <div class="body">
         <div class="container">
-          <span class="title-text">Programowanie webowe</span>
+          <span class="title-text">{{ courseTitle }}</span>
         </div>
 
         <div class="container">
@@ -82,7 +82,7 @@ import { useRouter } from 'vue-router'
 import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
 import { useGame } from '@/stores/gameStore'
-import { createQuestion, deleteQuestion, updateQuestion } from '@/utils/fetchUtils'
+import { createQuestion, deleteQuestion, getCourseName, updateQuestion } from '@/utils/fetchUtils'
 import DeleteQuestionModal from './DeleteQuestionModal.vue'
 import EditQuestionModal from './EditQuestionModal.vue'
 
@@ -172,10 +172,13 @@ function closeDeleteModal() {
   deletedQuestion.value = null
 }
 
-onMounted(() => {
+const courseTitle = ref('')
+
+onMounted(async () => {
   if (!currentLevel.value) {
     router.push({ name: 'teacher-topics' })
   }
+  courseTitle.value = await getCourseName()
 })
 </script>
 

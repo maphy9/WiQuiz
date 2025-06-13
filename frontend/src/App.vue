@@ -24,13 +24,16 @@ const { user } = storeToRefs(useUser())
 const previousRouteName = ref('')
 
 const currentTransition = computed(() => {
-  if (route.name === 'main') {
+  if (route.name === 'main' || (route.name === 'level' && previousRouteName.value === 'level-selection')) {
     return 'swipe-down'
+  }
+  else if (((route.name === 'level-selection' || route.name === 'about' || route.name === 'join') && previousRouteName.value === 'main') || (route.name === 'level-selection' && previousRouteName.value === 'level') || (route.name === 'level-selection' && previousRouteName.value === 'level-results')) {
+    return 'swipe-up'
   }
   else if (route.name === 'level' && previousRouteName.value === 'level-results') {
     return 'swipe-right'
   }
-  else if (route.name === 'level-results') {
+  else if (route.name === 'level-results' || (route.name === 'level-results' && previousRouteName.value === 'level')) {
     return 'swipe-left'
   }
   else {

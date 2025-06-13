@@ -5,24 +5,29 @@
 
       <div class="body">
         <div class="container">
+<<<<<<< 47_Add_i18n_translations_for_new_pages
+          <span class="title-text">{{ $t('stats.pio') }}
+          </span>
+=======
           <span class="title-text">{{ courseTitle }}</span>
+>>>>>>> main
         </div>
 
         <div class="container">
           <div class="topics">
             <div class="WiQuizWrapper">
-              <span class="WiQuizText">Statystyki Studentów</span>
+              <span class="WiQuizText">{{ $t('stats.student-stats') }}</span>
             </div>
 
             <div class="user-table">
               <div class="user-table-header">
-                <div>Student name</div>
+                <div>{{ $t('stats.student-name') }}</div>
 
-                <div>Max level reached</div>
+                <div>{{ $t('stats.max-level') }}</div>
 
-                <div>Correct answers %</div>
+                <div>{{ $t('stats.correct-answers') }}</div>
 
-                <div>Is complete</div>
+                <div>{{ $t('stats.is-complete') }}</div>
               </div>
 
               <div

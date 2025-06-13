@@ -15,7 +15,7 @@
       </div>
 
       <div class="modal-body">
-        <label class="modal-label">Question title:</label>
+        <label class="modal-label">{{ $t('teacher-topics.nazwa-pytania') }}</label>
 
         <textarea
           v-model="localQuestion.QuestionTitle"

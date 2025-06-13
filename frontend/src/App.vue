@@ -34,13 +34,15 @@ const currentTransition = computed(() => {
     return 'swipe-left'
   }
   else {
-    return 'swipe-down'
+    return ''
   }
 })
 
 watch(() => route.name, (newRoute, oldRoute) => {
   if (oldRoute) {
-    previousRouteName.value = oldRoute
+    previousRouteName.value = typeof oldRoute === 'symbol'
+      ? oldRoute.toString()
+      : (oldRoute ?? '')
   }
 })
 

@@ -269,7 +269,7 @@ onMounted(async () => {
   -webkit-text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
 
-  font-size: 2.5vw;
+  font-size: 2vw;
   font-weight: 700;
   font-family: "Titillium Web", sans-serif;
 

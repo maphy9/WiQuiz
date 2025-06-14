@@ -1,3 +1,4 @@
+<!-- eslint-disable max-lines -->
 <template>
   <div class="background">
     <LeafesAnimation />
@@ -136,6 +137,82 @@ function handleLogoClick() {
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+}
+
+@keyframes playButtonWave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(72, 176, 44, 0.6);
+  }
+  25% {
+    transform: rotate(-1deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(72, 176, 44, 0.4);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0 0 20px 10px rgba(72, 176, 44, 0.2);
+  }
+  75% {
+    transform: rotate(1deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(72, 176, 44, 0.4);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(72, 176, 44, 0);
+  }
+}
+
+@keyframes aboutButtonWave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0.6);
+  }
+  25% {
+    transform: rotate(-2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0 0 20px 10px rgba(26, 74, 143, 0.1);
+  }
+  75% {
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0);
+  }
+}
+
+@keyframes playIconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-2px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(3deg);
+  }
+}
+
+@keyframes aboutIconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(5deg);
   }
 }
 
@@ -303,26 +380,83 @@ function handleLogoClick() {
 }
 
 .play-button {
-  animation: pulse 2.5s infinite;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background-color: rgba(72, 176, 44, 0.9);
+  position: relative;
+  overflow: hidden;
+  animation: playButtonWave 3s ease-in-out infinite;
+}
+
+.play-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s;
+}
+
+.play-button:hover::before {
+  left: 100%;
+}
+
+.play-button .button-img {
+  animation: playIconFloat 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.play-button:hover .button-img {
+  transform: scale(1.15) rotate(-5deg);
+  filter: brightness(1.3);
 }
 
 .play-button:active {
-  animation: none;
-  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(72, 176, 44, 0.7), 0 0 50px rgba(72, 176, 44, 0.5);
+  transform: scale(0.98) translateY(2px);
   background-color: rgba(79, 190, 48, 0.9) !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: none;
 }
 
 .about-button {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background-color: rgba(26, 74, 143, 0.9);
+  position: relative;
+  overflow: hidden;
+  animation: aboutButtonWave 4s ease-in-out infinite;
+}
+
+.about-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.8s;
+}
+
+.about-button:hover::before {
+  left: 100%;
+}
+
+.about-button .button-img {
+  animation: aboutIconFloat 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.about-button:hover .button-img {
+  transform: scale(1.1) rotate(5deg);
+  filter: brightness(1.2);
 }
 
 .about-button:active {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(26, 74, 143, 0.6), 0 0 50px rgba(26, 74, 143, 0.4);
+  transform: scale(0.98) translateY(2px);
   background-color: rgba(30, 80, 152, 0.9) !important;
+  animation: none;
 }
 
 @media (hover: hover) {
@@ -338,11 +472,16 @@ function handleLogoClick() {
 
   .play-button:hover {
     background-color: rgba(59, 158, 32, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(72, 176, 44, 0.4);
     animation: none;
   }
 
   .about-button:hover {
     background-color: rgba(20, 67, 132, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(26, 74, 143, 0.4);
+    animation: none;
   }
 
   .button:hover {

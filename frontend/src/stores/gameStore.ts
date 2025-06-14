@@ -457,7 +457,6 @@ export const useGame = defineStore('gameStore', () => {
     if (!bonuses.value.reviveBonus.isAvailable) {
       return
     }
-    playBonusSound()
     let foundDead = false
     for (const teammate of team.value) {
       if (!teammate.isAlive) {
@@ -468,6 +467,7 @@ export const useGame = defineStore('gameStore', () => {
     if (!foundDead) {
       return
     }
+    playBonusSound()
     let index = Math.floor(Math.random() * team.value.length)
     while (team.value[index].isAlive) {
       index = Math.floor(Math.random() * team.value.length)

@@ -294,7 +294,7 @@ export const useGame = defineStore('gameStore', () => {
   function getRandomAvailableAvatar() {
     const avatars: any = {}
     for (let i = 0; i < 5; i++) {
-      avatars[`/images/avatar${i}.png`] = true
+      avatars[`/images/avatar${i}.jpg`] = true
     }
 
     for (const teammate of team.value) {

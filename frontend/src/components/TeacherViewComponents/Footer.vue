@@ -81,8 +81,9 @@
     background-color: #1a4a8f;
     color: white;
     padding: 30px 20px;
-    position: static;
-    bottom: 0;
+    margin-top: auto;
+    /* position: static;
+    bottom: 0; */
     display: flex;
     font-family: "Titillium Web", sans-serif;
     justify-content: space-around;
@@ -132,5 +133,33 @@
   .footer-text-after-line {
     border-top: 1px solid #ffffff;
     padding-top: 10px;
+  }
+   @media (max-width: 600px) {
+    .footer {
+      flex-direction: column;
+      align-items: center;
+      position: static;
+      bottom: 0;
+      gap: 30px;
+      padding: 20px 15px;
+      width: 90vw;
+    }
+
+    .footer-section {
+      width: 100%;
+      align-items: center;
+    }
+
+    .footer-section h2 {
+      font-size: 28px;
+    }
+
+    .footer-section h3 {
+      font-size: 20px;
+    }
+
+    .footer-section p {
+      font-size: 14px;
+    }
   }
 </style>

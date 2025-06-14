@@ -10,7 +10,7 @@ import { getCourseName, getMaxOrderNumber } from '@/utils/fetchUtils'
 import LevelCard from './LevelCard.vue'
 import LevelRoute from './LevelRoute.vue'
 
-const progress = ref(70)
+const progress = ref(0)
 const courseTitle = ref('')
 
 const router = useRouter()
@@ -38,6 +38,10 @@ watch([levels, maxOrderNumbers], () => {
             ? 'repeat'
             : 'locked'),
   }))
+
+  console.error(maxOrderNumber)
+  console.error(processedLevels.value.length)
+  progress.value = (maxOrderNumber - 1) / processedLevels.value.length * 100
 }, { deep: true, immediate: true })
 
 const leftCards = computed(() => processedLevels.value.filter((_: any, i: any) => i % 2 === 0))

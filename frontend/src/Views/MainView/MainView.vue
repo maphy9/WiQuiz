@@ -92,12 +92,12 @@
 </template>
 
 <script setup lang="ts">
-import LeafesAnimation from './LeafesAnimation.vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
+import LeafesAnimation from './LeafesAnimation.vue'
 
 const gameStore = useGame()
 const { team, isConnected } = storeToRefs(gameStore)

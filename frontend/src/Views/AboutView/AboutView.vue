@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
 import { onMounted } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useSoundStore } from '@/stores/useSoundStore'
+import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
 
 const { onMountMainTheme } = useSoundStore()
 

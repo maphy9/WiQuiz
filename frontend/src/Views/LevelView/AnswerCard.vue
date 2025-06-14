@@ -31,6 +31,19 @@ const answerColor = computed(() => {
 const isSelectable = computed(() => {
   return !isChosen.value && answer.value.isActive && me.value?.isAlive
 })
+
+watch(chosenAnswer, (newVal) => {
+  if (!newVal)
+    return
+  if (newVal === answer.value) {
+    if (newVal.IsCorrect) {
+      playCorrectSound()
+    }
+    else {
+      playInCorrectSound()
+    }
+  }
+})
 </script>
 
 <template>

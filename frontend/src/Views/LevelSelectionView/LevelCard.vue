@@ -145,28 +145,18 @@ function handleClick() {
 .card-container.repeat {
   border-color: #000000;
   box-shadow: 0 0 15px rgba(255, 217, 102, 0.3);
-  animation: pulse-repeat 2s infinite;
 }
 
 .card-container.locked {
   cursor: not-allowed;
-  filter: grayscale(0.7);
-  border-color: #8B231D;
+  border-color: #000000;
+  box-shadow: 0 0 15px rgba(139, 35, 29, 0.3);
 }
 
 .card-container.locked:hover {
   transform: none;
   background-color: rgba(178, 196, 217, 0.7);
-  box-shadow: none;
-}
-
-@keyframes pulse-repeat {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(255, 217, 102, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(255, 217, 102, 0.6);
-  }
+  box-shadow: 0 0 15px rgba(139, 35, 29, 0.3);
 }
 
 .glow-effect {

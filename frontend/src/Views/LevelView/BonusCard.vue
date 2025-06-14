@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { ref, toRefs } from 'vue'
+import { useGame } from '@/stores/gameStore'
 
 const props = defineProps<{
   bonus: any
@@ -11,24 +13,32 @@ const showEffect = ref(false)
 const effectText = ref('')
 const effectColor = ref('')
 
+const gameStore = useGame()
+const { team } = storeToRefs(gameStore)
+
 function handleClick() {
   if (!bonus.value.isAvailable)
     return
 
   isAnimating.value = true
-  showEffect.value = true
 
   if (bonus.value.image.includes('timeBonus')) {
+    showEffect.value = true
     effectText.value = '+15s'
     effectColor.value = '#4CAF50'
   }
   else if (bonus.value.image.includes('mistakeBonus')) {
+    showEffect.value = true
     effectText.value = 'Wrong Answer Removed!'
     effectColor.value = '#FF6B6B'
   }
   else if (bonus.value.image.includes('reviveBonus')) {
-    effectText.value = 'Player Revived!'
-    effectColor.value = '#FFD700'
+    const hasDeadPlayers = team.value.some(teammate => !teammate.isAlive)
+    if (hasDeadPlayers) {
+      showEffect.value = true
+      effectText.value = 'Player Revived!'
+      effectColor.value = '#FFD700'
+    }
   }
 
   bonus.value.onClick()

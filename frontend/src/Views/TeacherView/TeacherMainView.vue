@@ -245,4 +245,27 @@ onMounted(async () => {
   display: flex;
   flex-direction: row;
 }
+@media (max-width: 600px) {
+  .title-text {
+    font-size: 32px;
+    padding-left: 20px;
+  }
+
+  .bebra:last-child {
+    display: none; /* Hide stats and edit buttons */
+  }
+
+  .container {
+    padding: 15px 10px;
+    margin-top: 30px;
+  }
+
+  .topics {
+    padding: 10px;
+  }
+
+  .WiQuizWrapper {
+    padding: 8px 15px;
+  }
+}
 </style>

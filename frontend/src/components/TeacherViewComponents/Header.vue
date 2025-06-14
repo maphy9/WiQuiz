@@ -264,4 +264,51 @@ function toggleLanguage() {
 .dropdown-menu button:hover {
   opacity: 0.7;
 }
+@media (max-width: 600px) {
+  .header {
+    padding: 0 10px;
+    height: 60px;
+  }
+
+  .header-logo img {
+    display: none;
+  }
+
+  .header-logo h1 {
+    font-size: 24px;
+  }
+
+  .nav {
+    gap: 8px;
+  }
+
+  .nav-button:first-child {
+    display: none; /* Hide "wirtualne wydzialy" */
+  }
+
+  .nav-button:nth-child(2) {
+    display: none; /* Hide language button */
+  }
+  .header-language-text {
+    display: none; /* Hide language text */
+  }
+
+  .header-user-name {
+    display: none; /* Hide user name */
+  }
+
+  .nav-button:nth-child(5) {
+    display: none; /* Hide notification bell icon */
+  }
+
+  .nav-button-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-arrow {
+    width: 12px;
+    height: 12px;
+  }
+}
 </style>

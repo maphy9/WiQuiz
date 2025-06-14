@@ -14,18 +14,39 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUser } from './stores/userStore'
 import { loadUser } from './utils/fetchUtils'
 
 const route = useRoute()
 const { user } = storeToRefs(useUser())
+const previousRouteName = ref('')
 
 const currentTransition = computed(() => {
-  return route.name === 'main'
-    ? 'swipe-down'
-    : 'swipe-up'
+  if (route.name === 'main' || (route.name === 'level' && previousRouteName.value === 'level-selection')) {
+    return 'swipe-down'
+  }
+  else if (((route.name === 'level-selection' || route.name === 'about' || route.name === 'join') && previousRouteName.value === 'main') || (route.name === 'level-selection' && previousRouteName.value === 'level') || (route.name === 'level-selection' && previousRouteName.value === 'level-results')) {
+    return 'swipe-up'
+  }
+  else if (route.name === 'level' && previousRouteName.value === 'level-results') {
+    return 'swipe-right'
+  }
+  else if (route.name === 'level-results' && previousRouteName.value === 'level') {
+    return 'swipe-left'
+  }
+  else {
+    return ''
+  }
+})
+
+watch(() => route.name, (newRoute, oldRoute) => {
+  if (oldRoute) {
+    previousRouteName.value = typeof oldRoute === 'symbol'
+      ? oldRoute.toString()
+      : (oldRoute ?? '')
+  }
 })
 
 onMounted(() => {

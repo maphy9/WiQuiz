@@ -12,7 +12,7 @@ const { playButtonSound } = useSoundStore()
 const codeInput = ref('')
 const gameStore = useGame()
 const { connectToRoom } = gameStore
-const { roomCode } = storeToRefs(gameStore)
+const { roomCode, team } = storeToRefs(gameStore)
 
 function joinRoom() {
   playButtonSound()
@@ -20,6 +20,7 @@ function joinRoom() {
     return
   }
 
+  team.value = []
   connectToRoom(codeInput.value)
 }
 

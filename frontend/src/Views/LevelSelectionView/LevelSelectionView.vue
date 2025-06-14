@@ -41,8 +41,6 @@ watch([levels, maxOrderNumbers], () => {
             : 'locked'),
   }))
 
-  console.error(maxOrderNumber)
-  console.error(processedLevels.value.length)
   progress.value = (maxOrderNumber - 1) / processedLevels.value.length * 100
 }, { deep: true, immediate: true })
 

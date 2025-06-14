@@ -5,12 +5,7 @@
 
       <div class="body">
         <div class="container">
-<<<<<<< 47_Add_i18n_translations_for_new_pages
-          <span class="title-text">{{ $t('stats.pio') }}
-          </span>
-=======
           <span class="title-text">{{ courseTitle }}</span>
->>>>>>> main
         </div>
 
         <div class="container">

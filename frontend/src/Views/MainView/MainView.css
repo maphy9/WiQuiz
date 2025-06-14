@@ -1,129 +1,3 @@
-<template>
-  <div class="background">
-    <LeafesAnimation />
-
-    <LanguageButton />
-
-    <div class="team-card">
-      <div class="team-card-top">
-        <h3>{{ $t('main-view.your-team') }}</h3>
-      </div>
-
-      <div
-        v-if="isConnected"
-        class="team-members"
-      >
-        <div
-          v-for="(teammate, index) in team"
-          :key="index"
-          class="member-slot"
-          @click="playButtonSound"
-        >
-          <img
-            class="avatar"
-            :src="teammate.user.avatar || '/images/emptyPfp.png'"
-          >
-
-          <div>{{ teammate.user.name }}</div>
-        </div>
-
-        <router-link
-          v-for="i in (3 - team.length)"
-          :key="i"
-          :to="{'name': 'join'}"
-          class="member-slot"
-          @click="playButtonSound"
-        >
-          <img
-            class="add avatar"
-            src="@/images/plus.png"
-          >
-
-          <div>{{ $t('main-view.invite-or-join') }}</div>
-        </router-link>
-      </div>
-    </div>
-
-    <div
-      class="logo-card"
-      @click="handleLogoClick"
-    >
-      <img
-        class="logo-img"
-        src="@/images/logo.png"
-        :class="{'rotate': rotateLogo}"
-      >
-
-      <div class="logo-text">
-        WIKQUIZ
-      </div>
-    </div>
-
-    <div class="buttons-card">
-      <router-link :to="{'name': 'level-selection'}">
-        <div
-          class="button play-button"
-          @click="playButtonSound"
-        >
-          <div>{{ $t('main-view.play') }}</div>
-
-          <img
-            class="button-img"
-            src="@/images/play.png"
-          >
-        </div>
-      </router-link>
-
-      <router-link :to="{'name': 'about'}">
-        <div
-          class="about-button button"
-          @click="playButtonSound"
-        >
-          <div>{{ $t('main-view.about') }}</div>
-
-          <img
-            class="button-img"
-            src="@/images/handshake.png"
-          >
-        </div>
-      </router-link>
-    </div>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
-import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
-import { useGame } from '@/stores/gameStore'
-import { useSoundStore } from '@/stores/useSoundStore'
-import LeafesAnimation from './LeafesAnimation.vue'
-
-const gameStore = useGame()
-const { team, isConnected } = storeToRefs(gameStore)
-
-const logoClickCount = ref(0)
-const rotateLogo = ref(false)
-const { playButtonSound } = useSoundStore()
-const { onMountMainTheme } = useSoundStore()
-
-onMounted(() => {
-  onMountMainTheme()
-})
-
-function handleLogoClick() {
-  logoClickCount.value++
-  if (logoClickCount.value >= 5) {
-    rotateLogo.value = true
-    setTimeout(() => {
-      rotateLogo.value = false
-      logoClickCount.value = 0
-    }, 1000)
-  }
-}
-</script>
-
-<style scoped>
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -147,6 +21,45 @@ function handleLogoClick() {
     transform: rotate(360deg);
   }
 }
+
+@keyframes aboutButtonWave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0.6);
+  }
+  25% {
+    transform: rotate(-2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0 0 20px 10px rgba(26, 74, 143, 0.1);
+  }
+  75% {
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(26, 74, 143, 0.3);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 rgba(26, 74, 143, 0);
+  }
+}
+
+@keyframes aboutIconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(5deg);
+  }
+}
+
 
 .background {
   height: 100vh;
@@ -172,6 +85,7 @@ function handleLogoClick() {
   width: 35vw;
   height: 23vh;
   min-width: 400px;
+  z-index: 10;
 }
 
 .team-card-top {
@@ -204,7 +118,7 @@ function handleLogoClick() {
 
 .member-slot {
   width: 15vh;
-  height: 6vh;
+  height: 12vh;
   text-align: center;
   font-size: 2vh;
   font-family: "Titillium Web";
@@ -212,6 +126,7 @@ function handleLogoClick() {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .avatar {
@@ -247,6 +162,7 @@ function handleLogoClick() {
   align-items: center;
   justify-content: space-around;
   border-radius: 5px;
+  z-index: 10;
 }
 
 .rotate {
@@ -274,6 +190,7 @@ function handleLogoClick() {
   flex-direction: column;
   align-items: center;
   gap: 12vh;
+  z-index: 10;
 }
 
 .button {
@@ -284,7 +201,7 @@ function handleLogoClick() {
   min-height: 40px;
   font-family: "Segoe UI";
   font-weight: 600;
-  font-size: 40px;
+  font-size: clamp(35px, 3vw, 40px);
   color: #ffffff;
   -webkit-text-stroke: 1px black;
   display: flex;
@@ -293,13 +210,13 @@ function handleLogoClick() {
   justify-content: center;
   border-radius: 5px;
   border: 2px solid #ffffff;
-  gap: 10px;
+  gap: 3vw;
 }
 
 .button-img {
-  height: 90px;
-  width: 90px;
-  margin-left: 60px;
+  height: 10vh;
+  width: 10vh;
+  margin-left: 2vw;
 }
 
 .play-button {
@@ -315,14 +232,43 @@ function handleLogoClick() {
 }
 
 .about-button {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background-color: rgba(26, 74, 143, 0.9);
+  position: relative;
+  overflow: hidden;
+  animation: aboutButtonWave 4s ease-in-out infinite;
+}
+
+.about-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.8s;
+}
+
+.about-button:hover::before {
+  left: 100%;
+}
+
+.about-button .button-img {
+  animation: aboutIconFloat 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.about-button:hover .button-img {
+  transform: scale(1.1) rotate(5deg);
+  filter: brightness(1.2);
 }
 
 .about-button:active {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(26, 74, 143, 0.6), 0 0 50px rgba(26, 74, 143, 0.4);
+  transform: scale(0.98) translateY(2px);
   background-color: rgba(30, 80, 152, 0.9) !important;
+  animation: none;
 }
 
 @media (hover: hover) {
@@ -343,6 +289,9 @@ function handleLogoClick() {
 
   .about-button:hover {
     background-color: rgba(20, 67, 132, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(26, 74, 143, 0.4);
+    animation: none;
   }
 
   .button:hover {
@@ -370,7 +319,7 @@ a {
     bottom: 5vh;
     background-color: #525a64;
     width: 100vw;
-    height: 18vh;
+    height: 20vh;
   }
 
   .team-card-top {
@@ -378,7 +327,7 @@ a {
     width: 100vw;
     height: 5vh;
     font-family: "Titillium Web";
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 600;
     color: #ffffff;
     display: flex;
@@ -390,7 +339,7 @@ a {
   .team-members {
     display: flex;
     gap: 5px;
-    margin-top: 5vh;
+    margin-top: 7vh;
     align-items: center;
     justify-content: space-between;
   }
@@ -399,7 +348,7 @@ a {
     padding: 8px;
     width: 100px;
     text-align: center;
-    font-size: 10px;
+    font-size: 15px;
     font-family: "Titillium Web";
     color: #ffffff;
     display: flex;
@@ -437,8 +386,8 @@ a {
   }
 
   .button {
-    width: 200px;
-    height: 70px;
+    width: 312px;
+    height: 84px;
     font-family: "Segoe UI";
     font-weight: 600;
     font-size: 48px;
@@ -454,18 +403,11 @@ a {
   }
 
   .buttons-card {
-    top: 33vh;
+    top: 35vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5vh;
     margin-bottom: 50px;
   }
-
-  .button-img {
-  height: 90px;
-  width: 90px;
-  margin-left: 40px;
 }
-}
-</style>

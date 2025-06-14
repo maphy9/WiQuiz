@@ -5,6 +5,7 @@ import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
+import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
 
 const { playButtonSound } = useSoundStore()
 
@@ -37,6 +38,8 @@ onMounted(() => {
 
 <template>
   <div class="main">
+    <LeafesAnimation />
+
     <LanguageButton />
 
     <div class="container">

@@ -7,6 +7,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useSoundStore } from '@/stores/useSoundStore'
 import { addAnswerForBebrik, getLevels } from '@/utils/fetchUtils'
 import { useUser } from './userStore'
 
@@ -14,6 +15,7 @@ const ip = import.meta.env.VITE_IP
 const port = import.meta.env.VITE_PORT
 
 export const useGame = defineStore('gameStore', () => {
+  const { playInCorrectSound, playBonusSound } = useSoundStore()
   const { user } = storeToRefs(useUser())
   const { t } = useI18n()
 
@@ -338,6 +340,7 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
+    playInCorrectSound()
     showMessage(`${t('level-view.incorrect-answer')} - ${player.user.name} ${t('level-view.killed')}`, 'RED')
 
     handleGameOver()
@@ -441,6 +444,7 @@ export const useGame = defineStore('gameStore', () => {
     if (!bonuses.value.timeBonus.isAvailable) {
       return
     }
+    playBonusSound()
 
     const message = {
       type: 'use_time_bonus',
@@ -453,6 +457,7 @@ export const useGame = defineStore('gameStore', () => {
     if (!bonuses.value.reviveBonus.isAvailable) {
       return
     }
+    playBonusSound()
     let foundDead = false
     for (const teammate of team.value) {
       if (!teammate.isAlive) {
@@ -480,6 +485,7 @@ export const useGame = defineStore('gameStore', () => {
     if (!currentQuestion.value || !bonuses.value.mistakeBonus.isAvailable) {
       return
     }
+    playBonusSound()
     let index = Math.floor(Math.random() * 4)
     while (currentQuestion.value.answers[index].IsCorrect) {
       index = Math.floor(Math.random() * 4)

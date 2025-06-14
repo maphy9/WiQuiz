@@ -37,7 +37,7 @@ onBeforeRouteUpdate((to) => {
 
 onMounted(async () => {
   if (!user.value) {
-    router.push({ name: 'errorin' })
+    router.push({ name: 'login' })
 
     return
   }

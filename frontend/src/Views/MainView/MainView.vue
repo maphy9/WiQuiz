@@ -496,24 +496,15 @@ a {
 @media (max-width: 550px) {
   .team-card {
     position: fixed;
-    bottom: 8vh;
+    bottom: 0vh;
     top: auto;
     left: 0;
     width: 100vw;
-    height: 20vh;
-    background-color: #525a64;
-  }
-
-  .team-card {
-    position: fixed;
-    bottom: 5vh;
-    background-color: #525a64;
-    width: 100vw;
     height: 18vh;
+    padding-bottom: 10px;
   }
 
   .team-card-top {
-    background-color: #62707e;
     width: 100vw;
     height: 5vh;
     font-family: "Titillium Web";
@@ -527,18 +518,20 @@ a {
   }
 
   .team-members {
+    width: 100vw;
+    padding: 0;
+    margin: 0;
     display: flex;
-    gap: 5px;
     margin-top: 5vh;
     align-items: center;
     justify-content: space-between;
   }
 
   .member-slot {
-    padding: 8px;
-    width: 100px;
+    padding: 8px 0;
+    max-width: calc(100% / 3);
     text-align: center;
-    font-size: 10px;
+    font-size: 3vw;
     font-family: "Titillium Web";
     color: #ffffff;
     display: flex;

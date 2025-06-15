@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
@@ -11,15 +12,26 @@ import LeavesAnimation from '@/views/MainView/LeavesAnimation.vue'
 const { playButtonSound } = useSoundStore()
 
 const codeInput = ref('')
+const codeError = ref('')
 const gameStore = useGame()
 const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
 
+const { t, locale } = useI18n()
+
 const router = useRouter()
+
+watch(locale, () => {
+  if (codeError.value) {
+    codeError.value = t('Code must be exactly 6 characters')
+  }
+})
 
 function joinRoom() {
   playButtonSound()
   if (codeInput.value.length !== 6) {
+    codeError.value = t('Code must be exactly 6 characters')
+
     return
   }
 
@@ -98,23 +110,32 @@ onMounted(() => {
             {{ $t('join-view.enter-team-code') }}:
           </p>
 
-          <div class="code-input">
-            <input
-              v-model="codeInput"
-              type="text"
-              maxlength="6"
-              placeholder="000000"
-            >
-
-            <button
-              type="button"
-              @mousedown="joinRoom"
-            >
-              <img
-                id="paste-button-icon"
-                src="@/images/arrow.png"
+          <div class="bebra">
+            <div class="code-input">
+              <input
+                v-model="codeInput"
+                type="text"
+                maxlength="6"
+                placeholder="000000"
               >
-            </button>
+
+              <button
+                type="button"
+                @mousedown="joinRoom"
+              >
+                <img
+                  id="paste-button-icon"
+                  src="@/images/arrow.png"
+                >
+              </button>
+            </div>
+
+            <p
+              v-if="codeError"
+              class="error-message"
+            >
+              {{ codeError }}
+            </p>
           </div>
         </div>
       </div>
@@ -188,7 +209,20 @@ input {
   border-color: black;
   border-width: 1px;
   border-style: solid;
+}
 
+.error-message {
+  color: #ffffff;
+  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 1px;
+  font-size: 28px;
+  font-weight: bold;
+  font-family: "Titillium Web";
+}
+
+.bebra {
+  display: flex;
+  flex-direction: column;
 }
 
 .code-input {
@@ -246,8 +280,12 @@ button:active {
     margin: 0;
     margin-top: 80px;
     width: calc(95vw - 2px);
-    gap: 50px;
+    gap: 2vh;
     justify-content: space-between;
+  }
+
+  .error-message {
+    font-size: 24px;
   }
 
   .title {

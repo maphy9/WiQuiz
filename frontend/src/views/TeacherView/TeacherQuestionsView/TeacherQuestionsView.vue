@@ -70,6 +70,25 @@
       @confirm="confirmDelete"
       @close="closeDeleteModal"
     />
+
+    <div
+      v-if="showValidationError"
+      class="validation-error-overlay"
+    >
+      <div class="validation-error-message">
+        <h3>{{ $t('teacher-questions.validation-error') || 'Validation Error' }}</h3>
+
+        <p>{{ $t('teacher-questions.complete-all-fields') || 'Complete all the fields to save the question' }}</p>
+
+        <button
+          class="error-ok-button"
+          type="button"
+          @click="hideValidationError"
+        >
+          OK
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -93,6 +112,8 @@ const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 const editedQuestion = ref<Question | null>(null)
 const deletedQuestion = ref<Question | null>(null)
+const showValidationError = ref(false)
+
 const questionModel: Ref<Question> = ref({
   QuestionId: 0,
   QuestionTitle: '',
@@ -130,8 +151,34 @@ function openAddModal() {
   }
   showEditModal.value = true
 }
+function validateQuestion(question: Question): boolean {
+  // Check if question title and text are not empty
+  if (!question.QuestionTitle.trim() || !question.QuestionText.trim()) {
+    return false
+  }
 
+  // Check if all answers have text
+  const hasEmptyAnswer = question.answers.some(answer => !answer.AnswerText.trim())
+  if (hasEmptyAnswer) {
+    return false
+  }
+
+  // Check if at least one answer is marked as correct
+  const hasCorrectAnswer = question.answers.some(answer => answer.IsCorrect)
+  if (!hasCorrectAnswer) {
+    return false
+  }
+
+  return true
+}
 async function saveQuestion() {
+  // Validate the question before saving
+  if (!validateQuestion(questionModel.value)) {
+    showValidationError.value = true
+
+    return // Don't save if validation fails
+  }
+
   if (editedQuestion.value !== null) {
     await updateQuestion(
       questionModel.value.QuestionId,
@@ -170,6 +217,10 @@ function confirmDelete() {
 function closeDeleteModal() {
   showDeleteModal.value = false
   deletedQuestion.value = null
+}
+
+function hideValidationError() {
+  showValidationError.value = false
 }
 
 const courseTitle = ref('')
@@ -305,4 +356,51 @@ onMounted(async () => {
     pointer-events: none;
     user-select: none;
  }
+ .validation-error-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.validation-error-message {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.18);
+  padding: 32px 28px 24px 28px;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  font-family: "Titillium Web", sans-serif;
+}
+
+.validation-error-message h3 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #c0392b;
+  margin-bottom: 16px;
+}
+
+.validation-error-message p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 24px;
+}
+.error-ok-button {
+  background: #1a4a8f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: "Titillium Web", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
   </style>

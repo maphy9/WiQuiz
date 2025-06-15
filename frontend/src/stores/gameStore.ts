@@ -273,17 +273,68 @@ export const useGame = defineStore('gameStore', () => {
         handlePlayersUpdate(data.players)
         break
 
+      case 'set_avatar':
+        handlePlayerSetAvatar(data.player, data.avatar)
+        break
+
       default:
         console.warn('Unhandled message type:', data.type)
         break
     }
   }
 
+  function handlePlayerSetAvatar(player: any, avatar: string) {
+    for (const teammate of team.value) {
+      if (player.user.id === teammate.user.id) {
+        teammate.user.avatar = avatar
+      }
+    }
+
+    if (player.user.id === me.value?.user.id && avatar === '/images/emptyPfp.png') {
+      let doAllHaveAvatars = true
+      for (const teammate of team.value.filter(t1 => t1.user.id !== player.user.id)) {
+        if (teammate.user.avatar === '/images/emptyPfp.png') {
+          doAllHaveAvatars = false
+          break
+        }
+      }
+      if (doAllHaveAvatars) {
+        sendWebSocketMessage({
+          type: 'set_avatar',
+          player: me.value,
+          avatar: getRandomAvailableAvatar(),
+        })
+      }
+    }
+  }
+
+  function getRandomAvailableAvatar() {
+    const avatars: any = {}
+    for (let i = 0; i < 5; i++) {
+      avatars[`/images/avatar${i}.jpg`] = true
+    }
+
+    for (const teammate of team.value) {
+      avatars[teammate.user.avatar] = undefined
+    }
+
+    const availableAvatars = []
+    for (const key of Object.keys(avatars)) {
+      if (avatars[key]) {
+        availableAvatars.push(key)
+      }
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableAvatars.length)
+
+    return availableAvatars[randomIndex]
+  }
+
   function handlePlayersUpdate(players: any) {
-    const newPlayers = players.map((player: any, index: number) => ({
+    const newPlayers = players.map((player: any) => ({
       user: {
         ...player,
-        avatar: `/images/avatar${index + 1}.jpeg`,
+        avatar: '/images/emptyPfp.png',
       },
       isAlive: true,
       selectedAnswer: null,
@@ -296,9 +347,16 @@ export const useGame = defineStore('gameStore', () => {
         newPlayer.isAlive = oldPlayer.isAlive
         newPlayer.score = oldPlayer.score
         newPlayer.selectedAnswer = oldPlayer.selectedAnswer
+        newPlayer.user.avatar = oldPlayer.user.avatar
       }
     }
     team.value = newPlayers
+
+    sendWebSocketMessage({
+      type: 'set_avatar',
+      player: me.value,
+      avatar: me.value?.user.avatar,
+    })
 
     const answer = getChosenAnswer()
     if (answer) {

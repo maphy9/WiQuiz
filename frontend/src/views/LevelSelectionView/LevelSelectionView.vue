@@ -358,7 +358,7 @@ onMounted(async () => {
   }
 
   .columns-container{
-    padding-top: 100px;
+    padding-top: 150px;
     width: 100%;
   }
 

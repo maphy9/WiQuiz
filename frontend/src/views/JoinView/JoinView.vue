@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { useClipboard } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
@@ -15,7 +14,8 @@ const codeInput = ref('')
 const gameStore = useGame()
 const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
-const { copy } = useClipboard()
+
+const router = useRouter()
 
 function joinRoom() {
   playButtonSound()
@@ -25,11 +25,20 @@ function joinRoom() {
 
   team.value = []
   connectToRoom(codeInput.value)
+  router.push({ name: 'main' })
 }
 
 function copyCode() {
   if (roomCode.value) {
-    copy(roomCode.value)
+    const textarea = document.createElement('textarea')
+    textarea.value = roomCode.value
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'absolute'
+    textarea.style.left = '-9999px'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
   }
 }
 
@@ -64,7 +73,7 @@ onMounted(() => {
           <div class="code-input">
             <input
               type="text"
-              :value="roomCode?.split('').join('  ')"
+              :value="roomCode"
               readonly
             >
 
@@ -94,7 +103,7 @@ onMounted(() => {
               v-model="codeInput"
               type="text"
               maxlength="6"
-              placeholder="0  0  0  0  0  0"
+              placeholder="000000"
             >
 
             <button
@@ -188,6 +197,10 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.code-input input {
+  letter-spacing: 20px;
 }
 
 button {

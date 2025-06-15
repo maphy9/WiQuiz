@@ -67,7 +67,7 @@ export const useGame = defineStore('gameStore', () => {
 
   // Team
   const team: Ref<Teammate[]> = ref([])
-  const chosenAnswer: Ref<Answer | null> = ref(null)
+  const chosenAnswer: Ref<Answer | null | undefined> = ref(null)
 
   // Bebrik
   const me = computed(() => {
@@ -92,10 +92,9 @@ export const useGame = defineStore('gameStore', () => {
   // Bebra 52
   const answers: Ref<any[]> = ref([])
   const isChosen = ref(false)
-  const timeOut = ref(false)
 
   // Timer
-  const initialTime = 60
+  const initialTime = 10
   const maxTime = ref(initialTime)
   const timeLeft = ref(initialTime)
   const timeLeftFormatted = computed(() => {
@@ -290,10 +289,10 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    if (player.user.id === me.value?.user.id && avatar === '/images/emptyPfp.png') {
+    if (me.value?.user.avatar === '/images/emptyPfp.png') {
       let doAllHaveAvatars = true
-      for (const teammate of team.value.filter(t1 => t1.user.id !== player.user.id)) {
-        if (teammate.user.avatar === '/images/emptyPfp.png') {
+      for (const teammate of team.value) {
+        if (teammate.user.id !== me.value.user.id && teammate.user.avatar === '/images/emptyPfp.png') {
           doAllHaveAvatars = false
           break
         }
@@ -405,9 +404,18 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   function handleChooseAnswer(answer: Answer) {
-    chosenAnswer.value = answer
+    if (isChosen.value) {
+      return
+    }
+    isChosen.value = true
+    if (answer !== null) {
+      chosenAnswer.value = { ...answer }
+    }
+    else {
+      chosenAnswer.value = undefined
+    }
 
-    if (chosenAnswer.value?.IsCorrect) {
+    if (chosenAnswer.value && chosenAnswer.value.IsCorrect) {
       for (const teammate of team.value) {
         if (teammate.selectedAnswer?.AnswerId === chosenAnswer.value?.AnswerId) {
           teammate.score += 3
@@ -417,13 +425,14 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   function chooseAnswer() {
+    if (isChosen.value) {
+      return
+    }
     const answer = getChosenAnswer()
-    if (answer) {
-      sendWebSocketMessage({ type: 'choose_answer', answer })
-      if (!answer.IsCorrect) {
-        const player = getRandomAlive()
-        sendWebSocketMessage({ type: 'kill_player', player })
-      }
+    sendWebSocketMessage({ type: 'choose_answer', answer })
+    if (answer && !answer.IsCorrect) {
+      const player = getRandomAlive()
+      sendWebSocketMessage({ type: 'kill_player', player })
     }
   }
 
@@ -642,14 +651,16 @@ export const useGame = defineStore('gameStore', () => {
       answers.value.push({ ...currentQuestion.value.answers[i], ...answerProps[i] })
     }
 
-    timeOut.value = false
     chosenAnswer.value = null
     removeSelectedAnswers()
 
     timeLeftInterval.value = setInterval(() => {
       if (timeLeft.value === 0 && timeLeftInterval.value) {
         clearInterval(timeLeftInterval.value)
-        timeOut.value = true
+        timeLeftInterval.value = null
+        if (me.value?.user.id === team.value[0].user.id) {
+          chooseAnswer()
+        }
       }
       else {
         timeLeft.value--
@@ -695,7 +706,6 @@ export const useGame = defineStore('gameStore', () => {
     bonuses,
     timebarProgress,
     initQuestion,
-    timeOut,
     isChosen,
     answers,
     currentQuestionIndex,

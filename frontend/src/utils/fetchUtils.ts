@@ -273,7 +273,7 @@ export async function deleteAnswer(answerId: number): Promise<void> {
   }
 }
 
-export async function updateMaxLevelId(user: User, courseId: number, newMaxLevelId: number) {
+export async function updateMaxLevelId(user: User, courseId: number, newMaxLevelId: number | null) {
   const res = await fetch(`${API_BASE}/updateMaxLevelId`, {
     method: 'POST',
     headers: {

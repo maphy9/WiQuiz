@@ -90,5 +90,6 @@
     "student-stats": "Student statistics",
     "pio": "Basics of software engineering"
   },
-  "leave-room": "Leave room"
+  "leave-room": "Leave room",
+  "Last level reached": "Last level completed"
 }

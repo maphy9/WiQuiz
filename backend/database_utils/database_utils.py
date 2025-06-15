@@ -320,7 +320,27 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
     """, (userId, courseId))
     row = cursor.fetchone()
     if not row:
-        return None
+        cursor.execute("""
+        SELECT 
+            UserCourseData.UserCourseDataId,
+            UserCourseData.MaxLevelId,
+            UserCourseData.CorrectAnswers,
+            UserCourseData.TotalAnswers
+        FROM UserCourseData
+        WHERE UserId = ? AND CourseId = ?
+        """, (userId, courseId))
+        row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            'UserCourseDataId': row[0],
+            'MaxLevelId': row[1],
+            'LevelTitle': '',
+            'OrderNumber': -1,
+            'CourseId': courseId,
+            'CorrectAnswers': row[2],
+            'TotalAnswers': row[3],
+        }
     return {
         'UserCourseDataId': row[0],
         'MaxLevelId': row[1],
@@ -332,7 +352,7 @@ def get_UserCourseData_and_Level(cursor: Cursor, userId: int, courseId: int):
     }
 
 
-def update_MaxLevelId(cursor: Cursor, user_id: int, course_id: int, new_max_level_id: int, db_path="db/kck.db"):
+def update_MaxLevelId(cursor: Cursor, user_id: int, course_id: int, new_max_level_id):
     cursor.execute("""
         SELECT 1 FROM UserCourseData
         WHERE UserId = ? AND CourseId = ?
@@ -373,7 +393,9 @@ def get_Stats(cursor: Cursor, courseId: int):
         correctAnswers = userCourseData["CorrectAnswers"]
         numberOfLevels = len(get_all_Levels(cursor, courseId))
         correctPercentage = 0 if totalAnswers == 0 else round(correctAnswers / totalAnswers * 100, 2)
-        isComplete = numberOfLevels == userCourseData["OrderNumber"]
+        isComplete = True
+        if userCourseData["MaxLevelId"] != None:
+            isComplete = numberOfLevels == userCourseData["OrderNumber"]
         stats = {
             "Name": user["Name"],
             "MaxLevelReached": userCourseData["OrderNumber"],

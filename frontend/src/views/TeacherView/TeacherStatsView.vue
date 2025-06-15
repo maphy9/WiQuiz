@@ -32,7 +32,11 @@
               >
                 <div>{{ stat.Name }}</div>
 
-                <div>{{ stat.MaxLevelReached }}</div>
+                <div>
+                  {{ stat.MaxLevelReached === -1
+                    ? $t('Last level reached')
+                    : stat.MaxLevelReached }}
+                </div>
 
                 <div>{{ stat.CorrectPercentage }}%</div>
 

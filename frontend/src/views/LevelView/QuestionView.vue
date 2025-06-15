@@ -46,17 +46,18 @@ const {
   messages,
   isChosen,
   answers,
-  timeOut,
   timeLeftInterval,
 } = storeToRefs(gameStore)
 
 // Handlers
-watch([chosenAnswer, timeOut], () => {
-  const answer = chosenAnswer.value
-
-  if (!answer && !timeOut.value) {
+watch(chosenAnswer, () => {
+  if (chosenAnswer.value === null) {
     return
   }
+  const answer = chosenAnswer.value
+
+  console.error(answer)
+
   if (!answer) {
     playInCorrectSound()
     showMessage(t('level-view.no-answer'), 'WHITE')
@@ -68,7 +69,6 @@ watch([chosenAnswer, timeOut], () => {
   if (timeLeftInterval.value) {
     clearInterval(timeLeftInterval.value)
   }
-  isChosen.value = true
 
   if (answer?.IsCorrect) {
     correctAnswers.value += 1

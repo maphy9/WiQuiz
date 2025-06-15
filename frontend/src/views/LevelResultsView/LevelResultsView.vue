@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useGame } from '@/stores/gameStore'
@@ -13,10 +13,10 @@ const { t } = useI18n()
 const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic, startMainTheme } = useSoundStore()
 const router = useRouter()
 const { user } = storeToRefs(useUser())
-const { currentLevel, currentLevelIndex, correctAnswers, levels, team, me } = storeToRefs(useGame())
+const { currentLevel, currentLevelIndex, correctAnswers, levels, team } = storeToRefs(useGame())
 
 const level = computed(() => {
-  return `${t('result-view.topic')} ${currentLevel.value?.OrderNumber as number + 1} - ${currentLevel.value?.LevelTitle}`
+  return `${t('result-view.topic')} ${currentLevel.value?.OrderNumber as number} - ${currentLevel.value?.LevelTitle}`
 })
 
 const levelProgress = computed(() => {
@@ -35,21 +35,28 @@ const nextLevel = computed(() => {
   return null
 })
 
-watch(levelProgress, async () => {
-  if (user.value && nextLevel.value && user.value?.maxOrderNumber < nextLevel.value?.OrderNumber && levelProgress.value >= 90 && nextLevel.value && me.value && currentLevel.value) {
-    await updateMaxLevelId(me.value.user, currentLevel.value?.CourseId, nextLevel.value.LevelId)
-    if (user.value) {
-      user.value.maxOrderNumber = nextLevel.value.LevelId
-    }
-  }
-}, { immediate: true })
-
 const textScore = computed(() => {
   return `${correctAnswers.value} ${t('result-view.correct-answers-from')} ${currentLevel.value?.questions.length}`
 })
 
-onMounted(() => {
+onMounted(async () => {
   playResultsMusic()
+  if (user.value && levelProgress.value >= 90) {
+    if (nextLevel.value) {
+      if (user.value.maxOrderNumber !== null && nextLevel.value.OrderNumber > user.value.maxOrderNumber) {
+        await updateMaxLevelId(user.value, currentLevel.value?.CourseId as number, nextLevel.value.LevelId)
+        if (user.value) {
+          user.value.maxOrderNumber = nextLevel.value.OrderNumber
+        }
+      }
+    }
+    else {
+      await updateMaxLevelId(user.value, currentLevel.value?.CourseId as number, null)
+      if (user.value) {
+        user.value.maxOrderNumber = null
+      }
+    }
+  }
 })
 
 onUnmounted(() => {
@@ -89,7 +96,7 @@ onUnmounted(() => {
 
         <div class="buttons-list">
           <div
-            v-if="levelProgress >= 90"
+            v-if="levelProgress >= 90 && nextLevel"
             class="button next-level-button"
             @click="playButtonSound(); router.push({'name': 'level',
                                                     'params': {'levelIndex': currentLevelIndex + 1}})"

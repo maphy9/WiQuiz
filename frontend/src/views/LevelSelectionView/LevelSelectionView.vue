@@ -20,15 +20,21 @@ const { initLevels } = gameStore
 const { canGoToLevel, levels, team } = storeToRefs(gameStore)
 const { onMountMainTheme, stopMainTheme } = useSoundStore()
 
-const maxOrderNumbers = ref<number[]>([Infinity, Infinity, Infinity])
+const maxOrderNumbers = ref<(number)[]>([Infinity, Infinity, Infinity])
 const processedLevels = ref<any>([])
 
 watch([levels, maxOrderNumbers], () => {
   let maxOrderNumber = Infinity
   for (const _maxOrderNumber of maxOrderNumbers.value) {
-    if (maxOrderNumber > _maxOrderNumber) {
+    if (_maxOrderNumber === -1) {
+      continue
+    }
+    if (_maxOrderNumber < maxOrderNumber) {
       maxOrderNumber = _maxOrderNumber
     }
+  }
+  if (maxOrderNumber === Infinity) {
+    maxOrderNumber = processedLevels.value.length + 1
   }
 
   processedLevels.value = levels.value.map((level: Level) => ({
@@ -352,7 +358,7 @@ onMounted(async () => {
   }
 
   .columns-container{
-    padding-top: 100px;
+    padding-top: 150px;
     width: 100%;
   }
 

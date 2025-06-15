@@ -67,7 +67,7 @@
           src="@/images/leave.png"
         >
 
-        <span class="leave-text">Leave room</span>
+        <span class="leave-text">{{ $t('leave-room') }}</span>
       </div>
     </div>
 

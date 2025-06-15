@@ -26,7 +26,7 @@ const { user } = storeToRefs(useGame())
     <span
       class="teammate-name"
       :style="{
-        'textDecoration': teammate.user === user
+        'textDecoration': teammate.user.id === user?.id
           ? 'underline'
           : 'none',
       }"

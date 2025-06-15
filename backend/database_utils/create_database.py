@@ -30,7 +30,7 @@ def create_database(cursor: Cursor):
   CREATE TABLE IF NOT EXISTS UserCourseData (
     UserCourseDataId INTEGER PRIMARY KEY AUTOINCREMENT,
     UserId INTEGER,
-    MaxLevelId INTEGER,
+    MaxLevelId INTEGER DEFAULT NULL,
     CorrectAnswers INTEGER,
     TotalAnswers INTEGER,
     CourseId INTEGER,

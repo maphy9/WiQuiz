@@ -35,6 +35,34 @@ const isSelectable = computed(() => {
   return !isChosen.value && answer.value.isActive && me.value?.isAlive
 })
 
+const computedClass = computed(() => {
+  if (chosenAnswer.value === null) {
+    if (!me.value?.isAlive) {
+      return ['answer', 'inactive']
+    }
+
+    return ['answer', answer.value.isActive
+      ? 'active'
+      : 'inactive']
+  }
+
+  if (chosenAnswer.value.AnswerId === answer.value.AnswerId) {
+    return [
+      'answer',
+      chosenAnswer.value?.IsCorrect
+        ? 'correct'
+        : 'incorrect',
+      'active',
+    ]
+  }
+
+  if (isChosen.value) {
+    return ['answer', 'hidden']
+  }
+
+  return ['answer']
+})
+
 watch(chosenAnswer, (newVal) => {
   if (!newVal)
     return
@@ -51,17 +79,8 @@ watch(chosenAnswer, (newVal) => {
 
 <template>
   <div
-    :class="`answer ${chosenAnswer === null
-      ? me?.isAlive && answer.isActive
-        ? 'active'
-        : 'inactive'
-      : ''} ${chosenAnswer === answer
-      ? chosenAnswer?.IsCorrect
-        ? 'correct active'
-        : 'incorrect active'
-      : isChosen
-        ? 'hidden'
-        : ''}`"
+    class="answer"
+    :class="computedClass"
     :style="{
       'backgroundColor': answerColor,
     }"

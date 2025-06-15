@@ -6,6 +6,19 @@
     <LanguageButton />
 
     <div class="team-card">
+      <div
+        v-if="isConnected && team.length > 1"
+        class="leave-room-mobile"
+        @click="createRoom()"
+      >
+        <img
+          class="leave-icon"
+          src="@/images/leave.png"
+        >
+
+        <span class="leave-text">Leave room</span>
+      </div>
+
       <div class="team-card-top">
         <h3>{{ $t('main-view.your-team') }}</h3>
       </div>
@@ -42,6 +55,19 @@
 
           <div>{{ $t('main-view.invite-or-join') }}</div>
         </router-link>
+      </div>
+
+      <div
+        v-if="isConnected && team.length > 1"
+        class="leave-room"
+        @click="createRoom()"
+      >
+        <img
+          class="leave-icon"
+          src="@/images/leave.png"
+        >
+
+        <span class="leave-text">Leave room</span>
       </div>
     </div>
 
@@ -101,6 +127,7 @@ import { useSoundStore } from '@/stores/useSoundStore'
 import LeafesAnimation from './LeafesAnimation.vue'
 
 const gameStore = useGame()
+const { createRoom } = gameStore
 const { team, isConnected } = storeToRefs(gameStore)
 
 const logoClickCount = ref(0)
@@ -125,6 +152,29 @@ function handleLogoClick() {
 </script>
 
 <style scoped>
+.leave-room {
+  padding: 10px 0;
+  height: 32px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 9vh;
+  font-size: 24px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  background-color: rgba(139, 35, 29, 1);
+  cursor: pointer;
+}
+
+.leave-room-mobile {
+  display: none;
+}
+
+.leave-icon {
+  height: 100%;
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -595,9 +645,30 @@ a {
   }
 
   .button-img {
-  height: 90px;
-  width: 90px;
-  margin-left: 40px;
-}
+    height: 90px;
+    width: 90px;
+    margin-left: 40px;
+  }
+
+  .leave-room {
+    display: none;
+  }
+
+  .leave-room-mobile {
+    position: absolute;
+    padding: 4px 0;
+    height: 32px;
+    width: 100vw;
+    bottom: 19vh;
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    background-color: rgba(139, 35, 29, 1);
+    cursor: pointer;
+  }
 }
 </style>

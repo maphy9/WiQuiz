@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
@@ -17,9 +17,15 @@ const gameStore = useGame()
 const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const router = useRouter()
+
+watch(locale, () => {
+  if (codeError.value) {
+    codeError.value = t('Code must be exactly 6 characters')
+  }
+})
 
 function joinRoom() {
   playButtonSound()

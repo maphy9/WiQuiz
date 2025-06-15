@@ -93,5 +93,6 @@
     "pio": "Basics of software engineering"
   },
   "leave-room": "Leave room",
-  "Last level reached": "Last level completed"
+  "Last level reached": "Last level completed",
+  "Code must be exactly 6 characters": "Code must be exactly 6 characters"
 }

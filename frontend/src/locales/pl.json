@@ -93,5 +93,6 @@
   },
   "All levels completed": "Wszystkie tematy są ukończone",
   "leave-room": "Opuść pokój",
-  "Last level reached": "Ukończono ostatni poziom"
+  "Last level reached": "Ukończono ostatni poziom",
+  "Code must be exactly 6 characters": "Kod musi mieć dokładnie 6 znaków"
 }

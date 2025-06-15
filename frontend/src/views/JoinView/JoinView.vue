@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import { useClipboard } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
-import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
+import LeavesAnimation from '@/views/MainView/LeavesAnimation.vue'
 
 const { playButtonSound } = useSoundStore()
 
@@ -13,6 +15,7 @@ const codeInput = ref('')
 const gameStore = useGame()
 const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
+const { copy } = useClipboard()
 
 function joinRoom() {
   playButtonSound()
@@ -26,11 +29,19 @@ function joinRoom() {
 
 function copyCode() {
   if (roomCode.value) {
-    navigator.clipboard.writeText(roomCode.value.toString())
+    copy(roomCode.value)
   }
 }
 
 const { onMountMainTheme } = useSoundStore()
+
+onBeforeRouteLeave((to) => {
+  if (to.name === 'main') {
+    return true
+  }
+
+  return { name: 'main' }
+})
 
 onMounted(() => {
   onMountMainTheme()
@@ -39,7 +50,7 @@ onMounted(() => {
 
 <template>
   <div class="main">
-    <LeafesAnimation />
+    <LeavesAnimation />
 
     <LanguageButton />
 
@@ -218,14 +229,16 @@ button:active {
 
 @media (max-width: 550px) {
   .container {
+    flex-direction: column-reverse;
+    margin: 0;
     margin-top: 80px;
     width: calc(95vw - 2px);
-    height: 600px;
+    gap: 50px;
+    justify-content: space-between;
   }
 
   .title {
     font-size: 48px;
-    margin-bottom: 4vh;
   }
 
   .code-input-label {

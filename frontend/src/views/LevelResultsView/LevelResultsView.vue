@@ -7,7 +7,7 @@ import { useGame } from '@/stores/gameStore'
 import { useUser } from '@/stores/userStore'
 import { useSoundStore } from '@/stores/useSoundStore'
 import { updateMaxLevelId } from '@/utils/fetchUtils'
-import StudentCard from '@/Views/LevelResultsView/StudentCard.vue'
+import StudentCard from '@/views/LevelResultsView/StudentCard.vue'
 
 const { t } = useI18n()
 const { playResultsMusic, playButtonSound, stopLevelMusic, playLevelMusic, stopResultsMusic, startMainTheme } = useSoundStore()

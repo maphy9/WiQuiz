@@ -1,11 +1,24 @@
 <!-- eslint-disable max-lines -->
 <template>
   <div class="background">
-    <LeafesAnimation />
+    <LeavesAnimation />
 
     <LanguageButton />
 
     <div class="team-card">
+      <div
+        v-if="isConnected && team.length > 1"
+        class="leave-room-mobile"
+        @click="createRoom()"
+      >
+        <img
+          class="leave-icon"
+          src="@/images/leave.png"
+        >
+
+        <span class="leave-text">{{ $t('leave-room') }}</span>
+      </div>
+
       <div class="team-card-top">
         <h3>{{ $t('main-view.your-team') }}</h3>
       </div>
@@ -42,6 +55,19 @@
 
           <div>{{ $t('main-view.invite-or-join') }}</div>
         </router-link>
+      </div>
+
+      <div
+        v-if="isConnected && team.length > 1"
+        class="leave-room"
+        @click="createRoom()"
+      >
+        <img
+          class="leave-icon"
+          src="@/images/leave.png"
+        >
+
+        <span class="leave-text">Leave room</span>
       </div>
     </div>
 
@@ -98,9 +124,10 @@ import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
-import LeafesAnimation from './LeafesAnimation.vue'
+import LeavesAnimation from '@/views/MainView/LeavesAnimation.vue'
 
 const gameStore = useGame()
+const { createRoom } = gameStore
 const { team, isConnected } = storeToRefs(gameStore)
 
 const logoClickCount = ref(0)
@@ -125,6 +152,29 @@ function handleLogoClick() {
 </script>
 
 <style scoped>
+.leave-room {
+  padding: 10px 0;
+  height: 32px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 9vh;
+  font-size: 24px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  background-color: rgba(139, 35, 29, 1);
+  cursor: pointer;
+}
+
+.leave-room-mobile {
+  display: none;
+}
+
+.leave-icon {
+  height: 100%;
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -245,7 +295,7 @@ function handleLogoClick() {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #525a64;
+  background-color: rgba(82, 90, 100, 0.85);
   width: 35vw;
   height: 23vh;
   min-width: 400px;
@@ -255,7 +305,7 @@ function handleLogoClick() {
   position: absolute;
   top: 0px;
   left: 0px;
-  background-color: #62707e;
+  background-color: rgba(98, 112, 126, 0.85);
   width: 35vw;
   height: 7vh;
   font-family: "Titillium Web";
@@ -496,24 +546,15 @@ a {
 @media (max-width: 550px) {
   .team-card {
     position: fixed;
-    bottom: 8vh;
+    bottom: 0vh;
     top: auto;
     left: 0;
     width: 100vw;
-    height: 20vh;
-    background-color: #525a64;
-  }
-
-  .team-card {
-    position: fixed;
-    bottom: 5vh;
-    background-color: #525a64;
-    width: 100vw;
     height: 18vh;
+    padding-bottom: 10px;
   }
 
   .team-card-top {
-    background-color: #62707e;
     width: 100vw;
     height: 5vh;
     font-family: "Titillium Web";
@@ -527,18 +568,20 @@ a {
   }
 
   .team-members {
+    width: 100vw;
+    padding: 0;
+    margin: 0;
     display: flex;
-    gap: 5px;
     margin-top: 5vh;
     align-items: center;
     justify-content: space-between;
   }
 
   .member-slot {
-    padding: 8px;
-    width: 100px;
+    padding: 8px 0;
+    max-width: calc(100% / 3);
     text-align: center;
-    font-size: 10px;
+    font-size: 3vw;
     font-family: "Titillium Web";
     color: #ffffff;
     display: flex;
@@ -602,9 +645,30 @@ a {
   }
 
   .button-img {
-  height: 90px;
-  width: 90px;
-  margin-left: 40px;
-}
+    height: 90px;
+    width: 90px;
+    margin-left: 40px;
+  }
+
+  .leave-room {
+    display: none;
+  }
+
+  .leave-room-mobile {
+    position: absolute;
+    padding: 4px 0;
+    height: 32px;
+    width: 100vw;
+    bottom: 19vh;
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    background-color: rgba(139, 35, 29, 1);
+    cursor: pointer;
+  }
 }
 </style>

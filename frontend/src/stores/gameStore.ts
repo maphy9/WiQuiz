@@ -67,7 +67,7 @@ export const useGame = defineStore('gameStore', () => {
 
   // Team
   const team: Ref<Teammate[]> = ref([])
-  const chosenAnswer: Ref<Answer | null> = ref(null)
+  const chosenAnswer: Ref<Answer | null | undefined> = ref(null)
 
   // Bebrik
   const me = computed(() => {
@@ -408,9 +408,14 @@ export const useGame = defineStore('gameStore', () => {
       return
     }
     isChosen.value = true
-    chosenAnswer.value = answer
+    if (answer !== null) {
+      chosenAnswer.value = { ...answer }
+    }
+    else {
+      chosenAnswer.value = undefined
+    }
 
-    if (chosenAnswer.value?.IsCorrect) {
+    if (chosenAnswer.value && chosenAnswer.value.IsCorrect) {
       for (const teammate of team.value) {
         if (teammate.selectedAnswer?.AnswerId === chosenAnswer.value?.AnswerId) {
           teammate.score += 3
@@ -420,13 +425,14 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   function chooseAnswer() {
+    if (isChosen.value) {
+      return
+    }
     const answer = getChosenAnswer()
-    if (answer) {
-      sendWebSocketMessage({ type: 'choose_answer', answer })
-      if (!answer.IsCorrect) {
-        const player = getRandomAlive()
-        sendWebSocketMessage({ type: 'kill_player', player })
-      }
+    sendWebSocketMessage({ type: 'choose_answer', answer })
+    if (answer && !answer.IsCorrect) {
+      const player = getRandomAlive()
+      sendWebSocketMessage({ type: 'kill_player', player })
     }
   }
 
@@ -651,7 +657,10 @@ export const useGame = defineStore('gameStore', () => {
     timeLeftInterval.value = setInterval(() => {
       if (timeLeft.value === 0 && timeLeftInterval.value) {
         clearInterval(timeLeftInterval.value)
-        chooseAnswer()
+        timeLeftInterval.value = null
+        if (me.value?.user.id === team.value[0].user.id) {
+          chooseAnswer()
+        }
       }
       else {
         timeLeft.value--

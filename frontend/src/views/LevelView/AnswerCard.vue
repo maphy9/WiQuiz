@@ -6,7 +6,7 @@ import { useSoundStore } from '@/stores/useSoundStore'
 
 const props = defineProps<{
   answer: any
-  chosenAnswer: Answer | null
+  chosenAnswer: Answer | null | undefined
   isChosen: boolean
   me: Teammate | undefined
 }>()
@@ -46,7 +46,7 @@ const computedClass = computed(() => {
       : 'inactive']
   }
 
-  if (chosenAnswer.value.AnswerId === answer.value.AnswerId) {
+  if (chosenAnswer.value?.AnswerId === answer.value.AnswerId) {
     return [
       'answer',
       chosenAnswer.value?.IsCorrect

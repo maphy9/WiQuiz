@@ -50,12 +50,14 @@ const {
 } = storeToRefs(gameStore)
 
 // Handlers
-watch([chosenAnswer], () => {
-  const answer = chosenAnswer.value
-
-  if (!answer) {
+watch(chosenAnswer, () => {
+  if (chosenAnswer.value === null) {
     return
   }
+  const answer = chosenAnswer.value
+
+  console.error(answer)
+
   if (!answer) {
     playInCorrectSound()
     showMessage(t('level-view.no-answer'), 'WHITE')

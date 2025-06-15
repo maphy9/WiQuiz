@@ -2,11 +2,12 @@
 import { useClipboard } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
-import LeafesAnimation from '@/Views/MainView/LeafesAnimation.vue'
+import LeavesAnimation from '@/views/MainView/LeavesAnimation.vue'
 
 const { playButtonSound } = useSoundStore()
 
@@ -34,6 +35,14 @@ function copyCode() {
 
 const { onMountMainTheme } = useSoundStore()
 
+onBeforeRouteLeave((to) => {
+  if (to.name === 'main') {
+    return true
+  }
+
+  return { name: 'main' }
+})
+
 onMounted(() => {
   onMountMainTheme()
 })
@@ -41,7 +50,7 @@ onMounted(() => {
 
 <template>
   <div class="main">
-    <LeafesAnimation />
+    <LeavesAnimation />
 
     <LanguageButton />
 

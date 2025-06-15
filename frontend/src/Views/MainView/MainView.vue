@@ -1,7 +1,7 @@
 <!-- eslint-disable max-lines -->
 <template>
   <div class="background">
-    <LeafesAnimation />
+    <LeavesAnimation />
 
     <LanguageButton />
 
@@ -16,7 +16,7 @@
           src="@/images/leave.png"
         >
 
-        <span class="leave-text">Leave room</span>
+        <span class="leave-text">{{ $t('leave-room') }}</span>
       </div>
 
       <div class="team-card-top">
@@ -124,7 +124,7 @@ import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
-import LeafesAnimation from './LeafesAnimation.vue'
+import LeavesAnimation from '@/views/MainView/LeavesAnimation.vue'
 
 const gameStore = useGame()
 const { createRoom } = gameStore

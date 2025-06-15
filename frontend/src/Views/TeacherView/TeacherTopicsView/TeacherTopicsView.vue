@@ -86,8 +86,8 @@ import Footer from '@/components/TeacherViewComponents/Footer.vue'
 import Header from '@/components/TeacherViewComponents/Header.vue'
 import { useGame } from '@/stores/gameStore'
 import { createLevel, deleteLevel, getCourseName, getLevels, updateLevel } from '@/utils/fetchUtils'
-import DeleteTopicModal from '@/Views/TeacherView/TeacherTopicsView/DeleteTopicModal.vue'
-import EditTopicModal from '@/Views/TeacherView/TeacherTopicsView/EditTopicModal.vue'
+import DeleteTopicModal from '@/views/TeacherView/TeacherTopicsView/DeleteTopicModal.vue'
+import EditTopicModal from '@/views/TeacherView/TeacherTopicsView/EditTopicModal.vue'
 
 const showModal = ref(false)
 const showDeleteModal = ref(false)

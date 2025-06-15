@@ -95,7 +95,7 @@ export const useGame = defineStore('gameStore', () => {
   const timeOut = ref(false)
 
   // Timer
-  const initialTime = 60
+  const initialTime = 10
   const maxTime = ref(initialTime)
   const timeLeft = ref(initialTime)
   const timeLeftFormatted = computed(() => {
@@ -290,10 +290,10 @@ export const useGame = defineStore('gameStore', () => {
       }
     }
 
-    if (player.user.id === me.value?.user.id && avatar === '/images/emptyPfp.png') {
+    if (me.value?.user.avatar === '/images/emptyPfp.png') {
       let doAllHaveAvatars = true
-      for (const teammate of team.value.filter(t1 => t1.user.id !== player.user.id)) {
-        if (teammate.user.avatar === '/images/emptyPfp.png') {
+      for (const teammate of team.value) {
+        if (teammate.user.id !== me.value.user.id && teammate.user.avatar === '/images/emptyPfp.png') {
           doAllHaveAvatars = false
           break
         }

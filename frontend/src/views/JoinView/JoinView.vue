@@ -2,7 +2,7 @@
 import { useClipboard } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
 import ReturnButton from '@/components/SharedComponents/ReturnButton.vue'
 import { useGame } from '@/stores/gameStore'
@@ -17,6 +17,8 @@ const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
 const { copy } = useClipboard()
 
+const router = useRouter()
+
 function joinRoom() {
   playButtonSound()
   if (codeInput.value.length !== 6) {
@@ -25,6 +27,7 @@ function joinRoom() {
 
   team.value = []
   connectToRoom(codeInput.value)
+  router.push({ name: 'main' })
 }
 
 function copyCode() {

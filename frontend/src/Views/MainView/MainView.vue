@@ -245,7 +245,7 @@ function handleLogoClick() {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #525a64;
+  background-color: rgba(82, 90, 100, 0.85);
   width: 35vw;
   height: 23vh;
   min-width: 400px;
@@ -255,7 +255,7 @@ function handleLogoClick() {
   position: absolute;
   top: 0px;
   left: 0px;
-  background-color: #62707e;
+  background-color: rgba(98, 112, 126, 0.85);
   width: 35vw;
   height: 7vh;
   font-family: "Titillium Web";

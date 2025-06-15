@@ -4,6 +4,7 @@ import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import { useGame } from '@/stores/gameStore'
 import { useSoundStore } from '@/stores/useSoundStore'
+import QuestionView from '@/views/LevelView/QuestionView.vue'
 
 const props = defineProps<{
   levelIndex: string

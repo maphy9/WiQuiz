@@ -51,7 +51,9 @@
     "question-content": "Treść pytania",
     "answer-options": "Warianty odpowiedzi",
     "correct-answer": "Poprawna odpowiedź",
-    "save-question": "Zapisz pytanie"
+    "save-question": "Zapisz pytanie",
+    "validation-error": "Błąd walidacji",
+    "complete-all-fields": "Proszę wypełnić wszystkie pola"
   },
   "teacher-views-header": {
     "platforms": "Wirtualne wydziały"

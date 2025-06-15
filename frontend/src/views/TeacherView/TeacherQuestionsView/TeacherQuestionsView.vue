@@ -76,9 +76,9 @@
       class="validation-error-overlay"
     >
       <div class="validation-error-message">
-        <h3>Validation Error</h3>
+        <h3>{{ $t('teacher-questions.validation-error') || 'Validation Error' }}</h3>
 
-        <p>Complete all the fields to save the question</p>
+        <p>{{ $t('teacher-questions.complete-all-fields') || 'Complete all the fields to save the question' }}</p>
 
         <button
           class="error-ok-button"

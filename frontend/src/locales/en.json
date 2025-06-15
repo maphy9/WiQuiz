@@ -51,7 +51,9 @@
     "question-content": "Question content",
     "answer-options": "Answer options",
     "correct-answer": "Correct answer",
-    "save-question": "Save question"
+    "save-question": "Save question",
+    "validation-error": "Validation error",
+    "complete-all-fields": "Please fill in all fields to proceed"
   },
   "teacher-views-header": {
     "platforms": "WIKAMP Platforms"

@@ -289,6 +289,23 @@ export const useGame = defineStore('gameStore', () => {
         teammate.user.avatar = avatar
       }
     }
+
+    if (player.user.id === me.value?.user.id && avatar === '/images/emptyPfp.png') {
+      let doAllHaveAvatars = true
+      for (const teammate of team.value.filter(t1 => t1.user.id !== player.user.id)) {
+        if (teammate.user.avatar === '/images/emptyPfp.png') {
+          doAllHaveAvatars = false
+          break
+        }
+      }
+      if (doAllHaveAvatars) {
+        sendWebSocketMessage({
+          type: 'set_avatar',
+          player: me.value,
+          avatar: getRandomAvailableAvatar(),
+        })
+      }
+    }
   }
 
   function getRandomAvailableAvatar() {
@@ -335,17 +352,11 @@ export const useGame = defineStore('gameStore', () => {
     }
     team.value = newPlayers
 
-    for (const teammate of team.value) {
-      if (user.value?.id === teammate.user.id) {
-        sendWebSocketMessage({
-          type: 'set_avatar',
-          player: teammate,
-          avatar: teammate.user.avatar === '/images/emptyPfp.png'
-            ? getRandomAvailableAvatar()
-            : teammate.user.avatar,
-        })
-      }
-    }
+    sendWebSocketMessage({
+      type: 'set_avatar',
+      player: me.value,
+      avatar: me.value?.user.avatar,
+    })
 
     const answer = getChosenAnswer()
     if (answer) {

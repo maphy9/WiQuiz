@@ -104,12 +104,18 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
     max_level = get_Level(cursor, max_level_id)
 
     conn.close()
-
     player = {
         "id": user_id,
         "name": name,
-        "maxOrderNumber": max_level["OrderNumber"]
+        "maxOrderNumber": -1
     }
+    if (not max_level is None):
+        player = {
+            "id": user_id,
+            "name": name,
+            "maxOrderNumber": max_level["OrderNumber"]
+        }
+    
 
     await connect_player_to_room(room_code, player, websocket)
 
@@ -173,7 +179,7 @@ class QuestionUpdate(BaseModel):
 class UserUpdate(BaseModel):
     UserId: int
     CourseId: int
-    NewMaxLevelId: int
+    NewMaxLevelId: int | None
 
 class GetMaxOrderNumberForBebrik(BaseModel):
     UserId: int
@@ -188,20 +194,13 @@ class GetStats(BaseModel):
     CourseId: int
 
 @app.get("/getCourse")
-def getStats():
+def getCourse():
     conn = sqlite3.connect("db/kck.db")
     cursor = conn.cursor()
 
     res = get_Course(cursor, 1)
     conn.close()
     return { "title": res["CourseTitle"] }
-def getStats(payload: GetStats):
-    conn = sqlite3.connect("db/kck.db")
-    cursor = conn.cursor()
-
-    res = get_Stats(cursor, payload.CourseId)
-    conn.close()
-    return res
 
 @app.post("/getStats", status_code=201)
 def getStats(payload: GetStats):
@@ -229,6 +228,10 @@ def getMaxOrderNumberForBebrik(payload: GetMaxOrderNumberForBebrik):
 
     maxLevel = get_UserCourseData_and_Level(cursor, payload.UserId, payload.CourseId)
     conn.close()
+    if (maxLevel is None):
+        return {
+            "MaxOrderNumber": -1
+        }
     return {
         "MaxOrderNumber": maxLevel["OrderNumber"]
     }

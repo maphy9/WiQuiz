@@ -92,7 +92,6 @@ export const useGame = defineStore('gameStore', () => {
   // Bebra 52
   const answers: Ref<any[]> = ref([])
   const isChosen = ref(false)
-  const timeOut = ref(false)
 
   // Timer
   const initialTime = 10
@@ -405,6 +404,10 @@ export const useGame = defineStore('gameStore', () => {
   }
 
   function handleChooseAnswer(answer: Answer) {
+    if (isChosen.value) {
+      return
+    }
+    isChosen.value = true
     chosenAnswer.value = answer
 
     if (chosenAnswer.value?.IsCorrect) {
@@ -642,14 +645,13 @@ export const useGame = defineStore('gameStore', () => {
       answers.value.push({ ...currentQuestion.value.answers[i], ...answerProps[i] })
     }
 
-    timeOut.value = false
     chosenAnswer.value = null
     removeSelectedAnswers()
 
     timeLeftInterval.value = setInterval(() => {
       if (timeLeft.value === 0 && timeLeftInterval.value) {
         clearInterval(timeLeftInterval.value)
-        timeOut.value = true
+        chooseAnswer()
       }
       else {
         timeLeft.value--
@@ -695,7 +697,6 @@ export const useGame = defineStore('gameStore', () => {
     bonuses,
     timebarProgress,
     initQuestion,
-    timeOut,
     isChosen,
     answers,
     currentQuestionIndex,

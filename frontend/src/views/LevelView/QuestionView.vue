@@ -46,15 +46,14 @@ const {
   messages,
   isChosen,
   answers,
-  timeOut,
   timeLeftInterval,
 } = storeToRefs(gameStore)
 
 // Handlers
-watch([chosenAnswer, timeOut], () => {
+watch([chosenAnswer], () => {
   const answer = chosenAnswer.value
 
-  if (!answer && !timeOut.value) {
+  if (!answer) {
     return
   }
   if (!answer) {
@@ -68,7 +67,6 @@ watch([chosenAnswer, timeOut], () => {
   if (timeLeftInterval.value) {
     clearInterval(timeLeftInterval.value)
   }
-  isChosen.value = true
 
   if (answer?.IsCorrect) {
     correctAnswers.value += 1

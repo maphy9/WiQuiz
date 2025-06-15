@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useClipboard } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import LanguageButton from '@/components/SharedComponents/LanguageButton.vue'
@@ -13,6 +14,7 @@ const codeInput = ref('')
 const gameStore = useGame()
 const { connectToRoom } = gameStore
 const { roomCode, team } = storeToRefs(gameStore)
+const { copy } = useClipboard()
 
 function joinRoom() {
   playButtonSound()
@@ -26,7 +28,7 @@ function joinRoom() {
 
 function copyCode() {
   if (roomCode.value) {
-    navigator.clipboard.writeText(roomCode.value.toString())
+    copy(roomCode.value)
   }
 }
 
